@@ -356,6 +356,20 @@ public class Configuration implements Config {
                 .withValue("Modules.Emoji.enabled", config.getValue("Modules.Emotes.enabled"))
                 .withValue("Modules.Emoji.custom-emoji", config.getValue("Modules.Emotes.emotes"));
 
+      case "12.0":
+        LoggerHelper.info("Performing config migration 12.0 -> 12.1...");
+
+        config = config
+                .withValue("PrefixSuffixSettings.defaultPrefix",
+                           ConfigValueFactory.fromAnyRef(
+                                   ComponentUtil.miniMessage.serialize(
+                                           ComponentUtil.legacySerializer.deserialize(
+                                                   config.getString("PrefixSuffixSettings.defaultPrefix")))))
+                .withValue("PrefixSuffixSettings.defaultSuffix",
+                           ConfigValueFactory.fromAnyRef(
+                                   ComponentUtil.miniMessage.serialize(
+                                           ComponentUtil.legacySerializer.deserialize(
+                                                   config.getString("PrefixSuffixSettings.defaultSuffix")))));
 
       default:
         // Unknow Version or old version
@@ -364,10 +378,9 @@ public class Configuration implements Config {
             config.withValue(
                 "Version", ConfigValueFactory.fromAnyRef(ProxyChatApi.CONFIG_VERSION));
 
-      case "12.0":
+      case "12.1":
         // Up to date
         // -> No action needed
-
     }
   }
 

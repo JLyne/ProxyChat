@@ -21,6 +21,7 @@
 
 package uk.co.notnull.ProxyChat.api.hook;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -31,14 +32,12 @@ import java.util.stream.Collectors;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 @UtilityClass
 public class HookManager {
   public static final int DEFAULT_PREFIX_PRIORITY = 100;
   public static final int PERMISSION_PLUGIN_PREFIX_PRIORITY = 200;
-  private static final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.builder()
-          .character('&').hexColors().useUnusualXRepeatedCharacterHexFormat().build();
+  private static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
   private static Map<String, ProxyChatHook> hooks = new LinkedHashMap<>();
 
@@ -90,7 +89,7 @@ public class HookManager {
       Optional<String> prefix = hook.getPrefix(account);
 
       if(prefix.isPresent()) {
-        return legacySerializer.deserialize(prefix.get());
+        return miniMessage.deserialize(prefix.get());
       }
     }
 
@@ -102,7 +101,7 @@ public class HookManager {
       Optional<String> suffix = hook.getSuffix(account);
 
       if(suffix.isPresent()) {
-        return legacySerializer.deserialize(suffix.get());
+        return miniMessage.deserialize(suffix.get());
       }
     }
 
@@ -110,13 +109,13 @@ public class HookManager {
   }
 
   public Component getFullNameComponent(ProxyChatAccount account) {
-    return legacySerializer.deserialize(getPrefix(account) + account.getName() + getSuffix(account))
+    return miniMessage.deserialize(getPrefix(account) + account.getName() + getSuffix(account))
             .clickEvent(ClickEvent.suggestCommand("/w " + account.getName() + " "))
             .hoverEvent(Component.text("Click to whisper " + account.getName()));
   }
 
   public Component getFullDisplayNameComponent(ProxyChatAccount account) {
-    return legacySerializer.deserialize(getPrefix(account) + account.getDisplayName() + getSuffix(account))
+    return miniMessage.deserialize(getPrefix(account) + account.getDisplayName() + getSuffix(account))
             .clickEvent(ClickEvent.suggestCommand("/w " + account.getName() + " "))
             .hoverEvent(Component.text("Click to whisper " + account.getName()));
   }

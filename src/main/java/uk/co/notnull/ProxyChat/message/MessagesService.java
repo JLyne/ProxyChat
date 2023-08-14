@@ -361,7 +361,8 @@ public class MessagesService {
 		}
 
 		context.setParsedMessage(ComponentUtil.extractUrls(
-				ComponentUtil.filterFormatting(ComponentUtil.legacySerializer.deserialize(message), playerAccount)));
+				ComponentUtil.filterFormatting(
+						ComponentUtil.untrustedMiniMessage.deserialize(message), playerAccount)));
 
 		return true;
 	}

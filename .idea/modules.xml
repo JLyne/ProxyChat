@@ -3,6 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/BungeeChat2.iml" filepath="$PROJECT_DIR$/.idea/BungeeChat2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProxyChatApi/ProxyChat.ProxyChatApi.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ProxyChatApi/ProxyChat.ProxyChatApi.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProxyChatApi/ProxyChat.ProxyChatApi.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ProxyChatApi/ProxyChat.ProxyChatApi.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProxyChat.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ProxyChat.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProxyChat.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ProxyChat.test.iml" />
     </modules>
   </component>
 </project>

@@ -27,6 +27,8 @@ import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.*;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
@@ -63,6 +65,12 @@ public class ComponentUtil {
 	public static final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.builder()
 				  .character('&').hexColors().useUnusualXRepeatedCharacterHexFormat().build();
 
+	public static final TagResolver untrustedResolver = TagResolver.builder().resolvers(
+			StandardTags.color(),
+			StandardTags.decorations(),
+			StandardTags.reset()
+	).build();
+	public static final MiniMessage untrustedMiniMessage = MiniMessage.builder().tags(untrustedResolver).build();
 	public static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
 	static final Pattern URL_SCHEME_PATTERN = Pattern.compile("^[a-z][a-z\\d+\\-.]*:");

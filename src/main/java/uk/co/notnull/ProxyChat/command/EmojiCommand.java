@@ -21,7 +21,6 @@
 
 package uk.co.notnull.ProxyChat.command;
 
-import net.kyori.adventure.audience.MessageType;
 import uk.co.notnull.ProxyChat.module.EmojiModule;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.permission.PermissionManager;
@@ -42,7 +41,7 @@ public class EmojiCommand extends BaseCommand {
   public void execute(Invocation invocation) {
     if (!PermissionManager.hasPermission(invocation.source(), Permission.COMMAND_EMOJI)) return;
 
-    invocation.source().sendMessage(emojiModule.getEmojiListComponent(), MessageType.SYSTEM);
+    invocation.source().sendMessage(emojiModule.getEmojiListComponent());
   }
 
   @Override

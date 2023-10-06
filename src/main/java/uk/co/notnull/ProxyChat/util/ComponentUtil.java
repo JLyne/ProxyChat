@@ -73,22 +73,12 @@ public class ComponentUtil {
 	public static final MiniMessage untrustedMiniMessage = MiniMessage.builder().tags(untrustedResolver).build();
 	public static final MiniMessage miniMessage = MiniMessage.miniMessage();
 
-	static final Pattern URL_SCHEME_PATTERN = Pattern.compile("^[a-z][a-z\\d+\\-.]*:");
-
 	static final Style urlStyle = Style.style().color(TextColor.fromHexString("#8194e4"))
 			.decoration(TextDecoration.UNDERLINED, true).build();
 
 	private static final TextReplacementConfig extractUrlConfig = TextReplacementConfig.builder()
-			.match(Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?"))
-			.replacement(url -> {
-				String clickUrl = url.content();
-
-				if (!URL_SCHEME_PATTERN.matcher(clickUrl).find()) {
-					clickUrl = "http://" + clickUrl;
-				}
-
-				return url.style(urlStyle).clickEvent(ClickEvent.openUrl(clickUrl));
-			}).build();
+			.match(Pattern.compile("https?://(?:(?:\\d{1,3}.){3}\\d{1,3}|[-\\w_.]+\\.\\w{2,})(?:/\\S*)?"))
+			.replacement(url -> url.style(urlStyle).clickEvent(ClickEvent.openUrl(url.content()))).build();
 
 
 	public static Component filterFormatting(Component message, ProxyChatAccount account) {

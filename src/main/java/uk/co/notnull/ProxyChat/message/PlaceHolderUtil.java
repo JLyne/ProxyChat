@@ -29,13 +29,10 @@ import uk.co.notnull.ProxyChat.config.Configuration;
 import dev.aura.lib.messagestranslator.MessagesTranslator;
 import dev.aura.lib.messagestranslator.PluginMessagesTranslator;
 import java.io.File;
-
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import uk.co.notnull.ProxyChat.util.ComponentUtil;
 
-@UtilityClass
-public class PlaceHolderUtil {
+public final class PlaceHolderUtil {
   private static final String FORMATS = "Formats";
   private static final String LANGUAGE = "Language";
   private static Config formatsBase;
@@ -148,5 +145,9 @@ public class PlaceHolderUtil {
 
   public static String escapePlaceholders(String message) {
     return message.replace(placeholderString, placeholderString + placeholderString);
+  }
+
+  private PlaceHolderUtil() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

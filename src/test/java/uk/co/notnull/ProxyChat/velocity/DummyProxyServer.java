@@ -34,7 +34,6 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import com.velocitypowered.api.scheduler.Scheduler;
 import com.velocitypowered.api.util.ProxyVersion;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.map.LinkedMap;
 
@@ -49,23 +48,17 @@ import java.util.logging.Logger;
 public class DummyProxyServer implements ProxyServer {
     private final Map<String, RegisteredServer> servers = new LinkedMap<>();
 
-    @Getter
     private final PluginManager pluginManager;
 
-    @Getter
     private final File pluginsFolder =
             new File(System.getProperty("java.io.tmpdir"), "ProxyChatTest/" + UUID.randomUUID());
 
-    @Getter
     private final Logger logger = Logger.getLogger("DummyProxyServer");
 
-    @Getter
     private final CommandManager commandManager = new DummyCommandManager();
 
-    @Getter
     private final Scheduler scheduler = new DummyScheduler();
 
-    @Getter
     private final EventManager eventManager = new DummyEventManager();
 
     public DummyProxyServer() {
@@ -169,5 +162,29 @@ public class DummyProxyServer implements ProxyServer {
 
     public void addServer(String name, RegisteredServer server) {
         servers.put(name, server);
+    }
+
+    public PluginManager getPluginManager() {
+        return this.pluginManager;
+    }
+
+    public File getPluginsFolder() {
+        return this.pluginsFolder;
+    }
+
+    public Logger getLogger() {
+        return this.logger;
+    }
+
+    public CommandManager getCommandManager() {
+        return this.commandManager;
+    }
+
+    public Scheduler getScheduler() {
+        return this.scheduler;
+    }
+
+    public EventManager getEventManager() {
+        return this.eventManager;
     }
 }

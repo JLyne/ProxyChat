@@ -64,18 +64,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.slf4j.Logger;
 
 public class ProxyChat implements ProxyChatApi {
   private static final String storedDataHookName = "storedData";
   private static final String defaultHookName = "default";
-
-  @Getter
-  @Setter(AccessLevel.PRIVATE)
   @VisibleForTesting
   static ProxyChat instance;
 
@@ -335,5 +329,13 @@ public class ProxyChat implements ProxyChatApi {
 
       return Optional.empty();
     }
+  }
+
+  public static ProxyChat getInstance() {
+    return ProxyChat.instance;
+  }
+
+  private static void setInstance(final ProxyChat instance) {
+    ProxyChat.instance = instance;
   }
 }

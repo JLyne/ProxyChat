@@ -21,8 +21,6 @@
 
 package uk.co.notnull.ProxyChat.api.permission;
 
-import lombok.Getter;
-
 /**
  * Enum which contains all the permissions used by ProxyChat.<br>
  * Used for easy access to all the permission nodes.
@@ -101,8 +99,8 @@ public enum Permission {
   MESSAGE_SWITCH_VIEW("message.switch.view"),
   MESSAGE_MOTD("message.motd");
 
-  @Getter private final boolean warnOnLackingPermission;
-  @Getter private final String stringedPermission;
+  private final boolean warnOnLackingPermission;
+  private final String stringedPermission;
 
   Permission(String stringedPermission, boolean warnOnLackingPermission) {
     this.stringedPermission = "proxychat." + stringedPermission;
@@ -114,5 +112,13 @@ public enum Permission {
         stringedPermission,
         (stringedPermission.startsWith("command.") || stringedPermission.startsWith("admin."))
             && !(stringedPermission.endsWith(".view") || stringedPermission.endsWith(".exempt")));
+   }
+
+  public boolean isWarnOnLackingPermission() {
+    return this.warnOnLackingPermission;
+  }
+
+  public String getStringedPermission() {
+    return this.stringedPermission;
   }
 }

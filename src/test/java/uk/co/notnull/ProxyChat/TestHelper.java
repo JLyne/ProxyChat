@@ -28,32 +28,27 @@ import org.slf4j.LoggerFactory;
 import uk.co.notnull.ProxyChat.config.Configuration;
 import java.io.File;
 import java.io.IOException;
-
-import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.io.FileUtils;
 import uk.co.notnull.ProxyChat.velocity.DummyPluginDescription;
 import uk.co.notnull.ProxyChat.velocity.DummyProxyServer;
 
-@UtilityClass
-public class TestHelper {
+public final class TestHelper {
   private static ProxyChat proxyChat;
   private static boolean hasInitRun = false;
 
-  @SneakyThrows
   public static void initProxyChat() {
-    if (!hasInitRun) {
-      ProxyServer proxyServer = new DummyProxyServer();
-      PluginDescription desc = new DummyPluginDescription();
-
-      proxyChat = new ProxyChat(proxyServer, LoggerFactory.getLogger("test"), desc);
-
-      proxyChat.onLoad();
-
-      hasInitRun = true;
+    try {
+      if (!hasInitRun) {
+        ProxyServer proxyServer = new DummyProxyServer();
+        PluginDescription desc = new DummyPluginDescription();
+        proxyChat = new ProxyChat(proxyServer, LoggerFactory.getLogger("test"), desc);
+        proxyChat.onLoad();
+        hasInitRun = true;
+      }
+      Configuration.load();
+    } catch (final java.lang.Throwable $ex) {
+      throw lombok.Lombok.sneakyThrow($ex);
     }
-
-    Configuration.load();
   }
 
   public static void deinitProxyChat() throws IOException {
@@ -68,5 +63,7 @@ public class TestHelper {
             proxyChat.getConfigFolder().mkdirs(), "Could not create config folder");
   }
 
-
+  private TestHelper() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
 }

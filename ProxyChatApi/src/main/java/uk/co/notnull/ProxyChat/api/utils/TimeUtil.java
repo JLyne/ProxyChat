@@ -24,14 +24,12 @@ package uk.co.notnull.ProxyChat.api.utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import lombok.experimental.UtilityClass;
 
 /**
  * A util class that exists to simply get date and time values like the year or the current
  * timestamp.
  */
-@UtilityClass
-public class TimeUtil {
+public final class TimeUtil {
   /**
    * Gets the current timestamp in 24h format with date and double digits for both hour and minute,
    * separated by a colon.
@@ -161,5 +159,9 @@ public class TimeUtil {
     }
 
     return Double.parseDouble(timeToParse) * factor;
+  }
+
+  private TimeUtil() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

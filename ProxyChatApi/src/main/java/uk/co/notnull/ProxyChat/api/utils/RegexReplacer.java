@@ -24,19 +24,12 @@ package uk.co.notnull.ProxyChat.api.utils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-import lombok.AccessLevel;
-import lombok.Getter;
 
-@Getter
 public class RegexReplacer {
   private final String patternStr;
   private final Pattern pattern;
   private final String replacement;
-
-  @Getter(AccessLevel.NONE)
   private final int defaultFlags;
-
-  @Getter(AccessLevel.NONE)
   private final Map<Integer, Pattern> patternCache;
 
   public RegexReplacer(Pattern pattern, String replacement) {
@@ -72,5 +65,17 @@ public class RegexReplacer {
 
   private String replaceAll(Pattern pattern, String input) {
     return pattern.matcher(input).replaceAll(replacement);
+  }
+
+  public String getPatternStr() {
+    return this.patternStr;
+  }
+
+  public Pattern getPattern() {
+    return this.pattern;
+  }
+
+  public String getReplacement() {
+    return this.replacement;
   }
 }

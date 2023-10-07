@@ -24,15 +24,17 @@ package uk.co.notnull.ProxyChat.filter;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.filter.BlockMessageException;
 import uk.co.notnull.ProxyChat.message.Messages;
-import lombok.Getter;
 
 public class ExtendedBlockMessageException extends BlockMessageException {
   private static final long serialVersionUID = 5519820760858610372L;
-
-  @Getter private final Messages messageType;
+  private final Messages messageType;
 
   public ExtendedBlockMessageException(Messages messageType, ProxyChatAccount sender) {
     super(messageType.get(sender));
     this.messageType = messageType;
+  }
+
+  public Messages getMessageType() {
+    return this.messageType;
   }
 }

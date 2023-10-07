@@ -31,11 +31,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
  */
 public class BlockMessageException extends Exception {
   private static final long serialVersionUID = -2629372445468034714L;
-
-  @Getter
   private final Component component;
-
-  @Getter
   private final String message;
 
   /**
@@ -52,5 +48,13 @@ public class BlockMessageException extends Exception {
   public BlockMessageException(String message) {
       this.component = Component.text(message);
       this.message = message;
+  }
+
+  public Component getComponent() {
+    return this.component;
+  }
+
+  public String getMessage() {
+    return this.message;
   }
 }

@@ -21,11 +21,10 @@
 
 package uk.co.notnull.ProxyChat.api.utils;
 
-import lombok.experimental.UtilityClass;
-
-/** Simple util class to check wither a entered message is a command or not. */
-@UtilityClass
-public class ChatUtils {
+/**
+ * Simple util class to check wither a entered message is a command or not.
+ */
+public final class ChatUtils {
   /**
    * method to check if a message is a command. Which means it starts with a "/".
    *
@@ -34,5 +33,9 @@ public class ChatUtils {
    */
   public static boolean isCommand(String message) {
     return message.startsWith("/");
+  }
+
+  private ChatUtils() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

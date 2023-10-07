@@ -30,14 +30,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import uk.co.notnull.ProxyChat.api.utils.TextReplacementRenderer;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.PatternReplacementResult;
 import net.kyori.adventure.text.TextComponent;
 
-@UtilityClass
-public class PlaceHolderManager {
+public final class PlaceHolderManager {
   public static final Character placeholderChar = '%';
   private static final Pattern placeholderPattern = Pattern.compile(placeholderChar + "\\w+?" + placeholderChar);
   private static final List<ProxyChatPlaceHolder> placeholders = new LinkedList<>();
@@ -171,5 +169,9 @@ public class PlaceHolderManager {
 
   public static void clear() {
     placeholders.clear();
+  }
+
+  private PlaceHolderManager() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

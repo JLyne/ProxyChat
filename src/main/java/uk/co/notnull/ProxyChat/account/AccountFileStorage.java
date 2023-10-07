@@ -36,7 +36,6 @@ import java.io.ObjectOutputStream;
 import java.sql.Timestamp;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
-import lombok.Cleanup;
 
 public class AccountFileStorage implements ProxyChatAccountStorage {
   private static final String FILE_EXTENSION = ".sav";
@@ -58,17 +57,28 @@ public class AccountFileStorage implements ProxyChatAccountStorage {
         throw new IOException("Could not create " + accountFile);
       }
 
-      @Cleanup FileOutputStream saveFile = new FileOutputStream(accountFile);
-      @Cleanup ObjectOutputStream save = new ObjectOutputStream(saveFile);
-
-      save.writeObject(account.getName());
-      save.writeObject(account.getChannelType());
-      save.writeObject(account.isVanished());
-      save.writeObject(account.hasMessangerEnabled());
-      save.writeObject(account.hasSocialSpyEnabled());
-      save.writeObject(account.hasLocalSpyEnabled());
-      save.writeObject(account.getIgnored());
-      save.writeObject(account.getMutedUntil());
+      FileOutputStream saveFile = new FileOutputStream(accountFile);
+      try {
+        ObjectOutputStream save = new ObjectOutputStream(saveFile);
+        try {
+          save.writeObject(account.getName());
+          save.writeObject(account.getChannelType());
+          save.writeObject(account.isVanished());
+          save.writeObject(account.hasMessangerEnabled());
+          save.writeObject(account.hasSocialSpyEnabled());
+          save.writeObject(account.hasLocalSpyEnabled());
+          save.writeObject(account.getIgnored());
+          save.writeObject(account.getMutedUntil());
+        } finally {
+          if (save != null) {
+            save.close();
+          }
+        }
+      } finally {
+        if (saveFile != null) {
+          saveFile.close();
+        }
+      }
     } catch (IOException e) {
       LoggerHelper.warning("Could not save player " + account.getUniqueId(), e);
     }
@@ -82,24 +92,35 @@ public class AccountFileStorage implements ProxyChatAccountStorage {
 
       if (!accountFile.exists()) return new AccountInfo(new Account(uuid), false, true);
 
-      @Cleanup FileInputStream saveFile = new FileInputStream(accountFile);
-      @Cleanup ObjectInputStream save = new ObjectInputStream(saveFile);
+      FileInputStream saveFile = new FileInputStream(accountFile);
+      try {
+        ObjectInputStream save = new ObjectInputStream(saveFile);
+        try {
+          // Read Name (and discard it (for now))
+          save.readObject();
 
-      // Read Name (and discard it (for now))
-      save.readObject();
-
-      return new AccountInfo(
-          new Account(
-              uuid,
-              (ChannelType) save.readObject(),
-              (boolean) save.readObject(),
-              (boolean) save.readObject(),
-              (boolean) save.readObject(),
-              (boolean) save.readObject(),
-              (BlockingQueue<UUID>) save.readObject(),
-              (Timestamp) save.readObject()),
-          false,
-          false);
+          return new AccountInfo(
+                  new Account(
+                          uuid,
+                          (ChannelType) save.readObject(),
+                          (boolean) save.readObject(),
+                          (boolean) save.readObject(),
+                          (boolean) save.readObject(),
+                          (boolean) save.readObject(),
+                          (BlockingQueue<UUID>) save.readObject(),
+                          (Timestamp) save.readObject()),
+                  false,
+                  false);
+        } finally {
+          if (save != null) {
+            save.close();
+          }
+        }
+      } finally {
+        if (saveFile != null) {
+          saveFile.close();
+        }
+      }
     } catch (IOException | ClassNotFoundException | ClassCastException e) {
       LoggerHelper.warning("Could not load player " + uuid, e);
 

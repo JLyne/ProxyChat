@@ -33,9 +33,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class FileLogger implements ChatLogger, AutoCloseable {
   private static final ProxyChatContext context = new ProxyChatContext();
   private static final File pluginDir = ProxyChat.getInstance().getConfigFolder();
@@ -77,5 +75,9 @@ public class FileLogger implements ChatLogger, AutoCloseable {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  public FileLogger(final String logFile) {
+    this.logFile = logFile;
   }
 }

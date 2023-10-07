@@ -35,11 +35,9 @@ import uk.co.notnull.ProxyChat.api.utils.TimeUtil;
 import uk.co.notnull.ProxyChat.util.ServerNameUtil;
 import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 
-@UtilityClass
-public class PlaceHolders {
+public final class PlaceHolders {
   private static final String dateFormat = "yyyy-MM-dd HH:mm:ss";
 
   @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -264,5 +262,9 @@ public class PlaceHolders {
 
   private static SimpleDateFormat getDateFormat() {
     return new SimpleDateFormat(dateFormat);
+  }
+
+  private PlaceHolders() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

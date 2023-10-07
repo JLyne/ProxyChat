@@ -21,10 +21,7 @@
 
 package uk.co.notnull.ProxyChat.util;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
-public class ClassUtil {
+public final class ClassUtil {
   public static boolean doesClassExist(String className) {
     try {
       Class.forName(className);
@@ -33,5 +30,9 @@ public class ClassUtil {
     } catch (ClassNotFoundException e) {
       return false;
     }
+  }
+
+  private ClassUtil() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

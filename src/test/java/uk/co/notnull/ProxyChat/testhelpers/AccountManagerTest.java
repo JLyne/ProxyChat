@@ -26,7 +26,6 @@ import uk.co.notnull.ProxyChat.account.ProxyChatAccountManager;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.enums.AccountType;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 import org.junit.BeforeClass;
 import org.mockito.Mockito;
 
@@ -44,8 +43,8 @@ public abstract class AccountManagerTest {
     Mockito.when(console.hasPermission(Mockito.any())).thenReturn(true);
   }
 
-  @UtilityClass
-  private static class HelperAccountManager extends ProxyChatAccountManager {
+
+  private static final class HelperAccountManager extends ProxyChatAccountManager {
     private static long id = 0;
 
     public static void addPlayer(String name) {
@@ -62,6 +61,10 @@ public abstract class AccountManagerTest {
     public static void clearPlayers() {
       accounts.clear();
       id = 0;
+    }
+
+    private HelperAccountManager() {
+      throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
   }
 }

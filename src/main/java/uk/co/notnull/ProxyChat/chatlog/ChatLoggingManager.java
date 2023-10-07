@@ -31,10 +31,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class ChatLoggingManager {
+public final class ChatLoggingManager {
   private static final List<ChatLogger> loggers = new LinkedList<>();
   private static List<Pattern> filteredCommands = new LinkedList<>();
 
@@ -91,5 +89,9 @@ public class ChatLoggingManager {
 
   private static Stream<ChatLogger> getStream() {
     return loggers.stream();
+  }
+
+  private ChatLoggingManager() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

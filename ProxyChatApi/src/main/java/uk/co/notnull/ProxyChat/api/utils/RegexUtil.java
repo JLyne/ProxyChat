@@ -31,10 +31,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.Getter;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
 public class RegexUtil {
   private static final Pattern TOKENIZER =
       Pattern.compile(
@@ -309,11 +306,11 @@ public class RegexUtil {
    * It produces a regex that can be used for matching.
    */
   public static class LeetSpeakPattern {
-    @Getter private final String letter;
+    private final String letter;
     private final Pattern letterPattern;
     private final List<String> leetAlternatives;
-    @Getter private final String pattern;
-    @Getter private final String escapedPattern;
+    private final String pattern;
+    private final String escapedPattern;
 
     public LeetSpeakPattern(String letter, String... leetAlternatives) {
       this.letter = letter;
@@ -339,5 +336,21 @@ public class RegexUtil {
     public String apply(String input) {
       return letterPattern.matcher(input).replaceAll(escapedPattern);
     }
+
+    public String getLetter() {
+      return this.letter;
+    }
+
+    public String getPattern() {
+      return this.pattern;
+    }
+
+    public String getEscapedPattern() {
+      return this.escapedPattern;
+    }
+  }
+
+  private RegexUtil() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

@@ -27,11 +27,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 
-@UtilityClass
-public class FilterManager {
+public final class FilterManager {
   public static final int SWEAR_FILTER_PRIORITY = 100;
   public static final int ADVERTISING_FILTER_PRIORITY = 200;
   public static final int CAPSLOCK_FILTER_PRIORITY = 300;
@@ -97,5 +95,9 @@ public class FilterManager {
             .collect(
                 Collectors.toMap(
                     Entry::getKey, Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+  }
+
+  private FilterManager() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

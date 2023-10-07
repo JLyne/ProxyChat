@@ -25,11 +25,8 @@ import com.velocitypowered.api.command.CommandSource;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
 import dev.aura.lib.messagestranslator.Message;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 
-@RequiredArgsConstructor
 public enum Messages implements Message {
   // Channel Type Messages
   ENABLE_GLOBAL("enableGlobal"),
@@ -109,7 +106,7 @@ public enum Messages implements Message {
   PLUGIN_MODULES("pluginActiveModules"),
   PLUGIN_CREDITS("pluginCredits");
 
-  @Getter private final String stringPath;
+  private final String stringPath;
 
   public Component get() {
     return PlaceHolderUtil.getFullMessage(this);
@@ -139,5 +136,13 @@ public enum Messages implements Message {
 
   public Component get(CommandSource sender, String command) {
     return get(new Context(sender, command));
+  }
+
+  private Messages(final String stringPath) {
+    this.stringPath = stringPath;
+  }
+
+  public String getStringPath() {
+    return this.stringPath;
   }
 }

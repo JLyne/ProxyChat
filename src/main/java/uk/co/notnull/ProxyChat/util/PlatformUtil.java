@@ -25,15 +25,13 @@ import com.velocitypowered.api.plugin.PluginManager;
 import uk.co.notnull.ProxyChat.ProxyChat;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.account.ConsoleAccount;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import uk.co.notnull.platformdetection.Platform;
 import uk.co.notnull.platformdetection.PlatformDetectionVelocity;
 
-@UtilityClass
-public class PlatformUtil {
+public final class PlatformUtil {
 	private static boolean initialised = false;
 	private static PlatformDetectionVelocity platformDetection = null;
 
@@ -51,12 +49,12 @@ public class PlatformUtil {
 		}
 	}
 
-	private Platform getPlatform(ProxyChatAccount player) {
+	private static Platform getPlatform(ProxyChatAccount player) {
 		getPlatformAPI();
 		return platformDetection.getPlatform(player.getUniqueId());
 	}
 
-	public String getPlatformIcon(ProxyChatAccount player) {
+	public static String getPlatformIcon(ProxyChatAccount player) {
 		getPlatformAPI();
 		return platformDetection != null ? getPlatform(player).getIcon() : "";
 	}
@@ -102,5 +100,9 @@ public class PlatformUtil {
 				.append(Component.text(version, NamedTextColor.GRAY));
 
 		return result.build();
+	}
+
+	private PlatformUtil() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
 	}
 }

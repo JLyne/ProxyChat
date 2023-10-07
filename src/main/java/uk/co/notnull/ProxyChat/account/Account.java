@@ -37,34 +37,21 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(of = "uuid")
 public class Account implements ProxyChatAccount {
   protected static ChannelType defaultChannelType = ChannelType.LOCAL;
 
-  @Getter(AccessLevel.NONE)
-  @Setter(AccessLevel.NONE)
   private UUID uuid;
 
-  @Getter
   private final Player player;
 
   private ChannelType channelType;
   private boolean vanished;
 
-  @Getter(AccessLevel.NONE)
   private boolean messanger;
 
-  @Getter(AccessLevel.NONE)
   private boolean socialSpy;
 
-  @Getter(AccessLevel.NONE)
   private boolean localSpy;
 
   private final BlockingQueue<UUID> ignored;
@@ -228,5 +215,70 @@ public class Account implements ProxyChatAccount {
   @Override
   public boolean hasPermission(Permission permission) {
     return player.hasPermission(permission.getStringedPermission());
+  }
+
+  public ChannelType getChannelType() {
+    return this.channelType;
+  }
+
+  public boolean isVanished() {
+    return this.vanished;
+  }
+
+  public Timestamp getMutedUntil() {
+    return this.mutedUntil;
+  }
+
+  public void setChannelType(final ChannelType channelType) {
+    this.channelType = channelType;
+  }
+
+  public void setVanished(final boolean vanished) {
+    this.vanished = vanished;
+  }
+
+  public void setMessanger(final boolean messanger) {
+    this.messanger = messanger;
+  }
+
+  public void setSocialSpy(final boolean socialSpy) {
+    this.socialSpy = socialSpy;
+  }
+
+  public void setLocalSpy(final boolean localSpy) {
+    this.localSpy = localSpy;
+  }
+
+  public void setMutedUntil(final Timestamp mutedUntil) {
+    this.mutedUntil = mutedUntil;
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (o == this) return true;
+    if (!(o instanceof Account)) return false;
+    final Account other = (Account) o;
+    if (!other.canEqual((Object) this)) return false;
+    final Object this$uuid = this.uuid;
+    final Object other$uuid = other.uuid;
+    if (this$uuid == null ? other$uuid != null : !this$uuid.equals(other$uuid)) return false;
+    return true;
+  }
+
+  protected boolean canEqual(final Object other) {
+    return other instanceof Account;
+  }
+
+  @Override
+  public int hashCode() {
+    final int PRIME = 59;
+    int result = 1;
+    final Object $uuid = this.uuid;
+    result = result * PRIME + ($uuid == null ? 43 : $uuid.hashCode());
+    return result;
+  }
+
+  public Player getPlayer() {
+    return this.player;
   }
 }

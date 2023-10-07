@@ -29,12 +29,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 
-@UtilityClass
-public class HookManager {
+public final class HookManager {
   public static final int DEFAULT_PREFIX_PRIORITY = 100;
   public static final int PERMISSION_PLUGIN_PREFIX_PRIORITY = 200;
   private static final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -52,7 +50,7 @@ public class HookManager {
     sortHooks();
   }
 
-  public String getPrefix(ProxyChatAccount account) {
+  public static String getPrefix(ProxyChatAccount account) {
     Optional<String> out;
 
     for (ProxyChatHook hook : hooks.values()) {
@@ -64,7 +62,7 @@ public class HookManager {
     return "";
   }
 
-  public String getSuffix(ProxyChatAccount account) {
+  public static String getSuffix(ProxyChatAccount account) {
     Optional<String> out;
 
     for (ProxyChatHook hook : hooks.values()) {
@@ -76,15 +74,15 @@ public class HookManager {
     return "";
   }
 
-  public String getFullName(ProxyChatAccount account) {
+  public static String getFullName(ProxyChatAccount account) {
     return getPrefix(account) + account.getName() + getSuffix(account);
   }
 
-  public String getFullDisplayName(ProxyChatAccount account) {
+  public static String getFullDisplayName(ProxyChatAccount account) {
     return getPrefix(account) + account.getDisplayName() + getSuffix(account);
   }
 
-  public Component getPrefixComponent(ProxyChatAccount account) {
+  public static Component getPrefixComponent(ProxyChatAccount account) {
     for (ProxyChatHook hook : hooks.values()) {
       Optional<String> prefix = hook.getPrefix(account);
 
@@ -96,7 +94,7 @@ public class HookManager {
     return Component.empty();
   }
 
-  public Component getSuffixComponent(ProxyChatAccount account) {
+  public static Component getSuffixComponent(ProxyChatAccount account) {
     for (ProxyChatHook hook : hooks.values()) {
       Optional<String> suffix = hook.getSuffix(account);
 
@@ -108,13 +106,13 @@ public class HookManager {
     return Component.empty();
   }
 
-  public Component getFullNameComponent(ProxyChatAccount account) {
+  public static Component getFullNameComponent(ProxyChatAccount account) {
     return miniMessage.deserialize(getPrefix(account) + account.getName() + getSuffix(account))
             .clickEvent(ClickEvent.suggestCommand("/w " + account.getName() + " "))
             .hoverEvent(Component.text("Click to whisper " + account.getName()));
   }
 
-  public Component getFullDisplayNameComponent(ProxyChatAccount account) {
+  public static Component getFullDisplayNameComponent(ProxyChatAccount account) {
     return miniMessage.deserialize(getPrefix(account) + account.getDisplayName() + getSuffix(account))
             .clickEvent(ClickEvent.suggestCommand("/w " + account.getName() + " "))
             .hoverEvent(Component.text("Click to whisper " + account.getName()));
@@ -127,5 +125,9 @@ public class HookManager {
             .collect(
                 Collectors.toMap(
                     Entry::getKey, Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+  }
+
+  private HookManager() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

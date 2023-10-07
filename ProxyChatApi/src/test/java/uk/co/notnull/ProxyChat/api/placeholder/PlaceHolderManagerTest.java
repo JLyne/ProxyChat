@@ -23,7 +23,6 @@ package uk.co.notnull.ProxyChat.api.placeholder;
 
 import static org.junit.Assert.assertEquals;
 
-import lombok.Value;
 import net.kyori.adventure.text.Component;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -91,10 +90,10 @@ public class PlaceHolderManagerTest {
         PlaceHolderManager.processMessage(message, EMPTY_CONTEXT));
   }
 
-  @Value
-  private static class HelperPlaceholder implements ProxyChatPlaceHolder {
-    String name;
-    String replacement;
+
+  private static final class HelperPlaceholder implements ProxyChatPlaceHolder {
+    private final String name;
+    private final String replacement;
 
     @Override
     public boolean isContextApplicable(ProxyChatContext context) {
@@ -109,6 +108,49 @@ public class PlaceHolderManagerTest {
     @Override
     public String getReplacement(String name, ProxyChatContext context) {
       return replacement;
+    }
+
+    public HelperPlaceholder(final String name, final String replacement) {
+      this.name = name;
+      this.replacement = replacement;
+    }
+
+    public String getName() {
+      return this.name;
+    }
+
+    public String getReplacement() {
+      return this.replacement;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+      if (o == this) return true;
+      if (!(o instanceof PlaceHolderManagerTest.HelperPlaceholder)) return false;
+      final PlaceHolderManagerTest.HelperPlaceholder other = (PlaceHolderManagerTest.HelperPlaceholder) o;
+      final Object this$name = this.getName();
+      final Object other$name = other.getName();
+      if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+      final Object this$replacement = this.getReplacement();
+      final Object other$replacement = other.getReplacement();
+      if (this$replacement == null ? other$replacement != null : !this$replacement.equals(other$replacement)) return false;
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      final int PRIME = 59;
+      int result = 1;
+      final Object $name = this.getName();
+      result = result * PRIME + ($name == null ? 43 : $name.hashCode());
+      final Object $replacement = this.getReplacement();
+      result = result * PRIME + ($replacement == null ? 43 : $replacement.hashCode());
+      return result;
+    }
+
+    @Override
+    public String toString() {
+      return "PlaceHolderManagerTest.HelperPlaceholder(name=" + this.getName() + ", replacement=" + this.getReplacement() + ")";
     }
   }
 }

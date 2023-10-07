@@ -22,9 +22,6 @@
 package uk.co.notnull.ProxyChat.api.event;
 
 import com.velocitypowered.api.proxy.Player;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 /**
  * Event called as soon as a connection has a {@link Player} and is ready to be connected to
@@ -33,10 +30,50 @@ import lombok.ToString;
  * <p>Used by ProxyChat internally to make sure people joining while they are online don't cause
  * issues.
  */
-@Data
-@ToString()
-@EqualsAndHashCode()
 public class ProxyChatJoinEvent {
-  /** The player involved with this event. */
+  /**
+   * The player involved with this event.
+   */
   private final Player player;
+
+  public ProxyChatJoinEvent(final Player player) {
+    this.player = player;
+  }
+
+  /**
+   * The player involved with this event.
+   */
+  public Player getPlayer() {
+    return this.player;
+  }
+
+  @Override
+  public String toString() {
+    return "ProxyChatJoinEvent(player=" + this.getPlayer() + ")";
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (o == this) return true;
+    if (!(o instanceof ProxyChatJoinEvent)) return false;
+    final ProxyChatJoinEvent other = (ProxyChatJoinEvent) o;
+    if (!other.canEqual((Object) this)) return false;
+    final Object this$player = this.getPlayer();
+    final Object other$player = other.getPlayer();
+    if (this$player == null ? other$player != null : !this$player.equals(other$player)) return false;
+    return true;
+  }
+
+  protected boolean canEqual(final Object other) {
+    return other instanceof ProxyChatJoinEvent;
+  }
+
+  @Override
+  public int hashCode() {
+    final int PRIME = 59;
+    int result = 1;
+    final Object $player = this.getPlayer();
+    result = result * PRIME + ($player == null ? 43 : $player.hashCode());
+    return result;
+  }
 }

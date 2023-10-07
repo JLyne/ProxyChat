@@ -28,10 +28,8 @@ import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.message.Messages;
 import uk.co.notnull.ProxyChat.message.MessagesService;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class PermissionManager {
+public final class PermissionManager {
   public static boolean hasPermissionNoMessage(Player player, Permission permission) {
     return player.hasPermission(permission.getStringedPermission());
   }
@@ -60,4 +58,8 @@ public class PermissionManager {
   public static boolean hasPermission(CommandSource sender, Permission permission) {
     return !(sender instanceof Player) || hasPermission((Player) sender, permission);
   }
+
+	private PermissionManager() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
 }

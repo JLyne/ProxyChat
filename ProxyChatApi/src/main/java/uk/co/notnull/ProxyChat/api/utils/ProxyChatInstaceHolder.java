@@ -22,14 +22,39 @@
 package uk.co.notnull.ProxyChat.api.utils;
 
 import uk.co.notnull.ProxyChat.api.ProxyChatApi;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.UtilityClass;
 
-/** This class is used to set the instance returned by {@link ProxyChatApi#getInstance()} */
-@UtilityClass
-public class ProxyChatInstaceHolder {
+/**
+ * This class is used to set the instance returned by {@link ProxyChatApi#getInstance()}
+ */
+public final class ProxyChatInstaceHolder {
   // @formatter:off
+  // @formatter:on
+  /**
+   * The actual ProxyChatApi instance.<br>
+   * You shouldn't be using this if you are using the API!
+   *
+   * <p>-- SETTER -- Sets the ProxyChatApi instance. Don't use it!
+   *
+
+   */
+  private static ProxyChatApi instance;
+
+  private ProxyChatInstaceHolder() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
+
+  /**
+   * The actual ProxyChatApi instance.<br>
+   * You shouldn't be using this if you are using the API!
+   *
+   * <p>-- SETTER -- Sets the ProxyChatApi instance. Don't use it!
+   *
+   * @return ProxyChatApi instance
+   */
+  public static ProxyChatApi getInstance() {
+    return ProxyChatInstaceHolder.instance;
+  }
+
   /**
    * The actual ProxyChatApi instance.<br>
    * You shouldn't be using this if you are using the API!
@@ -41,6 +66,7 @@ public class ProxyChatInstaceHolder {
    *     ProxyChatApi#getInstance()} instead!
    * @return ProxyChatApi instance
    */
-  // @formatter:on
-  @Getter @Setter private static ProxyChatApi instance;
+  public static void setInstance(final ProxyChatApi instance) {
+    ProxyChatInstaceHolder.instance = instance;
+  }
 }

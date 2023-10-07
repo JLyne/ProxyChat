@@ -22,11 +22,8 @@
 package uk.co.notnull.ProxyChat.message;
 
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
 
-@RequiredArgsConstructor
 public enum Format {
   ALERT("alert"),
   CHAT_LOGGING_CONSOLE("chatLoggingConsole"),
@@ -44,7 +41,7 @@ public enum Format {
   STAFF_CHAT("staffChat"),
   WELCOME_MESSAGE("welcomeMessage");
 
-  @Getter private final String stringPath;
+  private final String stringPath;
 
   public Component get(ProxyChatContext context) {
     return PlaceHolderUtil.getFullFormatMessage(this, context);
@@ -52,5 +49,13 @@ public enum Format {
 
   public String getRaw(ProxyChatContext context) {
     return PlaceHolderUtil.getFullFormatMessageRaw(this, context);
+  }
+
+  private Format(final String stringPath) {
+    this.stringPath = stringPath;
+  }
+
+  public String getStringPath() {
+    return this.stringPath;
   }
 }

@@ -30,61 +30,50 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import lombok.Getter;
-import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 
-@UtilityClass
-public class TestDatabase {
+public final class TestDatabase {
   private static final String baseDir = SystemUtils.JAVA_IO_TMPDIR + "/MariaDB4j/base/";
   private static final String localhost = "localhost";
   private static DB databaseInstance;
-  @Getter private static String host;
-  @Getter private static int port;
+  private static String host;
+  private static int port;
 
-  @SneakyThrows(ManagedProcessException.class)
   public static void startDatabase() {
-    final int limit = 100;
-    int count = 0;
-    String actualBaseDir;
-    String actualDataDir;
-
-    do {
-      actualBaseDir = baseDir + count;
-    } while ((++count < limit) && (new File(actualBaseDir)).exists());
-
-    Preconditions.checkElementIndex(count, limit, "count must be less than " + limit);
-
-    actualDataDir = actualBaseDir + "/data";
-    final DBConfiguration config =
-        DBConfigurationBuilder.newBuilder()
-            .setPort(0)
-            .setSocket(localhost)
-            .setBaseDir(actualBaseDir)
-            .setDataDir(actualDataDir)
-            .build();
-    databaseInstance = DB.newEmbeddedDB(config);
-    databaseInstance.start();
-
-    port = databaseInstance.getConfiguration().getPort();
-    host = localhost + ':' + port;
-
-    databaseInstance.createDB("test");
+    try {
+      final int limit = 100;
+      int count = 0;
+      String actualBaseDir;
+      String actualDataDir;
+      do {
+        actualBaseDir = baseDir + count;
+      } while ((++count < limit) && (new File(actualBaseDir)).exists());
+      Preconditions.checkElementIndex(count, limit, "count must be less than " + limit);
+      actualDataDir = actualBaseDir + "/data";
+      final DBConfiguration config = DBConfigurationBuilder.newBuilder().setPort(0).setSocket(localhost).setBaseDir(actualBaseDir).setDataDir(actualDataDir).build();
+      databaseInstance = DB.newEmbeddedDB(config);
+      databaseInstance.start();
+      port = databaseInstance.getConfiguration().getPort();
+      host = localhost + ':' + port;
+      databaseInstance.createDB("test");
+    } catch (final ManagedProcessException $ex) {
+      throw lombok.Lombok.sneakyThrow($ex);
+    }
   }
 
-  @SneakyThrows({ManagedProcessException.class})
   public static void stopDatabase() {
-    databaseInstance.stop();
-
     try {
-      Thread.sleep(500);
-
-      FileUtils.deleteDirectory(new File(databaseInstance.getConfiguration().getBaseDir()));
-    } catch (IOException | InterruptedException e) {
-      // Ignore
+      databaseInstance.stop();
+      try {
+        Thread.sleep(500);
+        FileUtils.deleteDirectory(new File(databaseInstance.getConfiguration().getBaseDir()));
+      } catch (IOException | InterruptedException e) {
+      }
+    } catch (final ManagedProcessException $ex) {
+      throw lombok.Lombok.sneakyThrow($ex);
     }
+    // Ignore
   }
 
   public static Connection getDatabaseInstance() throws SQLException {
@@ -93,5 +82,17 @@ public class TestDatabase {
 
   public static void closeDatabaseInstance(Connection database) throws SQLException {
     database.close();
+  }
+
+  private TestDatabase() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+  }
+
+  public static String getHost() {
+    return TestDatabase.host;
+  }
+
+  public static int getPort() {
+    return TestDatabase.port;
   }
 }

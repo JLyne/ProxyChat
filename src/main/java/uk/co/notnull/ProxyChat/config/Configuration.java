@@ -39,15 +39,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import lombok.AccessLevel;
-import lombok.Cleanup;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Delegate;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
-
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 
 public class Configuration implements Config {
   protected static final ConfigParseOptions PARSE_OPTIONS =
@@ -64,12 +57,11 @@ public class Configuration implements Config {
   protected static final File OLD_OLD_CONFIG_FILE =
       new File(CONFIG_FILE.getParentFile(), OLD_OLD_CONFIG_FILE_NAME);
 
-  @Getter(value = AccessLevel.PROTECTED, lazy = true)
-  private static final String header = loadHeader();
+  private static final java.util.concurrent.atomic.AtomicReference<Object> header = new java.util.concurrent.atomic.AtomicReference<Object>();
+
 
   private static Configuration currentConfig;
-
-  @Delegate protected Config config;
+  protected Config config;
 
   /**
    * Creates and loads the config. Also saves it so that all missing values exist!<br>
@@ -94,22 +86,19 @@ public class Configuration implements Config {
     StringBuilder header = new StringBuilder();
 
     try {
-      @Cleanup
-      BufferedReader reader =
-          new BufferedReader(
-              new InputStreamReader(
-                      Objects.requireNonNull(ProxyChat.getInstance().getClass().getClassLoader().getResourceAsStream(
-                              CONFIG_FILE_NAME)),
-                  StandardCharsets.UTF_8));
-      String line;
-
-      do {
-        line = reader.readLine();
-
-        if (line == null) throw new IOException("Unexpeted EOF while reading " + CONFIG_FILE_NAME);
-
-        header.append(line).append('\n');
-      } while (line.startsWith("#"));
+      BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(ProxyChat.getInstance().getClass().getClassLoader().getResourceAsStream(CONFIG_FILE_NAME)), StandardCharsets.UTF_8));
+      try {
+        String line;
+        do {
+          line = reader.readLine();
+          if (line == null) throw new IOException("Unexpeted EOF while reading " + CONFIG_FILE_NAME);
+          header.append(line).append('\n');
+        } while (line.startsWith("#"));
+      } finally {
+        if (reader != null) {
+          reader.close();
+        }
+      }
     } catch (IOException e) {
       LoggerHelper.error("Error loading file header", e);
     }
@@ -180,11 +169,16 @@ public class Configuration implements Config {
 
   protected void saveConfig() {
     try {
-      @Cleanup PrintWriter writer = new PrintWriter(CONFIG_FILE, StandardCharsets.UTF_8.name());
-      String renderedConfig = config.root().render(RENDER_OPTIONS);
-      renderedConfig = getHeader() + renderedConfig;
-
-      writer.print(renderedConfig);
+      PrintWriter writer = new PrintWriter(CONFIG_FILE, StandardCharsets.UTF_8.name());
+      try {
+        String renderedConfig = config.root().render(RENDER_OPTIONS);
+        renderedConfig = getHeader() + renderedConfig;
+        writer.print(renderedConfig);
+      } finally {
+        if (writer != null) {
+          writer.close();
+        }
+      }
     } catch (FileNotFoundException | UnsupportedEncodingException e) {
       LoggerHelper.error("Something very unexpected happend! Please report this!", e);
     }
@@ -721,5 +715,247 @@ public class Configuration implements Config {
           config.withValue(
               path, currentConfig.withOrigin(currentConfig.origin().withComments(comments)));
     }
+  }
+
+  protected Configuration() {
+  }
+
+  protected static String getHeader() {
+    Object value = Configuration.header.get();
+    if (value == null) {
+      synchronized (Configuration.header) {
+        value = Configuration.header.get();
+        if (value == null) {
+          final String actualValue = loadHeader();
+          value = actualValue == null ? Configuration.header : actualValue;
+          Configuration.header.set(value);
+        }
+      }
+    }
+    return (String) (value == Configuration.header ? null : value);
+  }
+
+  public com.typesafe.config.ConfigObject root() {
+    return this.config.root();
+  }
+
+  public com.typesafe.config.ConfigOrigin origin() {
+    return this.config.origin();
+  }
+
+  public com.typesafe.config.Config withFallback(final com.typesafe.config.ConfigMergeable arg0) {
+    return this.config.withFallback(arg0);
+  }
+
+  public com.typesafe.config.Config resolve() {
+    return this.config.resolve();
+  }
+
+  public com.typesafe.config.Config resolve(final com.typesafe.config.ConfigResolveOptions arg0) {
+    return this.config.resolve(arg0);
+  }
+
+  public boolean isResolved() {
+    return this.config.isResolved();
+  }
+
+  public com.typesafe.config.Config resolveWith(final com.typesafe.config.Config arg0) {
+    return this.config.resolveWith(arg0);
+  }
+
+  public com.typesafe.config.Config resolveWith(final com.typesafe.config.Config arg0, final com.typesafe.config.ConfigResolveOptions arg1) {
+    return this.config.resolveWith(arg0, arg1);
+  }
+
+  public void checkValid(final com.typesafe.config.Config arg0, final java.lang.String... arg1) {
+    this.config.checkValid(arg0, arg1);
+  }
+
+  public boolean hasPath(final java.lang.String arg0) {
+    return this.config.hasPath(arg0);
+  }
+
+  public boolean hasPathOrNull(final java.lang.String arg0) {
+    return this.config.hasPathOrNull(arg0);
+  }
+
+  public boolean isEmpty() {
+    return this.config.isEmpty();
+  }
+
+  public java.util.Set<java.util.Map.Entry<java.lang.String, com.typesafe.config.ConfigValue>> entrySet() {
+    return this.config.entrySet();
+  }
+
+  public boolean getIsNull(final java.lang.String arg0) {
+    return this.config.getIsNull(arg0);
+  }
+
+  public boolean getBoolean(final java.lang.String arg0) {
+    return this.config.getBoolean(arg0);
+  }
+
+  public java.lang.Number getNumber(final java.lang.String arg0) {
+    return this.config.getNumber(arg0);
+  }
+
+  public int getInt(final java.lang.String arg0) {
+    return this.config.getInt(arg0);
+  }
+
+  public long getLong(final java.lang.String arg0) {
+    return this.config.getLong(arg0);
+  }
+
+  public double getDouble(final java.lang.String arg0) {
+    return this.config.getDouble(arg0);
+  }
+
+  public java.lang.String getString(final java.lang.String arg0) {
+    return this.config.getString(arg0);
+  }
+
+  public <T extends java.lang.Enum<T>> T getEnum(final java.lang.Class<T> arg0, final java.lang.String arg1) {
+    return this.config.<T>getEnum(arg0, arg1);
+  }
+
+  public com.typesafe.config.ConfigObject getObject(final java.lang.String arg0) {
+    return this.config.getObject(arg0);
+  }
+
+  public com.typesafe.config.Config getConfig(final java.lang.String arg0) {
+    return this.config.getConfig(arg0);
+  }
+
+  public java.lang.Object getAnyRef(final java.lang.String arg0) {
+    return this.config.getAnyRef(arg0);
+  }
+
+  public com.typesafe.config.ConfigValue getValue(final java.lang.String arg0) {
+    return this.config.getValue(arg0);
+  }
+
+  public java.lang.Long getBytes(final java.lang.String arg0) {
+    return this.config.getBytes(arg0);
+  }
+
+  public com.typesafe.config.ConfigMemorySize getMemorySize(final java.lang.String arg0) {
+    return this.config.getMemorySize(arg0);
+  }
+
+  @Deprecated
+  public java.lang.Long getMilliseconds(final java.lang.String arg0) {
+    return this.config.getMilliseconds(arg0);
+  }
+
+  @Deprecated
+  public java.lang.Long getNanoseconds(final java.lang.String arg0) {
+    return this.config.getNanoseconds(arg0);
+  }
+
+  public long getDuration(final java.lang.String arg0, final java.util.concurrent.TimeUnit arg1) {
+    return this.config.getDuration(arg0, arg1);
+  }
+
+  public java.time.Duration getDuration(final java.lang.String arg0) {
+    return this.config.getDuration(arg0);
+  }
+
+  public java.time.Period getPeriod(final java.lang.String arg0) {
+    return this.config.getPeriod(arg0);
+  }
+
+  public java.time.temporal.TemporalAmount getTemporal(final java.lang.String arg0) {
+    return this.config.getTemporal(arg0);
+  }
+
+  public com.typesafe.config.ConfigList getList(final java.lang.String arg0) {
+    return this.config.getList(arg0);
+  }
+
+  public java.util.List<java.lang.Boolean> getBooleanList(final java.lang.String arg0) {
+    return this.config.getBooleanList(arg0);
+  }
+
+  public java.util.List<java.lang.Number> getNumberList(final java.lang.String arg0) {
+    return this.config.getNumberList(arg0);
+  }
+
+  public java.util.List<java.lang.Integer> getIntList(final java.lang.String arg0) {
+    return this.config.getIntList(arg0);
+  }
+
+  public java.util.List<java.lang.Long> getLongList(final java.lang.String arg0) {
+    return this.config.getLongList(arg0);
+  }
+
+  public java.util.List<java.lang.Double> getDoubleList(final java.lang.String arg0) {
+    return this.config.getDoubleList(arg0);
+  }
+
+  public java.util.List<java.lang.String> getStringList(final java.lang.String arg0) {
+    return this.config.getStringList(arg0);
+  }
+
+  public <T extends java.lang.Enum<T>> java.util.List<T> getEnumList(final java.lang.Class<T> arg0, final java.lang.String arg1) {
+    return this.config.<T>getEnumList(arg0, arg1);
+  }
+
+  public java.util.List<? extends com.typesafe.config.ConfigObject> getObjectList(final java.lang.String arg0) {
+    return this.config.getObjectList(arg0);
+  }
+
+  public java.util.List<? extends com.typesafe.config.Config> getConfigList(final java.lang.String arg0) {
+    return this.config.getConfigList(arg0);
+  }
+
+  public java.util.List<?> getAnyRefList(final java.lang.String arg0) {
+    return this.config.getAnyRefList(arg0);
+  }
+
+  public java.util.List<java.lang.Long> getBytesList(final java.lang.String arg0) {
+    return this.config.getBytesList(arg0);
+  }
+
+  public java.util.List<com.typesafe.config.ConfigMemorySize> getMemorySizeList(final java.lang.String arg0) {
+    return this.config.getMemorySizeList(arg0);
+  }
+
+  @Deprecated
+  public java.util.List<java.lang.Long> getMillisecondsList(final java.lang.String arg0) {
+    return this.config.getMillisecondsList(arg0);
+  }
+
+  @Deprecated
+  public java.util.List<java.lang.Long> getNanosecondsList(final java.lang.String arg0) {
+    return this.config.getNanosecondsList(arg0);
+  }
+
+  public java.util.List<java.lang.Long> getDurationList(final java.lang.String arg0, final java.util.concurrent.TimeUnit arg1) {
+    return this.config.getDurationList(arg0, arg1);
+  }
+
+  public java.util.List<java.time.Duration> getDurationList(final java.lang.String arg0) {
+    return this.config.getDurationList(arg0);
+  }
+
+  public com.typesafe.config.Config withOnlyPath(final java.lang.String arg0) {
+    return this.config.withOnlyPath(arg0);
+  }
+
+  public com.typesafe.config.Config withoutPath(final java.lang.String arg0) {
+    return this.config.withoutPath(arg0);
+  }
+
+  public com.typesafe.config.Config atPath(final java.lang.String arg0) {
+    return this.config.atPath(arg0);
+  }
+
+  public com.typesafe.config.Config atKey(final java.lang.String arg0) {
+    return this.config.atKey(arg0);
+  }
+
+  public com.typesafe.config.Config withValue(final java.lang.String arg0, final com.typesafe.config.ConfigValue arg1) {
+    return this.config.withValue(arg0, arg1);
   }
 }

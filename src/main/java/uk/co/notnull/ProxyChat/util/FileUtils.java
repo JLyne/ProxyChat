@@ -35,7 +35,6 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import lombok.Generated;
-import lombok.experimental.UtilityClass;
 
 /**
  * Taken from https://stackoverflow.com/a/3348150/1996022<br>
@@ -44,8 +43,7 @@ import lombok.experimental.UtilityClass;
  * <p>Marked generated to ignore coverage as this code is confirmed to work
  */
 @Generated
-@UtilityClass
-public class FileUtils {
+public final class FileUtils {
   @Generated
   public static boolean copyFile(final File toCopy, final File destFile) {
     try (final InputStream inStream = new FileInputStream(toCopy);
@@ -176,5 +174,9 @@ public class FileUtils {
   @Generated
   private static boolean isEmpty(CharSequence cs) {
     return (cs == null) || (cs.length() == 0);
+  }
+
+  private FileUtils() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

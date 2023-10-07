@@ -31,8 +31,6 @@ import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
 import uk.co.notnull.ProxyChat.api.placeholder.InvalidContextError;
 import uk.co.notnull.ProxyChat.api.utils.ProxyChatInstaceHolder;
 import java.io.File;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -138,8 +136,7 @@ public class FilterManagerTest {
     }
   }
 
-  @RequiredArgsConstructor
-  @Getter
+
   private static class TestFilter implements ProxyChatPreParseFilter {
     private final String message;
     private final int priority;
@@ -152,6 +149,19 @@ public class FilterManagerTest {
     public String applyFilter(ProxyChatAccount sender, String message)
         throws BlockMessageException {
       throw new BlockMessageException(this.message);
+    }
+
+    public TestFilter(final String message, final int priority) {
+      this.message = message;
+      this.priority = priority;
+    }
+
+    public String getMessage() {
+      return this.message;
+    }
+
+    public int getPriority() {
+      return this.priority;
     }
   }
 }

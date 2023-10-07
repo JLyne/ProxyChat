@@ -31,7 +31,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.velocitypowered.api.command.SimpleCommand;
-import lombok.experimental.Delegate;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -65,8 +64,6 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class EmojiModule extends Module {
-	@Delegate(excludes = ProxyChatFilter.class)
-
 	private final Pattern incompleteEmojiPattern = Pattern.compile("(.*):(\\w+)$"); //Pattern for matching an incomplete :emoji_name:
 	private final Pattern emojiPattern = Pattern.compile(":(\\w+):"); //Pattern for matching all default unicode emoji
 	private Pattern customCharacterPattern; //Pattern for matching all configured custom emoji
@@ -316,5 +313,37 @@ public class EmojiModule extends Module {
 
 			return emoji;
 		}
+	}
+
+	public java.lang.String pattern() {
+		return this.incompleteEmojiPattern.pattern();
+	}
+
+	public java.util.regex.Matcher matcher(final java.lang.CharSequence input) {
+		return this.incompleteEmojiPattern.matcher(input);
+	}
+
+	public int flags() {
+		return this.incompleteEmojiPattern.flags();
+	}
+
+	public java.lang.String[] split(final java.lang.CharSequence input, final int limit) {
+		return this.incompleteEmojiPattern.split(input, limit);
+	}
+
+	public java.lang.String[] split(final java.lang.CharSequence input) {
+		return this.incompleteEmojiPattern.split(input);
+	}
+
+	public java.util.function.Predicate<java.lang.String> asPredicate() {
+		return this.incompleteEmojiPattern.asPredicate();
+	}
+
+	public java.util.function.Predicate<java.lang.String> asMatchPredicate() {
+		return this.incompleteEmojiPattern.asMatchPredicate();
+	}
+
+	public java.util.stream.Stream<java.lang.String> splitAsStream(final java.lang.CharSequence input) {
+		return this.incompleteEmojiPattern.splitAsStream(input);
 	}
 }

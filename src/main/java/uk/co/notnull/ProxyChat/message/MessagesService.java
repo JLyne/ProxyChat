@@ -46,22 +46,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import lombok.Setter;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import uk.co.notnull.ProxyChat.util.ComponentUtil;
 
-@UtilityClass
-public class MessagesService {
-	@Setter
-	private List<List<String>> multiCastServerGroups = null;
+public final class MessagesService {
+	private static List<List<String>> multiCastServerGroups = null;
 
-	public void unsetMultiCastServerGroups() {
+	public static void unsetMultiCastServerGroups() {
 		setMultiCastServerGroups(null);
 	}
 
-	public void sendPrivateMessage(CommandSource sender, CommandSource target, String message) throws InvalidContextError {
+	public static void sendPrivateMessage(CommandSource sender, CommandSource target, String message) throws InvalidContextError {
 		ProxyChatContext context = new Context(sender, target, message);
 		boolean allowed = parseMessage(context, true);
 
@@ -70,7 +65,7 @@ public class MessagesService {
 		}
 	}
 
-	public void sendPrivateMessage(ProxyChatContext context) throws InvalidContextError {
+	public static void sendPrivateMessage(ProxyChatContext context) throws InvalidContextError {
 		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_TARGET,
 						ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
 
@@ -119,7 +114,7 @@ public class MessagesService {
 		}
 	}
 
-	public void sendChannelMessage(CommandSource sender, ChannelType channel, String message) throws InvalidContextError {
+	public static void sendChannelMessage(CommandSource sender, ChannelType channel, String message) throws InvalidContextError {
 		ProxyChatContext context = new Context(sender, message);
 		boolean allowed = parseMessage(context, true);
 
@@ -128,7 +123,7 @@ public class MessagesService {
 		}
 	}
 
-	public void sendChannelMessage(ProxyChatContext context, ChannelType channel)
+	public static void sendChannelMessage(ProxyChatContext context, ChannelType channel)
 			throws InvalidContextError {
 		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
 
@@ -148,7 +143,7 @@ public class MessagesService {
 		}
 	}
 
-	public void sendGlobalMessage(CommandSource sender, String message) throws InvalidContextError {
+	public static void sendGlobalMessage(CommandSource sender, String message) throws InvalidContextError {
 		ProxyChatContext context = new Context(sender, message);
 		boolean allowed = parseMessage(context, true);
 
@@ -157,7 +152,7 @@ public class MessagesService {
 		}
 	}
 
-	public void sendGlobalMessage(ProxyChatContext context) throws InvalidContextError {
+	public static void sendGlobalMessage(ProxyChatContext context) throws InvalidContextError {
 		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
 
 		ProxyChatAccount account = context.getSender().orElseThrow();
@@ -170,7 +165,7 @@ public class MessagesService {
 		ChatLoggingManager.logMessage(ChannelType.GLOBAL, context);
 	}
 
-	public void sendLocalMessage(CommandSource sender, String message) throws InvalidContextError {
+	public static void sendLocalMessage(CommandSource sender, String message) throws InvalidContextError {
 		ProxyChatContext context = new Context(sender, message);
 		boolean allowed = parseMessage(context, true);
 
@@ -179,7 +174,7 @@ public class MessagesService {
 		}
 	}
 
-	public void sendLocalMessage(ProxyChatContext context) throws InvalidContextError {
+	public static void sendLocalMessage(ProxyChatContext context) throws InvalidContextError {
 		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
 
 		ProxyChatAccount account = context.getSender().orElseThrow();
@@ -202,7 +197,7 @@ public class MessagesService {
 		}
 	}
 
-	public void sendTransparentMessage(ProxyChatContext context) throws InvalidContextError {
+	public static void sendTransparentMessage(ProxyChatContext context) throws InvalidContextError {
 		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
 
 		ProxyChatAccount account = context.getSender().orElseThrow();
@@ -220,7 +215,7 @@ public class MessagesService {
 		}
 	}
 
-	public void sendStaffMessage(CommandSource sender, String message) throws InvalidContextError {
+	public static void sendStaffMessage(CommandSource sender, String message) throws InvalidContextError {
 		ProxyChatContext context = new Context(sender, message);
 		boolean allowed = parseMessage(context, true);
 
@@ -229,7 +224,7 @@ public class MessagesService {
 		}
 	}
 
-	public void sendStaffMessage(ProxyChatContext context) throws InvalidContextError {
+	public static void sendStaffMessage(ProxyChatContext context) throws InvalidContextError {
 		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
 
 		preProcessMessage(context, Format.STAFF_CHAT)
@@ -240,7 +235,7 @@ public class MessagesService {
 		ChatLoggingManager.logMessage(ChannelType.STAFF, context);
 	}
 
-	public void sendJoinMessage(Player player) throws InvalidContextError {
+	public static void sendJoinMessage(Player player) throws InvalidContextError {
 		ProxyChatContext context = new Context(player);
 
 		String message = Format.JOIN_MESSAGE.getRaw(context);
@@ -260,7 +255,7 @@ public class MessagesService {
 		ChatLoggingManager.logMessage("JOIN", context);
 	}
 
-	public void sendLeaveMessage(Player player) throws InvalidContextError {
+	public static void sendLeaveMessage(Player player) throws InvalidContextError {
 		ProxyChatContext context = new Context(player);
 
 		String message = Format.LEAVE_MESSAGE.getRaw(context);
@@ -280,7 +275,7 @@ public class MessagesService {
 		ChatLoggingManager.logMessage("LEAVE", context);
 	}
 
-	public void sendSwitchMessage(Player player, RegisteredServer server) throws InvalidContextError {
+	public static void sendSwitchMessage(Player player, RegisteredServer server) throws InvalidContextError {
 		ProxyChatContext context = new Context(player);
 		context.setServer(server);
 
@@ -301,19 +296,18 @@ public class MessagesService {
 		ChatLoggingManager.logMessage("SWITCH", context);
 	}
 
-	public Optional<Component> preProcessMessage(ProxyChatContext context, Format format)
-			throws InvalidContextError {
+	public static Optional<Component> preProcessMessage(ProxyChatContext context, Format format) throws InvalidContextError {
 		return preProcessMessage(context, format, true);
 	}
 
-	public Optional<Component> preProcessMessage(
+	public static Optional<Component> preProcessMessage(
 			ProxyChatContext context,
 			Format format,
 			boolean runFilters) {
 		return preProcessMessage(context, format, runFilters, false);
 	}
 
-	public Optional<Component> preProcessMessage(
+	public static Optional<Component> preProcessMessage(
 			ProxyChatContext context,
 			Format format,
 			boolean runFilters,
@@ -342,7 +336,7 @@ public class MessagesService {
 		return Optional.of(PlaceHolderUtil.getFullFormatMessage(format, context));
 	}
 
-	public boolean parseMessage(ProxyChatContext context, boolean runFilters) {
+	public static boolean parseMessage(ProxyChatContext context, boolean runFilters) {
 		context.require(ProxyChatContext.HAS_MESSAGE, ProxyChatContext.HAS_SENDER);
 
 		ProxyChatAccount playerAccount = context.getSender().orElseThrow();
@@ -369,7 +363,7 @@ public class MessagesService {
 
 	@SafeVarargs
 	@SuppressWarnings("varargs")
-	public void sendToMatchingPlayers(Component finalMessage, Predicate<ProxyChatAccount>... playerFilters) {
+	public static void sendToMatchingPlayers(Component finalMessage, Predicate<ProxyChatAccount>... playerFilters) {
 		Predicate<ProxyChatAccount> playerFiler =
 				Arrays.stream(playerFilters).reduce(Predicate::and).orElse(acc -> true);
 
@@ -384,7 +378,7 @@ public class MessagesService {
 
 	@SafeVarargs
 	@SuppressWarnings("varargs")
-	public void sendToMatchingPlayers(Component finalMessage, Identified sender, Predicate<ProxyChatAccount>... playerFilters) {
+	public static void sendToMatchingPlayers(Component finalMessage, Identified sender, Predicate<ProxyChatAccount>... playerFilters) {
 		Predicate<ProxyChatAccount> playerFiler =
 				Arrays.stream(playerFilters).reduce(Predicate::and).orElse(acc -> true);
 
@@ -398,7 +392,7 @@ public class MessagesService {
 																											  finalMessage)));
 	}
 
-	public Predicate<ProxyChatAccount> getServerListPredicate(Config section) {
+	public static Predicate<ProxyChatAccount> getServerListPredicate(Config section) {
 		if (!section.getBoolean("enabled")) return account -> true;
 		else {
 			// TODO: Use wildcard string
@@ -408,16 +402,16 @@ public class MessagesService {
 		}
 	}
 
-	public Predicate<ProxyChatAccount> getGlobalPredicate() {
+	public static Predicate<ProxyChatAccount> getGlobalPredicate() {
 		return getServerListPredicate(
 				ProxyChatModuleManager.GLOBAL_CHAT_MODULE.getModuleSection().getConfig("serverList"));
 	}
 
-	public Predicate<ProxyChatAccount> getServerPredicate(List<RegisteredServer> servers) {
+	public static Predicate<ProxyChatAccount> getServerPredicate(List<RegisteredServer> servers) {
 		return account -> servers.contains(account.getServer().orElse(null));
 	}
 
-	public Predicate<ProxyChatAccount> getLocalPredicate(RegisteredServer server) {
+	public static Predicate<ProxyChatAccount> getLocalPredicate(RegisteredServer server) {
 		if (multiCastServerGroups == null) {
 			return account -> server.equals(account.getServer().orElse(null));
 		} else {
@@ -436,7 +430,7 @@ public class MessagesService {
 		}
 	}
 
-	public Predicate<ProxyChatAccount> getLocalPredicate() {
+	public static Predicate<ProxyChatAccount> getLocalPredicate() {
 		final Config serverList =
 				ProxyChatModuleManager.LOCAL_CHAT_MODULE.getModuleSection().getConfig("serverList");
 		final Config passThruServerList =
@@ -449,7 +443,7 @@ public class MessagesService {
 				.reduce(Predicate::or).orElse(account -> true);
 	}
 
-	private Stream<Predicate<ProxyChatAccount>> serverListToPredicate(Config section) {
+	private static Stream<Predicate<ProxyChatAccount>> serverListToPredicate(Config section) {
 		if (section.getBoolean("enabled")) {
 			// TODO: Use wildcard string
 			List<String> allowedServers = section.getStringList("list");
@@ -460,11 +454,11 @@ public class MessagesService {
 		}
 	}
 
-	public Predicate<ProxyChatAccount> getPermissionPredicate(Permission permission) {
+	public static Predicate<ProxyChatAccount> getPermissionPredicate(Permission permission) {
 		return account -> account.hasPermission(permission);
 	}
 
-	public Predicate<ProxyChatAccount> getNotIgnoredPredicate(ProxyChatAccount sender) {
+	public static Predicate<ProxyChatAccount> getNotIgnoredPredicate(ProxyChatAccount sender) {
 		final IgnoringModule ignoringModule = ProxyChatModuleManager.IGNORING_MODULE;
 
 		return (ignoringModule.isEnabled()
@@ -474,15 +468,23 @@ public class MessagesService {
 				: account -> true;
 	}
 
-	public void sendMessage(CommandSource recipient, Component message) {
+	public static void sendMessage(CommandSource recipient, Component message) {
 		if ((message == null)) return;
 
 		recipient.sendMessage(message);
 	}
 
-	public void sendMessage(CommandSource recipient, Identified sender, Component message) {
+	public static void sendMessage(CommandSource recipient, Identified sender, Component message) {
 		if ((message == null)) return;
 
 		recipient.sendMessage(message);
+	}
+
+	private MessagesService() {
+		throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+	}
+
+	public static void setMultiCastServerGroups(final List<List<String>> multiCastServerGroups) {
+		MessagesService.multiCastServerGroups = multiCastServerGroups;
 	}
 }

@@ -34,7 +34,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
-import lombok.Value;
 
 public class DuplicationFilter implements ProxyChatPreParseFilter {
   private final ConcurrentMap<UUID, Queue<TimePointMessage>> playerMessagesStorage;
@@ -95,9 +94,50 @@ public class DuplicationFilter implements ProxyChatPreParseFilter {
     playerMessagesStorage.clear();
   }
 
-  @Value
-  private static class TimePointMessage {
-    long timePoint;
-    String message;
+
+  private static final class TimePointMessage {
+    private final long timePoint;
+    private final String message;
+
+    public TimePointMessage(final long timePoint, final String message) {
+      this.timePoint = timePoint;
+      this.message = message;
+    }
+
+    public long getTimePoint() {
+      return this.timePoint;
+    }
+
+    public String getMessage() {
+      return this.message;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+      if (o == this) return true;
+      if (!(o instanceof DuplicationFilter.TimePointMessage)) return false;
+      final DuplicationFilter.TimePointMessage other = (DuplicationFilter.TimePointMessage) o;
+      if (this.getTimePoint() != other.getTimePoint()) return false;
+      final Object this$message = this.getMessage();
+      final Object other$message = other.getMessage();
+      if (this$message == null ? other$message != null : !this$message.equals(other$message)) return false;
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      final int PRIME = 59;
+      int result = 1;
+      final long $timePoint = this.getTimePoint();
+      result = result * PRIME + (int) ($timePoint >>> 32 ^ $timePoint);
+      final Object $message = this.getMessage();
+      result = result * PRIME + ($message == null ? 43 : $message.hashCode());
+      return result;
+    }
+
+    @Override
+    public String toString() {
+      return "DuplicationFilter.TimePointMessage(timePoint=" + this.getTimePoint() + ", message=" + this.getMessage() + ")";
+    }
   }
 }

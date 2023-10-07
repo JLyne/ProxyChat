@@ -31,13 +31,10 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.Getter;
-
 public class AccountManager {
-  @Getter protected static final ProxyChatAccount consoleAccount = new ConsoleAccount();
-  protected static final ConcurrentMap<UUID, ProxyChatAccount> accounts =
-      new ConcurrentHashMap<>();
-  @Getter private static ProxyChatAccountStorage accountStorage;
+  protected static final ProxyChatAccount consoleAccount = new ConsoleAccount();
+  protected static final ConcurrentMap<UUID, ProxyChatAccount> accounts = new ConcurrentHashMap<>();
+  private static ProxyChatAccountStorage accountStorage;
 
   public static void setAccountStorage(ProxyChatAccountStorage accountStorage) {
     AccountManager.accountStorage = accountStorage;
@@ -106,5 +103,13 @@ public class AccountManager {
 
   static {
     accounts.put(consoleAccount.getUniqueId(), consoleAccount);
+  }
+
+  public static ProxyChatAccount getConsoleAccount() {
+    return AccountManager.consoleAccount;
+  }
+
+  public static ProxyChatAccountStorage getAccountStorage() {
+    return AccountManager.accountStorage;
   }
 }

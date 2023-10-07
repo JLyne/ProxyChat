@@ -25,10 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import lombok.Getter;
 
 public class ModuleManager {
-  @Getter private static final List<ProxyChatModule> availableModules = new LinkedList<>();
+  private static final List<ProxyChatModule> availableModules = new LinkedList<>();
   private static final List<ProxyChatModule> activeModules = new LinkedList<>();
 
   public static void registerModule(ProxyChatModule module) throws UnsupportedOperationException {
@@ -71,5 +70,9 @@ public class ModuleManager {
 
   public static void clearActiveModules() throws UnsupportedOperationException {
     activeModules.clear();
+  }
+
+  public static List<ProxyChatModule> getAvailableModules() {
+    return ModuleManager.availableModules;
   }
 }

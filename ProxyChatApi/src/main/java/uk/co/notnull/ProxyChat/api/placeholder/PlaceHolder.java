@@ -25,13 +25,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
-@EqualsAndHashCode(of = "placeholder")
 public class PlaceHolder implements ProxyChatPlaceHolder {
-  @Getter private final String placeholder;
+  private final String placeholder;
   private ReplacementSupplier replacementSupplier;
   private ComponentReplacementSupplier componentReplacementSupplier = context -> Component.text(replacementSupplier.get(context));
   private final List<Predicate<? super ProxyChatContext>> requirements = new LinkedList<>();
@@ -115,5 +112,34 @@ public class PlaceHolder implements ProxyChatPlaceHolder {
     placeHolders[size] = this;
 
     return placeHolders;
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (o == this) return true;
+    if (!(o instanceof PlaceHolder)) return false;
+    final PlaceHolder other = (PlaceHolder) o;
+    if (!other.canEqual((Object) this)) return false;
+    final Object this$placeholder = this.getPlaceholder();
+    final Object other$placeholder = other.getPlaceholder();
+    if (this$placeholder == null ? other$placeholder != null : !this$placeholder.equals(other$placeholder)) return false;
+    return true;
+  }
+
+  protected boolean canEqual(final Object other) {
+    return other instanceof PlaceHolder;
+  }
+
+  @Override
+  public int hashCode() {
+    final int PRIME = 59;
+    int result = 1;
+    final Object $placeholder = this.getPlaceholder();
+    result = result * PRIME + ($placeholder == null ? 43 : $placeholder.hashCode());
+    return result;
+  }
+
+  public String getPlaceholder() {
+    return this.placeholder;
   }
 }

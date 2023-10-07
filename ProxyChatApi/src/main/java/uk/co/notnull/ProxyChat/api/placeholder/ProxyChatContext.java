@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
-import lombok.Data;
 import net.kyori.adventure.text.Component;
 
 /**
@@ -38,7 +37,6 @@ import net.kyori.adventure.text.Component;
  * It may contain the acting player (sender), the receiver (target), the message and possibly more
  * in the future.
  */
-@Data
 public class ProxyChatContext {
   /**
    * Predefined Predicate to check if a context has a sender.
@@ -283,5 +281,105 @@ public class ProxyChatContext {
         e.printStackTrace();
       }
     }
+  }
+
+  public boolean isParsed() {
+    return this.parsed;
+  }
+
+  public boolean isFiltered() {
+    return this.filtered;
+  }
+
+  public void setSender(final ProxyChatAccount sender) {
+    this.sender = sender;
+  }
+
+  public void setTarget(final ProxyChatAccount target) {
+    this.target = target;
+  }
+
+  public void setMessage(final String message) {
+    this.message = message;
+  }
+
+  public void setChannel(final String channel) {
+    this.channel = channel;
+  }
+
+  public void setServer(final RegisteredServer server) {
+    this.server = server;
+  }
+
+  public void setParsed(final boolean parsed) {
+    this.parsed = parsed;
+  }
+
+  public void setFiltered(final boolean filtered) {
+    this.filtered = filtered;
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (o == this) return true;
+    if (!(o instanceof ProxyChatContext)) return false;
+    final ProxyChatContext other = (ProxyChatContext) o;
+    if (!other.canEqual((Object) this)) return false;
+    if (this.isParsed() != other.isParsed()) return false;
+    if (this.isFiltered() != other.isFiltered()) return false;
+    final Object this$sender = this.getSender();
+    final Object other$sender = other.getSender();
+    if (this$sender == null ? other$sender != null : !this$sender.equals(other$sender)) return false;
+    final Object this$target = this.getTarget();
+    final Object other$target = other.getTarget();
+    if (this$target == null ? other$target != null : !this$target.equals(other$target)) return false;
+    final Object this$message = this.getMessage();
+    final Object other$message = other.getMessage();
+    if (this$message == null ? other$message != null : !this$message.equals(other$message)) return false;
+    final Object this$filteredMessage = this.getFilteredMessage();
+    final Object other$filteredMessage = other.getFilteredMessage();
+    if (this$filteredMessage == null ? other$filteredMessage != null : !this$filteredMessage.equals(other$filteredMessage)) return false;
+    final Object this$parsedMessage = this.getParsedMessage();
+    final Object other$parsedMessage = other.getParsedMessage();
+    if (this$parsedMessage == null ? other$parsedMessage != null : !this$parsedMessage.equals(other$parsedMessage)) return false;
+    final Object this$channel = this.getChannel();
+    final Object other$channel = other.getChannel();
+    if (this$channel == null ? other$channel != null : !this$channel.equals(other$channel)) return false;
+    final Object this$server = this.getServer();
+    final Object other$server = other.getServer();
+    if (this$server == null ? other$server != null : !this$server.equals(other$server)) return false;
+    return true;
+  }
+
+  protected boolean canEqual(final Object other) {
+    return other instanceof ProxyChatContext;
+  }
+
+  @Override
+  public int hashCode() {
+    final int PRIME = 59;
+    int result = 1;
+    result = result * PRIME + (this.isParsed() ? 79 : 97);
+    result = result * PRIME + (this.isFiltered() ? 79 : 97);
+    final Object $sender = this.getSender();
+    result = result * PRIME + ($sender == null ? 43 : $sender.hashCode());
+    final Object $target = this.getTarget();
+    result = result * PRIME + ($target == null ? 43 : $target.hashCode());
+    final Object $message = this.getMessage();
+    result = result * PRIME + ($message == null ? 43 : $message.hashCode());
+    final Object $filteredMessage = this.getFilteredMessage();
+    result = result * PRIME + ($filteredMessage == null ? 43 : $filteredMessage.hashCode());
+    final Object $parsedMessage = this.getParsedMessage();
+    result = result * PRIME + ($parsedMessage == null ? 43 : $parsedMessage.hashCode());
+    final Object $channel = this.getChannel();
+    result = result * PRIME + ($channel == null ? 43 : $channel.hashCode());
+    final Object $server = this.getServer();
+    result = result * PRIME + ($server == null ? 43 : $server.hashCode());
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "ProxyChatContext(sender=" + this.getSender() + ", target=" + this.getTarget() + ", message=" + this.getMessage() + ", filteredMessage=" + this.getFilteredMessage() + ", parsedMessage=" + this.getParsedMessage() + ", channel=" + this.getChannel() + ", server=" + this.getServer() + ", parsed=" + this.isParsed() + ", filtered=" + this.isFiltered() + ")";
   }
 }

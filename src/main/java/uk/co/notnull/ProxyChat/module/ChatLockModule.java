@@ -25,12 +25,9 @@ import uk.co.notnull.ProxyChat.api.filter.ProxyChatFilter;
 import uk.co.notnull.ProxyChat.api.filter.FilterManager;
 import uk.co.notnull.ProxyChat.command.ChatLockCommand;
 import uk.co.notnull.ProxyChat.filter.ChatLockFilter;
-import lombok.experimental.Delegate;
 
 public class ChatLockModule extends Module {
   private ChatLockCommand chatLockCommand;
-
-  @Delegate(excludes = ProxyChatFilter.class)
   private ChatLockFilter chatLockFilter;
 
   @Override
@@ -51,5 +48,33 @@ public class ChatLockModule extends Module {
   public void onDisable() {
     chatLockCommand.unregister();
     FilterManager.removePreParseFilter(getName());
+  }
+
+  public java.lang.String applyFilter(final uk.co.notnull.ProxyChat.api.account.ProxyChatAccount sender, final java.lang.String message) throws uk.co.notnull.ProxyChat.api.filter.BlockMessageException {
+    return this.chatLockFilter.applyFilter(sender, message);
+  }
+
+  public void enableGlobalChatLock() {
+    this.chatLockFilter.enableGlobalChatLock();
+  }
+
+  public void enableLocalChatLock(final com.velocitypowered.api.proxy.server.RegisteredServer name) {
+    this.chatLockFilter.enableLocalChatLock(name);
+  }
+
+  public boolean isGlobalChatLockEnabled() {
+    return this.chatLockFilter.isGlobalChatLockEnabled();
+  }
+
+  public boolean isLocalChatLockEnabled(final com.velocitypowered.api.proxy.server.RegisteredServer name) {
+    return this.chatLockFilter.isLocalChatLockEnabled(name);
+  }
+
+  public void disableGlobalChatLock() {
+    this.chatLockFilter.disableGlobalChatLock();
+  }
+
+  public void disableLocalChatLock(final com.velocitypowered.api.proxy.server.RegisteredServer name) {
+    this.chatLockFilter.disableLocalChatLock(name);
   }
 }

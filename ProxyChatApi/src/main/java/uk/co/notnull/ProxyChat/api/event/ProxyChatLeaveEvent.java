@@ -22,9 +22,6 @@
 package uk.co.notnull.ProxyChat.api.event;
 
 import com.velocitypowered.api.proxy.Player;
-import lombok.ToString;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * Called when a player has left the proxy, it is not safe to call any methods that perform an
@@ -33,10 +30,50 @@ import lombok.EqualsAndHashCode;
  * <p>Used by ProxyChat internally to make sure people joining while they are online don't cause
  * issues.
  */
-@Data
-@ToString()
-@EqualsAndHashCode()
 public class ProxyChatLeaveEvent {
-  /** Player disconnecting. */
+  /**
+   * Player disconnecting.
+   */
   private final Player player;
+
+  public ProxyChatLeaveEvent(final Player player) {
+    this.player = player;
+  }
+
+  /**
+   * Player disconnecting.
+   */
+  public Player getPlayer() {
+    return this.player;
+  }
+
+  @Override
+  public String toString() {
+    return "ProxyChatLeaveEvent(player=" + this.getPlayer() + ")";
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (o == this) return true;
+    if (!(o instanceof ProxyChatLeaveEvent)) return false;
+    final ProxyChatLeaveEvent other = (ProxyChatLeaveEvent) o;
+    if (!other.canEqual((Object) this)) return false;
+    final Object this$player = this.getPlayer();
+    final Object other$player = other.getPlayer();
+    if (this$player == null ? other$player != null : !this$player.equals(other$player)) return false;
+    return true;
+  }
+
+  protected boolean canEqual(final Object other) {
+    return other instanceof ProxyChatLeaveEvent;
+  }
+
+  @Override
+  public int hashCode() {
+    final int PRIME = 59;
+    int result = 1;
+    final Object $player = this.getPlayer();
+    result = result * PRIME + ($player == null ? 43 : $player.hashCode());
+    return result;
+  }
 }

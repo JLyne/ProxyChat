@@ -26,7 +26,6 @@ import uk.co.notnull.ProxyChat.api.hook.ProxyChatHook;
 import uk.co.notnull.ProxyChat.api.hook.HookManager;
 import java.util.Objects;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.cacheddata.CachedMetaData;
@@ -37,7 +36,6 @@ import net.luckperms.api.model.user.User;
 import net.luckperms.api.query.QueryMode;
 import net.luckperms.api.query.QueryOptions;
 
-@RequiredArgsConstructor
 public class LuckPerms5Hook implements ProxyChatHook {
   private final boolean fixContexts;
   private final LuckPerms api = LuckPermsProvider.get();
@@ -83,5 +81,9 @@ public class LuckPerms5Hook implements ProxyChatHook {
     } else {
       return queryOptions;
     }
+  }
+
+  public LuckPerms5Hook(final boolean fixContexts) {
+    this.fixContexts = fixContexts;
   }
 }

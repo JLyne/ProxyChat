@@ -44,9 +44,7 @@ import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
-import lombok.Cleanup;
 import lombok.NonNull;
-import lombok.SneakyThrows;
 
 public class AccountSQLStorage implements ProxyChatAccountStorage {
   private final Connection connection;
@@ -100,9 +98,12 @@ public class AccountSQLStorage implements ProxyChatAccountStorage {
         .collect(Collectors.joining("&"));
   }
 
-  @SneakyThrows(UnsupportedEncodingException.class)
   private static String urlEncode(String message) {
-    return URLEncoder.encode(message, StandardCharsets.UTF_8.name());
+	 try {
+		return URLEncoder.encode(message, StandardCharsets.UTF_8.name());
+	 } catch (final UnsupportedEncodingException $ex) {
+		  throw lombok.Lombok.sneakyThrow($ex);
+	  }
   }
 
   public AccountSQLStorage(
@@ -156,92 +157,70 @@ public class AccountSQLStorage implements ProxyChatAccountStorage {
     prepareStatements();
   }
 
-  @SneakyThrows
-  @Override
-  public void save(ProxyChatAccount account) {
-    try {
-      byte[] uuidBytes = getBytesFromUUID(account.getUniqueId());
+	@Override
+	public void save(ProxyChatAccount account) {
+		try {
+			try {
+				byte[] uuidBytes = getBytesFromUUID(account.getUniqueId());
+				// deleteIgnores
+				deleteIgnores.setBytes(1, uuidBytes);
+				deleteIgnores.execute();
+				deleteIgnores.clearParameters();
+				// saveAccount
+				saveAccount.setBytes(1, uuidBytes);
+				saveAccount.setString(2, account.getName());
+				saveAccount.setString(3, account.getChannelType().name());
+				saveAccount.setBoolean(4, account.isVanished());
+				saveAccount.setBoolean(5, account.hasMessangerEnabled());
+				saveAccount.setBoolean(6, account.hasSocialSpyEnabled());
+				saveAccount.setBoolean(7, account.hasLocalSpyEnabled());
+				saveAccount.setTimestamp(8, account.getMutedUntil());
+				saveAccount.executeUpdate();
+				saveAccount.clearParameters();
+				// addIgnore
+				addIgnore.setBytes(1, uuidBytes);
+				for (UUID uuid : account.getIgnored()) {
+					addIgnore.setBytes(2, getBytesFromUUID(uuid));
+					addIgnore.executeUpdate();
+				}
+				addIgnore.clearParameters();
+			} catch (SQLException e) {
+				LoggerHelper.error("Could not save user " + account.getUniqueId() + " to database!", e);
+			}
+		} catch (final java.lang.Throwable $ex) {
+			throw lombok.Lombok.sneakyThrow($ex);
+		}
+	}
 
-      // deleteIgnores
-      deleteIgnores.setBytes(1, uuidBytes);
-
-      deleteIgnores.execute();
-      deleteIgnores.clearParameters();
-
-      // saveAccount
-      saveAccount.setBytes(1, uuidBytes);
-      saveAccount.setString(2, account.getName());
-      saveAccount.setString(3, account.getChannelType().name());
-      saveAccount.setBoolean(4, account.isVanished());
-      saveAccount.setBoolean(5, account.hasMessangerEnabled());
-      saveAccount.setBoolean(6, account.hasSocialSpyEnabled());
-      saveAccount.setBoolean(7, account.hasLocalSpyEnabled());
-      saveAccount.setTimestamp(8, account.getMutedUntil());
-
-      saveAccount.executeUpdate();
-      saveAccount.clearParameters();
-
-      // addIgnore
-      addIgnore.setBytes(1, uuidBytes);
-
-      for (UUID uuid : account.getIgnored()) {
-        addIgnore.setBytes(2, getBytesFromUUID(uuid));
-
-        addIgnore.executeUpdate();
-      }
-
-      addIgnore.clearParameters();
-    } catch (SQLException e) {
-      LoggerHelper.error("Could not save user " + account.getUniqueId() + " to database!", e);
-    }
-  }
-
-  @SneakyThrows
-  @Override
-  public AccountInfo load(UUID uuid) {
-    try {
-      byte[] uuidBytes = getBytesFromUUID(uuid);
-
-      // loadAccount
-      loadAccount.setBytes(1, uuidBytes);
-
-      try (ResultSet resultLoadAccount = loadAccount.executeQuery()) {
-        loadAccount.clearParameters();
-
-        if (!resultLoadAccount.next()) return new AccountInfo(new Account(uuid), true, true);
-
-        // getIgnores
-        getIgnores.setBytes(1, uuidBytes);
-
-        try (ResultSet resultGetIgnores = getIgnores.executeQuery()) {
-          getIgnores.clearParameters();
-
-          BlockingQueue<UUID> ignores = new LinkedBlockingQueue<>();
-
-          while (resultGetIgnores.next()) {
-            ignores.add(getUUIDFromBytes(resultGetIgnores.getBytes(tableIgnoresColumnIgnores)));
-          }
-
-          return new AccountInfo(
-              new Account(
-					  uuid,
-					  ChannelType.valueOf(resultLoadAccount.getString(tableAccountsColumnChannelType)),
-					  resultLoadAccount.getBoolean(tableAccountsColumnVanished),
-					  resultLoadAccount.getBoolean(tableAccountsColumnMessenger),
-					  resultLoadAccount.getBoolean(tableAccountsColumnSocialSpy),
-					  resultLoadAccount.getBoolean(tableAccountsColumnLocalSpy),
-					  ignores,
-					  resultLoadAccount.getTimestamp(tableAccountsColumnMutedUntil)),
-              true,
-              false);
-        }
-      }
-    } catch (SQLException e) {
-      LoggerHelper.error("Could not load user " + uuid + " from database!", e);
-
-      return new AccountInfo(new Account(uuid), true, true);
-    }
-  }
+	@Override
+	public AccountInfo load(UUID uuid) {
+		try {
+			try {
+				byte[] uuidBytes = getBytesFromUUID(uuid);
+				// loadAccount
+				loadAccount.setBytes(1, uuidBytes);
+				try (ResultSet resultLoadAccount = loadAccount.executeQuery()) {
+					loadAccount.clearParameters();
+					if (!resultLoadAccount.next()) return new AccountInfo(new Account(uuid), true, true);
+					// getIgnores
+					getIgnores.setBytes(1, uuidBytes);
+					try (ResultSet resultGetIgnores = getIgnores.executeQuery()) {
+						getIgnores.clearParameters();
+						BlockingQueue<UUID> ignores = new LinkedBlockingQueue<>();
+						while (resultGetIgnores.next()) {
+							ignores.add(getUUIDFromBytes(resultGetIgnores.getBytes(tableIgnoresColumnIgnores)));
+						}
+						return new AccountInfo(new Account(uuid, ChannelType.valueOf(resultLoadAccount.getString(tableAccountsColumnChannelType)), resultLoadAccount.getBoolean(tableAccountsColumnVanished), resultLoadAccount.getBoolean(tableAccountsColumnMessenger), resultLoadAccount.getBoolean(tableAccountsColumnSocialSpy), resultLoadAccount.getBoolean(tableAccountsColumnLocalSpy), ignores, resultLoadAccount.getTimestamp(tableAccountsColumnMutedUntil)), true, false);
+					}
+				}
+			} catch (SQLException e) {
+				LoggerHelper.error("Could not load user " + uuid + " from database!", e);
+				return new AccountInfo(new Account(uuid), true, true);
+			}
+		} catch (final java.lang.Throwable $ex) {
+			throw lombok.Lombok.sneakyThrow($ex);
+		}
+	}
 
   @Override
   public boolean requiresConsoleAccountSave() {
@@ -268,25 +247,40 @@ public class AccountSQLStorage implements ProxyChatAccountStorage {
     return connection.prepareStatement(statement);
   }
 
-  @SuppressWarnings("unused")
-  private ResultSet executeQuery(final String query) throws SQLException {
-    @Cleanup Statement statement = getStatement();
+	@SuppressWarnings("unused")
+	private ResultSet executeQuery(final String query) throws SQLException {
+		Statement statement = getStatement();
+		try {
+			return statement.executeQuery(query);
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+		}
+	}
 
-    return statement.executeQuery(query);
-  }
+	private boolean executeStatement(final String query) throws SQLException {
+		Statement statement = getStatement();
+		try {
+			return statement.execute(query);
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+		}
+	}
 
-  private boolean executeStatement(final String query) throws SQLException {
-    @Cleanup Statement statement = getStatement();
-
-    return statement.execute(query);
-  }
-
-  @SuppressWarnings("unused")
-  private int executeUpdate(final String query) throws SQLException {
-    @Cleanup Statement statement = getStatement();
-
-    return statement.executeUpdate(query);
-  }
+	@SuppressWarnings("unused")
+	private int executeUpdate(final String query) throws SQLException {
+		Statement statement = getStatement();
+		try {
+			return statement.executeUpdate(query);
+		} finally {
+			if (statement != null) {
+				statement.close();
+			}
+		}
+	}
 
   private String getTableName(String baseName) {
     String name = tablePrefix + baseName;

@@ -28,9 +28,7 @@ import uk.co.notnull.ProxyChat.api.account.AccountManager;
 import uk.co.notnull.ProxyChat.api.filter.BlockMessageException;
 import uk.co.notnull.ProxyChat.api.filter.ProxyChatFilter;
 import uk.co.notnull.ProxyChat.message.Messages;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class FilterHelper {
   private final Messages expectedMessage;
 
@@ -54,5 +52,9 @@ public class FilterHelper {
     } catch (BlockMessageException e) {
       fail("No exception expected! (" + e.getMessage() + ')');
     }
+  }
+
+  public FilterHelper(final Messages expectedMessage) {
+    this.expectedMessage = expectedMessage;
   }
 }

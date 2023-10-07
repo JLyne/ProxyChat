@@ -23,10 +23,6 @@ package uk.co.notnull.ProxyChat.api.event;
 
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 
 /**
  * Called when a player has changed servers.
@@ -34,13 +30,67 @@ import lombok.ToString;
  * <p>Used by ProxyChat internally to make sure people joining while they are online don't cause
  * issues.
  */
-@Data
-@RequiredArgsConstructor
-@ToString()
-@EqualsAndHashCode()
 public class ProxyChatServerSwitchEvent {
-  /** Player whom the server is for. */
+  /**
+   * Player whom the server is for.
+   */
   private final Player player;
-  /** Server the player is switch from. */
+  /**
+   * Server the player is switch from.
+   */
   private final RegisteredServer from;
+
+  /**
+   * Player whom the server is for.
+   */
+  public Player getPlayer() {
+    return this.player;
+  }
+
+  /**
+   * Server the player is switch from.
+   */
+  public RegisteredServer getFrom() {
+    return this.from;
+  }
+
+  public ProxyChatServerSwitchEvent(final Player player, final RegisteredServer from) {
+    this.player = player;
+    this.from = from;
+  }
+
+  @Override
+  public String toString() {
+    return "ProxyChatServerSwitchEvent(player=" + this.getPlayer() + ", from=" + this.getFrom() + ")";
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (o == this) return true;
+    if (!(o instanceof ProxyChatServerSwitchEvent)) return false;
+    final ProxyChatServerSwitchEvent other = (ProxyChatServerSwitchEvent) o;
+    if (!other.canEqual((Object) this)) return false;
+    final Object this$player = this.getPlayer();
+    final Object other$player = other.getPlayer();
+    if (this$player == null ? other$player != null : !this$player.equals(other$player)) return false;
+    final Object this$from = this.getFrom();
+    final Object other$from = other.getFrom();
+    if (this$from == null ? other$from != null : !this$from.equals(other$from)) return false;
+    return true;
+  }
+
+  protected boolean canEqual(final Object other) {
+    return other instanceof ProxyChatServerSwitchEvent;
+  }
+
+  @Override
+  public int hashCode() {
+    final int PRIME = 59;
+    int result = 1;
+    final Object $player = this.getPlayer();
+    result = result * PRIME + ($player == null ? 43 : $player.hashCode());
+    final Object $from = this.getFrom();
+    result = result * PRIME + ($from == null ? 43 : $from.hashCode());
+    return result;
+  }
 }

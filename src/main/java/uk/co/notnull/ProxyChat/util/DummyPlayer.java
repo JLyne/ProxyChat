@@ -40,13 +40,11 @@ import com.velocitypowered.api.proxy.player.TabList;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.util.GameProfile;
 import com.velocitypowered.api.util.ModInfo;
-import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
 
-@RequiredArgsConstructor
 public class DummyPlayer implements Player {
   private final UUID uuid;
 
@@ -220,5 +218,9 @@ public class DummyPlayer implements Player {
   @Override
   public IdentifiedKey getIdentifiedKey() {
     return null;
+  }
+
+  public DummyPlayer(final UUID uuid) {
+    this.uuid = uuid;
   }
 }

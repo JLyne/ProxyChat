@@ -24,10 +24,9 @@ package uk.co.notnull.ProxyChat.module;
 import com.typesafe.config.Config;
 import uk.co.notnull.ProxyChat.api.module.ProxyChatModule;
 import uk.co.notnull.ProxyChat.config.Configuration;
-import lombok.Setter;
 
 public abstract class Module implements ProxyChatModule {
-  @Setter private static boolean test_mode = false;
+  private static boolean test_mode = false;
 
   public static final String MODULE_BASE = "Modules";
   public static final String CONFIG_ENABLED = "enabled";
@@ -39,5 +38,9 @@ public abstract class Module implements ProxyChatModule {
 
   public Config getModuleSection() {
     return Configuration.get().getConfig(MODULE_BASE).getConfig(getName());
+  }
+
+  public static void setTest_mode(final boolean test_mode) {
+    Module.test_mode = test_mode;
   }
 }

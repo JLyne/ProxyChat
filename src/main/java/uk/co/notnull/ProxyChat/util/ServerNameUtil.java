@@ -35,13 +35,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-@UtilityClass
-public class ServerNameUtil {
+public final class ServerNameUtil {
   private static Map<String, String> aliasMapping = new HashMap<>();
   private static final Map<RegisteredServer, Component> serverComponents = new HashMap<>();
   private static final Map<RegisteredServer, Component> serverAliasComponents = new HashMap<>();
@@ -119,5 +117,9 @@ public class ServerNameUtil {
       serverAliasComponents.put(server, Component.text().content(getServerAlias(name))
               .hoverEvent(hoverEvent).clickEvent(clickEvent).build());
     });
+  }
+
+  private ServerNameUtil() {
+    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
   }
 }

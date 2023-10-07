@@ -21,7 +21,6 @@
 
 package uk.co.notnull.ProxyChat.api.filter;
 
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 

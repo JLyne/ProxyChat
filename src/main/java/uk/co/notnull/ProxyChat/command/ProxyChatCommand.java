@@ -58,7 +58,7 @@ public class ProxyChatCommand extends BaseCommand {
                 instance,
                 () -> {
                   instance.onDisable();
-                  instance.onEnable(false);
+                  instance.onEnable();
 
                   MessagesService.sendMessage(invocation.source(), Messages.PLUGIN_RELOAD.get());
                 }).schedule();

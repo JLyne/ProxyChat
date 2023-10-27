@@ -59,12 +59,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.slf4j.Logger;
 
 public class ProxyChat implements ProxyChatApi {
@@ -117,16 +113,16 @@ public class ProxyChat implements ProxyChatApi {
       superVanishBridgeHandler = new SuperVanishBridgeHandler(this);
     }
 
-    onEnable(true);
+    onEnable();
   }
 
   @Subscribe
   public void onProxyReload(ProxyReloadEvent event) {
     onDisable();
-    onEnable(false);
+    onEnable();
   }
 
-  public void onEnable(boolean prinLoadScreen) {
+  public void onEnable() {
     Configuration.load();
     PlaceHolderUtil.loadConfigSections();
 
@@ -182,10 +178,6 @@ public class ProxyChat implements ProxyChatApi {
         new DefaultHook(
             prefixDefaults.getString("defaultPrefix"), prefixDefaults.getString("defaultSuffix")));
     ServerNameUtil.init();
-
-    if (prinLoadScreen) {
-      loadScreen();
-    }
   }
 
   public void onDisable() {
@@ -247,63 +239,6 @@ public class ProxyChat implements ProxyChatApi {
     MessagesService.sendChannelMessage(context, channel);
   }
 
-  private void loadScreen() {
-    StartupBannerSize size =
-        StartupBannerSize.optionalValueOf(
-                Configuration.get().getString("Miscellaneous.startupBannerSize"))
-            .orElse(StartupBannerSize.NORMAL);
-
-    if (size == StartupBannerSize.NONE) return;
-
-    if (size != StartupBannerSize.SHORT) {
-      LoggerHelper.info(
-              NamedTextColor.GOLD
-              + "---------------- "
-              + NamedTextColor.AQUA
-              + "Proxy Chat"
-              + NamedTextColor.GOLD
-              + " ----------------");
-      LoggerHelper.info(getPeopleMessage("Authors", ProxyChatApi.AUTHORS));
-    }
-
-    if (size == StartupBannerSize.LONG) {
-      LoggerHelper.info(NamedTextColor.YELLOW + "Modules:");
-
-      ModuleManager.getAvailableModulesStream()
-          .map(
-              module -> {
-                if (module.isEnabled()) return "\t" + NamedTextColor.GREEN + "On  - " + module.getName();
-                else return "\t" + NamedTextColor.RED + "Off - " + module.getName();
-              })
-          .forEachOrdered(LoggerHelper::info);
-    } else {
-      LoggerHelper.info(
-          NamedTextColor.YELLOW
-              + "Modules: "
-              + NamedTextColor.GREEN
-              + ProxyChatModuleManager.getActiveModuleString());
-    }
-
-    if (size != StartupBannerSize.SHORT) {
-      LoggerHelper.info(getPeopleMessage("Contributors", ProxyChatApi.CONTRIBUTORS));
-      LoggerHelper.info(getPeopleMessage("Translators", ProxyChatApi.TRANSLATORS));
-      LoggerHelper.info(getPeopleMessage("Donators", ProxyChatApi.DONATORS));
-    }
-
-    if (size != StartupBannerSize.SHORT) {
-      LoggerHelper.info(NamedTextColor.GOLD + "---------------------------------------------");
-    }
-  }
-
-  private String getPeopleMessage(String name, String... people) {
-    return Arrays.stream(people)
-        .collect(
-            Collectors.joining(
-                    ProxyChatModuleManager.MODULE_CONCATENATOR,
-                    NamedTextColor.YELLOW + name + ": " + NamedTextColor.GREEN,
-                    ""));
-  }
-
   public Logger getLogger() {
     return logger;
   }
@@ -314,21 +249,6 @@ public class ProxyChat implements ProxyChatApi {
 
   public ProxyDiscordHandler getProxyDiscordHandler() {
     return proxyDiscordHandler;
-  }
-
-  private enum StartupBannerSize {
-    NONE,
-    SHORT,
-    NORMAL,
-    LONG;
-
-    public static Optional<StartupBannerSize> optionalValueOf(String value) {
-      for (StartupBannerSize element : values()) {
-        if (element.name().equalsIgnoreCase(value)) return Optional.of(element);
-      }
-
-      return Optional.empty();
-    }
   }
 
   public static ProxyChat getInstance() {

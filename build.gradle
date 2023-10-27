@@ -70,13 +70,13 @@ dependencies {
     implementation name: 'MessagesTranslator-1.4.3.41-DEV'
     implementation 'com.typesafe:config:1.4.2'
 
-    compileOnly 'com.velocitypowered:velocity-api:3.1.2-SNAPSHOT'
+    compileOnly 'com.velocitypowered:velocity-api:3.2.0-SNAPSHOT'
     compileOnly 'net.luckperms:api:5.4'
-    compileOnly 'uk.co.notnull:PlatformDetection-velocity:2.0'
+    compileOnly 'uk.co.notnull:PlatformDetection-velocity:2.1'
     compileOnly 'uk.co.notnull:ProxyDiscordAPI:1.1-SNAPSHOT'
     compileOnly 'uk.co.notnull:SuperVanishBridge-api:1.0-SNAPSHOT'
 
-    annotationProcessor 'com.velocitypowered:velocity-api:3.1.2-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:3.2.0-SNAPSHOT'
 
     testImplementation project(':ProxyChatApi')
     testImplementation 'junit:junit:4.13.2'
@@ -89,7 +89,7 @@ dependencies {
     testImplementation "org.powermock:powermock-module-junit4:2.0.9"
     testCompileOnly "com.github.spotbugs:spotbugs-annotations:4.2.0"
 
-    testCompileOnly 'com.velocitypowered:velocity-api:3.1.2-SNAPSHOT'
+    testCompileOnly 'com.velocitypowered:velocity-api:3.2.0-SNAPSHOT'
 
     testRuntimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.3'
     testRuntimeOnly 'org.slf4j:slf4j-nop:1.7.36'

@@ -79,6 +79,11 @@ public class DummyPlayer implements Player {
   }
 
   @Override
+  public boolean hasSentPlayerSettings() {
+    return false;
+  }
+
+  @Override
   public Optional<ModInfo> getModInfo() {
     return Optional.empty();
   }
@@ -126,6 +131,11 @@ public class DummyPlayer implements Player {
   @Override
   @Deprecated
   public void clearHeaderAndFooter() {
+  }
+
+  @Override
+  public void clearPlayerListHeaderAndFooter() {
+
   }
 
   @Override

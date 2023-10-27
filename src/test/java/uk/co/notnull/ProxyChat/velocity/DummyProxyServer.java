@@ -76,6 +76,11 @@ public class DummyProxyServer implements ProxyServer {
     }
 
     @Override
+    public void closeListeners() {
+
+    }
+
+    @Override
     public Optional<Player> getPlayer(String username) {
       return Optional.empty();
     }

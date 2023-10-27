@@ -24,10 +24,8 @@ package uk.co.notnull.ProxyChat.command;
 import uk.co.notnull.ProxyChat.module.EmojiModule;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.permission.PermissionManager;
-import uk.co.notnull.ProxyChat.util.ServerNameUtil;
 
 import java.util.Collections;
-import java.util.List;
 
 public class EmojiCommand extends BaseCommand {
   private final EmojiModule emojiModule;
@@ -42,14 +40,5 @@ public class EmojiCommand extends BaseCommand {
     if (!PermissionManager.hasPermission(invocation.source(), Permission.COMMAND_EMOJI)) return;
 
     invocation.source().sendMessage(emojiModule.getEmojiListComponent());
-  }
-
-  @Override
-  public List<String> suggest(Invocation invocation) {
-    if(invocation.arguments().length == 0) {
-      return ServerNameUtil.getServerNames();
-    }
-
-    return super.suggest(invocation);
   }
 }

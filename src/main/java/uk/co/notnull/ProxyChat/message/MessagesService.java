@@ -134,12 +134,7 @@ public final class MessagesService {
 	}
 
 	public static void sendGlobalMessage(CommandSource sender, String message) throws InvalidContextError {
-		ProxyChatContext context = new Context(sender, message);
-		boolean allowed = parseMessage(context, true);
-
-		if(allowed) {
-			sendGlobalMessage(context);
-		}
+		sendChannelMessage(sender, ChannelType.GLOBAL, message);
 	}
 
 	public static void sendGlobalMessage(ProxyChatContext context) throws InvalidContextError {
@@ -156,12 +151,7 @@ public final class MessagesService {
 	}
 
 	public static void sendLocalMessage(CommandSource sender, String message) throws InvalidContextError {
-		ProxyChatContext context = new Context(sender, message);
-		boolean allowed = parseMessage(context, true);
-
-		if(allowed) {
-			sendLocalMessage(context);
-		}
+		sendChannelMessage(sender, ChannelType.LOCAL, message);
 	}
 
 	public static void sendLocalMessage(ProxyChatContext context) throws InvalidContextError {
@@ -205,12 +195,7 @@ public final class MessagesService {
 	}
 
 	public static void sendStaffMessage(CommandSource sender, String message) throws InvalidContextError {
-		ProxyChatContext context = new Context(sender, message);
-		boolean allowed = parseMessage(context, true);
-
-		if(allowed) {
-			sendStaffMessage(context);
-		}
+		sendChannelMessage(sender, ChannelType.STAFF, message);
 	}
 
 	public static void sendStaffMessage(ProxyChatContext context) throws InvalidContextError {

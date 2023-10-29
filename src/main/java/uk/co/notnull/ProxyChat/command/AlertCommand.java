@@ -31,6 +31,7 @@ import uk.co.notnull.ProxyChat.module.ProxyChatModuleManager;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.permission.PermissionManager;
 import net.kyori.adventure.text.Component;
+import uk.co.notnull.ProxyChat.util.PredicateUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -53,7 +54,7 @@ public class AlertCommand extends BaseCommand {
 
         MessagesService.preProcessMessage(context, Format.ALERT)
                 .ifPresent((Component message) ->
-                                   MessagesService.sendToMatchingPlayers(message, MessagesService.getGlobalPredicate()));
+                                   MessagesService.sendToMatchingPlayers(message, PredicateUtil.getGlobalPredicate()));
       }
     }
   }

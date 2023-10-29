@@ -27,8 +27,8 @@ import com.typesafe.config.ConfigObject;
 import com.typesafe.config.ConfigValue;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import uk.co.notnull.ProxyChat.ProxyChat;
-import uk.co.notnull.ProxyChat.message.MessagesService;
 import uk.co.notnull.ProxyChat.task.AutomaticBroadcastTask;
+import uk.co.notnull.ProxyChat.util.PredicateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class AutoBroadcastModule extends Module {
 					.buildTask(
 							ProxyChat.getInstance(),
 							new AutomaticBroadcastTask(
-									MessagesService.getServerListPredicate(broadcastConfig.getConfig("serverList")),
+									PredicateUtil.getServerListPredicate(broadcastConfig.getConfig("serverList")),
 									broadcastConfig.getStringList("messages"), broadcastConfig.getBoolean("random")))
 					.delay(delay, TIME_UNIT)
 					.repeat(interval, TIME_UNIT)

@@ -35,6 +35,7 @@ import uk.co.notnull.ProxyChat.message.MessagesService;
 import uk.co.notnull.ProxyChat.module.ProxyChatModuleManager;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.permission.PermissionManager;
+import uk.co.notnull.ProxyChat.util.PredicateUtil;
 
 public class GlobalChatListener {
   private final boolean passToBackendServer =
@@ -68,7 +69,7 @@ public class GlobalChatListener {
       String symbol = symbolSection.getString("symbol");
 
       if (message.startsWith(symbol) && !symbol.equals("/")) {
-        if (!MessagesService.getGlobalPredicate().test(account)) {
+        if (!PredicateUtil.getGlobalPredicate().test(account)) {
           MessagesService.sendMessage(sender, Messages.NOT_IN_GLOBAL_SERVER.get());
           return;
         }
@@ -91,7 +92,7 @@ public class GlobalChatListener {
 
     if (account.getChannelType() != ChannelType.GLOBAL) return;
 
-    if (!MessagesService.getGlobalPredicate().test(account)) {
+    if (!PredicateUtil.getGlobalPredicate().test(account)) {
       MessagesService.sendMessage(sender, Messages.NOT_IN_GLOBAL_SERVER.get());
 
       return;

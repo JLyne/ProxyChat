@@ -21,11 +21,11 @@
 
 package uk.co.notnull.ProxyChat.module;
 
-import uk.co.notnull.ProxyChat.message.MessagesService;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MulticastChatModule extends Module {
+  private List<List<String>> multiCastServerGroups = null;
+
   @Override
   public String getName() {
     return "MulticastChat";
@@ -34,14 +34,17 @@ public class MulticastChatModule extends Module {
   @SuppressWarnings("unchecked")
   @Override
   public void onEnable() {
-    MessagesService.setMultiCastServerGroups(
-        getModuleSection().getList("serverLists").stream()
+    multiCastServerGroups = getModuleSection().getList("serverLists").stream()
             .map(configValue -> (List<String>) configValue.unwrapped())
-            .collect(Collectors.toList()));
+            .toList();
   }
 
   @Override
   public void onDisable() {
-    MessagesService.unsetMultiCastServerGroups();
+    multiCastServerGroups = null;
+  }
+
+  public List<List<String>> getMultiCastServerGroups() {
+    return multiCastServerGroups;
   }
 }

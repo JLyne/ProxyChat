@@ -34,6 +34,7 @@ import uk.co.notnull.ProxyChat.message.Context;
 import uk.co.notnull.ProxyChat.message.Messages;
 import uk.co.notnull.ProxyChat.message.MessagesService;
 import uk.co.notnull.ProxyChat.module.ProxyChatModuleManager;
+import uk.co.notnull.ProxyChat.util.PredicateUtil;
 
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class LocalChatListener {
     if (ChatUtils.isCommand(message)) return;
 
     if (account.getChannelType() == ChannelType.LOCAL) {
-      if (!MessagesService.getLocalPredicate().test(account)) {
+      if (!PredicateUtil.getLocalPredicate().test(account)) {
         MessagesService.sendMessage(sender, Messages.NOT_IN_LOCAL_SERVER.get());
         e.setResult(PlayerChatEvent.ChatResult.denied());
 

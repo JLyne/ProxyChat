@@ -31,6 +31,7 @@ import uk.co.notnull.ProxyChat.module.ProxyChatModuleManager;
 import uk.co.notnull.ProxyChat.module.ClearChatModule;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.permission.PermissionManager;
+import uk.co.notnull.ProxyChat.util.PredicateUtil;
 import uk.co.notnull.ProxyChat.util.ServerNameUtil;
 import net.kyori.adventure.text.Component;
 
@@ -84,12 +85,12 @@ public class ClearChatCommand extends BaseCommand {
         clearLocalChat(server.get(), lines);
 
         MessagesService.sendToMatchingPlayers(
-            Messages.CLEARED_LOCAL.get(invocation.source()), MessagesService.getLocalPredicate(server.get()));
+                Messages.CLEARED_LOCAL.get(invocation.source()), PredicateUtil.getLocalPredicate(server.get()));
       } else if (invocation.arguments()[0].equalsIgnoreCase("global")) {
         clearGlobalChat(lines);
 
         MessagesService.sendToMatchingPlayers(
-            Messages.CLEARED_GLOBAL.get(invocation.source()), MessagesService.getGlobalPredicate());
+            Messages.CLEARED_GLOBAL.get(invocation.source()), PredicateUtil.getGlobalPredicate());
       } else {
         MessagesService.sendMessage(invocation.source(), Messages.INCORRECT_USAGE.get(invocation.source(), USAGE));
       }
@@ -118,11 +119,11 @@ public class ClearChatCommand extends BaseCommand {
   }
 
   public static void clearGlobalChat(int emptyLines) {
-    clearChat(emptyLines, MessagesService.getGlobalPredicate());
+    clearChat(emptyLines, PredicateUtil.getGlobalPredicate());
   }
 
   public static void clearLocalChat(RegisteredServer server, int emptyLines) {
-    clearChat(emptyLines, MessagesService.getLocalPredicate(server));
+    clearChat(emptyLines, PredicateUtil.getLocalPredicate(server));
   }
 
   private static void clearChat(int emptyLines, Predicate<ProxyChatAccount> predicate) {

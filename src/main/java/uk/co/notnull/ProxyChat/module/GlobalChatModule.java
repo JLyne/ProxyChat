@@ -23,9 +23,13 @@ package uk.co.notnull.ProxyChat.module;
 
 import uk.co.notnull.ProxyChat.ProxyChat;
 import uk.co.notnull.ProxyChat.account.Account;
+import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.command.GlobalChatCommand;
 import uk.co.notnull.ProxyChat.listener.GlobalChatListener;
+import uk.co.notnull.ProxyChat.util.PredicateUtil;
+
+import java.util.function.Predicate;
 
 public class GlobalChatModule extends Module {
   private GlobalChatCommand globalChatCommand;
@@ -60,5 +64,9 @@ public class GlobalChatModule extends Module {
         .unregisterListener(ProxyChat.getInstance(), globalChatListener);
 
     Account.setDefaultChannelType(ChannelType.LOCAL);
+  }
+
+  public Predicate<ProxyChatAccount> getGlobalPredicate() {
+    return PredicateUtil.getServerListPredicate(getModuleSection().getConfig("serverList"));
   }
 }

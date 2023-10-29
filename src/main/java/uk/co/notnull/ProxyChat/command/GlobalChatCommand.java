@@ -32,6 +32,7 @@ import uk.co.notnull.ProxyChat.module.GlobalChatModule;
 import uk.co.notnull.ProxyChat.module.ProxyChatModuleManager;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.permission.PermissionManager;
+import uk.co.notnull.ProxyChat.util.PredicateUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +51,7 @@ public class GlobalChatCommand extends BaseCommand {
 
     ProxyChatAccount account = ProxyChatAccountManager.getAccount(invocation.source()).orElseThrow();
 
-    if (!MessagesService.getGlobalPredicate().test(account)
+    if (!PredicateUtil.getGlobalPredicate().test(account)
         && (account.getAccountType() == AccountType.PLAYER)) {
       MessagesService.sendMessage(invocation.source(), Messages.NOT_IN_GLOBAL_SERVER.get());
 

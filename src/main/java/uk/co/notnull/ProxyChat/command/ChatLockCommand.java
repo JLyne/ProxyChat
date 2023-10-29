@@ -31,6 +31,7 @@ import uk.co.notnull.ProxyChat.module.ProxyChatModuleManager;
 import uk.co.notnull.ProxyChat.module.ChatLockModule;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.permission.PermissionManager;
+import uk.co.notnull.ProxyChat.util.PredicateUtil;
 import uk.co.notnull.ProxyChat.util.ServerNameUtil;
 
 import java.util.Collections;
@@ -79,7 +80,7 @@ public class ChatLockCommand extends BaseCommand {
         }
 
         MessagesService.sendToMatchingPlayers(
-            Messages.ENABLE_CHATLOCK.get(player), MessagesService.getGlobalPredicate());
+                Messages.ENABLE_CHATLOCK.get(player), PredicateUtil.getGlobalPredicate());
       }
     } else if (invocation.arguments()[0].equalsIgnoreCase("local")) {
       boolean serverSpecified = invocation.arguments().length == (clear ? 3 : 2);
@@ -106,7 +107,7 @@ public class ChatLockCommand extends BaseCommand {
         }
 
         MessagesService.sendToMatchingPlayers(
-            Messages.ENABLE_CHATLOCK.get(player), MessagesService.getLocalPredicate(server.get()));
+            Messages.ENABLE_CHATLOCK.get(player), PredicateUtil.getLocalPredicate(server.get()));
       }
     } else {
       MessagesService.sendMessage(invocation.source(), Messages.INCORRECT_USAGE.get(player, USAGE));

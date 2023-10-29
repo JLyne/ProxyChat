@@ -29,6 +29,7 @@ import uk.co.notnull.ProxyChat.api.filter.FilterManager;
 import uk.co.notnull.ProxyChat.message.Messages;
 import uk.co.notnull.ProxyChat.message.MessagesService;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
+import uk.co.notnull.ProxyChat.util.PredicateUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class ChatLockFilter implements ProxyChatPreParseFilter {
       return message;
     }
 
-    if(!((globalLock && MessagesService.getGlobalPredicate().test(sender)) ||
+    if(!((globalLock && PredicateUtil.getGlobalPredicate().test(sender)) ||
             (sender.getServer().isPresent() && lockedServers.contains(sender.getServer().get())))) {
       return message;
     }

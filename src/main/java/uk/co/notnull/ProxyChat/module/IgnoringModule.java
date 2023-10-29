@@ -21,7 +21,11 @@
 
 package uk.co.notnull.ProxyChat.module;
 
+import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
+import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.command.IgnoreCommand;
+
+import java.util.function.Predicate;
 
 public class IgnoringModule extends Module {
   private IgnoreCommand ignoreCommand;
@@ -41,4 +45,12 @@ public class IgnoringModule extends Module {
   public void onDisable() {
     ignoreCommand.unregister();
   }
+
+  public Predicate<ProxyChatAccount> getNotIgnoredPredicate(ProxyChatAccount sender) {
+		return (isEnabled()
+				&& getModuleSection().getBoolean("ignoreChatMessages")
+				&& !sender.hasPermission(Permission.BYPASS_IGNORE))
+				? account -> !account.hasIgnored(sender)
+				: account -> true;
+	}
 }

@@ -45,8 +45,7 @@ public class FilterManagerTest {
           }
 
           @Override
-          public void sendChannelMessage(ProxyChatContext context, ChannelType channel)
-              throws InvalidContextError {
+          public void sendChannelMessage(ProxyChatContext context) throws InvalidContextError {
             // Nothing
           }
 

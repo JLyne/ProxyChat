@@ -22,6 +22,8 @@
 package uk.co.notnull.ProxyChat.message;
 
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import uk.co.notnull.ProxyChat.account.ProxyChatAccountManager;
 import uk.co.notnull.ProxyChat.api.account.AccountManager;
@@ -55,10 +57,14 @@ public class Context extends ProxyChatContext {
     super(ProxyChatAccountManager.getAccount(sender).get());
   }
 
-  public Context(CommandSource player, String message) {
-    this(player);
+  public Context(CommandSource sender, String message) {
+    this(sender);
 
     setMessage(message);
+
+    if(sender instanceof Player player) {
+      player.getCurrentServer().map(ServerConnection::getServer).ifPresent(this::setServer);
+    }
   }
 
   public Context(CommandSource player, String message, RegisteredServer server) {

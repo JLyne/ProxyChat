@@ -28,6 +28,8 @@ import uk.co.notnull.ProxyChat.account.ProxyChatAccountManager;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
+import uk.co.notnull.ProxyChat.chatlog.ChatLogger;
+import uk.co.notnull.ProxyChat.chatlog.ChatLoggingManager;
 import uk.co.notnull.ProxyChat.emoji.Emoji;
 import uk.co.notnull.ProxyChat.module.EmojiModule;
 import uk.co.notnull.ProxyChat.module.ProxyChatModuleManager;
@@ -40,7 +42,7 @@ import uk.co.notnull.proxydiscord.api.logging.LogVisibility;
 import java.util.Map;
 import java.util.Optional;
 
-public class ProxyDiscordHandler {
+public class ProxyDiscordHandler implements ChatLogger {
 	private final ProxyChat plugin;
 	private final ProxyDiscord proxyDiscord;
 	private final EmojiModule emojiModule = ProxyChatModuleManager.EMOJI_MODULE;
@@ -58,6 +60,8 @@ public class ProxyDiscordHandler {
 				return builder.build();
 			}
 		});
+
+		ChatLoggingManager.addLogger(this);
 
 		plugin.getProxy().getEventManager().register(plugin, this);
 	}
@@ -96,8 +100,10 @@ public class ProxyDiscordHandler {
 		});
 	}
 
-	public void logMessage(ChannelType channel, ProxyChatContext context) {
-		context.require(ProxyChatContext.HAS_MESSAGE, ProxyChatContext.HAS_SENDER, ProxyChatContext.IS_FILTERED);
+	public void log(ProxyChatContext context) {
+		if(!context.hasSender() || !context.hasChannel()) {
+			return;
+		}
 
 		Optional<Player> player = context.getSender().flatMap(
 				sender -> plugin.getProxy().getPlayer(sender.getUniqueId()));
@@ -110,7 +116,8 @@ public class ProxyDiscordHandler {
 				.server(context.getServer().orElse(null));
 
 		String unfiltered = context.getMessage().get();
-		String filtered = context.getFilteredMessage().get();
+		String filtered = context.getFilteredMessage().orElse(unfiltered);
+		ChannelType channel = context.getChannel().orElseThrow();
 
 		if(channel == ChannelType.STAFF) {
 			entry.visibility(LogVisibility.PRIVATE_ONLY)

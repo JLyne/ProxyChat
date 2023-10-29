@@ -21,6 +21,7 @@
 
 package uk.co.notnull.ProxyChat.message;
 
+import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
 import net.kyori.adventure.text.Component;
 
@@ -51,11 +52,39 @@ public enum Format {
     return PlaceHolderUtil.getFullFormatMessageRaw(this, context);
   }
 
-  private Format(final String stringPath) {
+  Format(final String stringPath) {
     this.stringPath = stringPath;
   }
 
   public String getStringPath() {
     return this.stringPath;
+  }
+
+  static Format getFormatForChannel(ChannelType channelType) {
+    switch(channelType) {
+      case GLOBAL -> {
+        return GLOBAL_CHAT;
+      }
+      case LOCAL -> {
+        return LOCAL_CHAT;
+      }
+      case STAFF -> {
+        return STAFF_CHAT;
+      }
+      case JOIN -> {
+        return JOIN_MESSAGE;
+      }
+      case LEAVE -> {
+        return LEAVE_MESSAGE;
+      }
+      case SWITCH -> {
+        return SERVER_SWITCH;
+      }
+      case ALERT -> {
+        return ALERT;
+      }
+    }
+
+    return null;
   }
 }

@@ -21,17 +21,13 @@
 
 package uk.co.notnull.ProxyChat.command;
 
-import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
-import uk.co.notnull.ProxyChat.message.Context;
-import uk.co.notnull.ProxyChat.message.Format;
+import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.message.Messages;
 import uk.co.notnull.ProxyChat.message.MessagesService;
 import uk.co.notnull.ProxyChat.module.AlertModule;
 import uk.co.notnull.ProxyChat.module.ProxyChatModuleManager;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.permission.PermissionManager;
-import net.kyori.adventure.text.Component;
-import uk.co.notnull.ProxyChat.util.PredicateUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,12 +45,8 @@ public class AlertCommand extends BaseCommand {
         MessagesService.sendMessage(
             invocation.source(), Messages.INCORRECT_USAGE.get(invocation.source(), "/alert <message>"));
       } else {
-        ProxyChatContext context = new Context(invocation.source(), String.join(" ", invocation.arguments()));
-        MessagesService.parseMessage(context, false);
-
-        MessagesService.preProcessMessage(context, Format.ALERT)
-                .ifPresent((Component message) ->
-                                   MessagesService.sendToMatchingPlayers(message, PredicateUtil.getGlobalPredicate()));
+        MessagesService.sendChannelMessage(invocation.source(), ChannelType.ALERT,
+                                           String.join(" ", invocation.arguments()));
       }
     }
   }

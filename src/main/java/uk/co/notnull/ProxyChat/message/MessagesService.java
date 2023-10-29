@@ -49,6 +49,7 @@ import uk.co.notnull.ProxyChat.util.PredicateUtil;
 public final class MessagesService {
 	public static void sendPrivateMessage(CommandSource sender, CommandSource target, String message) throws InvalidContextError {
 		ProxyChatContext context = new Context(sender, target, message);
+		context.setChannel(ChannelType.PRIVATE);
 		boolean allowed = parseMessage(context, true);
 
 		if(allowed) {
@@ -100,81 +101,83 @@ public final class MessagesService {
 		if (ProxyChatModuleManager.CHAT_LOGGING_MODULE
 				.getModuleSection()
 				.getBoolean("privateMessages")) {
-			ChatLoggingManager.logMessage("PM to " + targetAccount.getName(), context);
+			ChatLoggingManager.logMessage(context);
 		}
 	}
 
 	public static void sendChannelMessage(CommandSource sender, ChannelType channel, String message) throws InvalidContextError {
 		ProxyChatContext context = new Context(sender, message);
-		boolean allowed = parseMessage(context, true);
+		context.setChannel(channel);
+		boolean allowed = parseMessage(context, channel.isFilterable());
 
 		if(allowed) {
-			sendChannelMessage(context, channel);
+			sendChannelMessage(context);
 		}
 	}
 
-	public static void sendChannelMessage(ProxyChatContext context, ChannelType channel)
-			throws InvalidContextError {
-		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
+	public static void sendChannelMessage(ProxyChatContext context) throws InvalidContextError {
+		// Ensure a channel is set
+		if(!context.hasChannel()) {
+			if (context.hasSender()) {
+				context.setChannel(context.getSender().orElseThrow().getChannelType());
+			} else {
+				context.setChannel(ChannelType.LOCAL);
+			}
+		}
+
+		context.require(ProxyChatContext.HAS_CHANNEL);
+		context.getChannel().orElseThrow().checkRequirements(context);
+
+		//TODO: Better way?
+		if(context.getChannel().get().equals(ChannelType.PRIVATE)) {
+			sendPrivateMessage(context);
+			return;
+		}
+
+		ProxyChatAccount sender = context.getSender().orElseThrow();
+		Predicate<ProxyChatAccount> recipients = PredicateUtil.getGlobalPredicate();
+		ChannelType channel = context.getChannel().orElseThrow();
 
 		switch (channel) {
-			case GLOBAL:
-				sendGlobalMessage(context);
-				break;
-			case LOCAL:
-				sendLocalMessage(context);
-				break;
-			case STAFF:
-				sendStaffMessage(context);
-				break;
-			default:
-				// Ignore
-				break;
+			case LOCAL -> {
+				RegisteredServer localServer = context.getServer().orElse(sender.getServer().orElse(null));
+				Predicate<ProxyChatAccount> finalRecipients = recipients = PredicateUtil.getLocalPredicate(localServer);
+
+				//TODO: Move to module?
+				if (ModuleManager.isModuleActive(ProxyChatModuleManager.SPY_MODULE)) {
+					preProcessMessage(context, Format.LOCAL_SPY, false)
+							.ifPresent((Component message) ->
+											   sendToMatchingPlayers(message, ProxyChatAccount::hasLocalSpyEnabled,
+																	 finalRecipients.negate()));
+				}
+			}
+			case STAFF -> recipients = pp -> pp.hasPermission(Permission.COMMAND_STAFFCHAT_VIEW);
+			case JOIN -> recipients = PredicateUtil.getPermissionPredicate(Permission.MESSAGE_JOIN_VIEW);
+			case LEAVE -> recipients = PredicateUtil.getPermissionPredicate(Permission.MESSAGE_LEAVE_VIEW);
+			case SWITCH -> recipients = PredicateUtil.getPermissionPredicate(Permission.MESSAGE_SWITCH_VIEW);
 		}
+
+		if(channel.isIgnorable()) {
+			recipients = recipients.and(PredicateUtil.getNotIgnoredPredicate(sender));
+		}
+
+		// This condition checks if the player is present and vanished
+		if(channel.isHideVanished() && sender.isVanished()) {
+			recipients = recipients.and(PredicateUtil.getPermissionPredicate(Permission.COMMAND_VANISH_VIEW));
+		}
+
+		Predicate<ProxyChatAccount> finalRecipients = recipients;
+		preProcessMessage(context).ifPresent((Component message) -> sendToMatchingPlayers(message, finalRecipients));
+
+		ChatLoggingManager.logMessage(context);
 	}
 
 	public static void sendGlobalMessage(CommandSource sender, String message) throws InvalidContextError {
 		sendChannelMessage(sender, ChannelType.GLOBAL, message);
 	}
 
-	public static void sendGlobalMessage(ProxyChatContext context) throws InvalidContextError {
-		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
-
-		ProxyChatAccount sender = context.getSender().orElseThrow();
-		Predicate<ProxyChatAccount> global = PredicateUtil.getGlobalPredicate();
-		Predicate<ProxyChatAccount> notIgnored = PredicateUtil.getNotIgnoredPredicate(sender);
-
-		preProcessMessage(context, Format.GLOBAL_CHAT)
-				.ifPresent((Component message) -> sendToMatchingPlayers(message, global, notIgnored));
-
-		ChatLoggingManager.logMessage(ChannelType.GLOBAL, context);
-	}
-
 	public static void sendLocalMessage(CommandSource sender, String message) throws InvalidContextError {
 		sendChannelMessage(sender, ChannelType.LOCAL, message);
-	}
-
-	public static void sendLocalMessage(ProxyChatContext context) throws InvalidContextError {
-		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
-
-		ProxyChatAccount account = context.getSender().orElseThrow();
-		RegisteredServer localServer = context.getServer().orElse(account.getServer().orElse(null));
-
-		Predicate<ProxyChatAccount> isLocal = PredicateUtil.getLocalPredicate(localServer);
-		Predicate<ProxyChatAccount> notIgnored = PredicateUtil.getNotIgnoredPredicate(account);
-
-		preProcessMessage(context, Format.LOCAL_CHAT)
-				.ifPresent((Component finalMessage) ->
-								   sendToMatchingPlayers(finalMessage, isLocal, notIgnored));
-
-		ChatLoggingManager.logMessage(ChannelType.LOCAL, context);
-
-		if (ModuleManager.isModuleActive(ProxyChatModuleManager.SPY_MODULE)) {
-			preProcessMessage(context, Format.LOCAL_SPY, false)
-					.ifPresent((Component message) ->
-									   sendToMatchingPlayers(message, ProxyChatAccount::hasLocalSpyEnabled,
-															 isLocal.negate(), notIgnored));
-		}
 	}
 
 	public static void sendTransparentMessage(ProxyChatContext context) throws InvalidContextError {
@@ -184,8 +187,9 @@ public final class MessagesService {
 		RegisteredServer localServer = context.getServer().orElse(account.getServer().orElse(null));
 		Predicate<ProxyChatAccount> isLocal = PredicateUtil.getLocalPredicate(localServer);
 
-		ChatLoggingManager.logMessage(ChannelType.LOCAL, context);
+		ChatLoggingManager.logMessage(context);
 
+		//TODO: Move to module?
 		if (ModuleManager.isModuleActive(ProxyChatModuleManager.SPY_MODULE)
 				&& !account.hasPermission(Permission.COMMAND_LOCALSPY_EXEMPT)) {
 			preProcessMessage(context, Format.LOCAL_SPY, false)
@@ -198,120 +202,61 @@ public final class MessagesService {
 		sendChannelMessage(sender, ChannelType.STAFF, message);
 	}
 
-	public static void sendStaffMessage(ProxyChatContext context) throws InvalidContextError {
-		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
-
-		preProcessMessage(context, Format.STAFF_CHAT)
-				.ifPresent((Component finalMessage) ->
-								   sendToMatchingPlayers(finalMessage,
-														 pp -> pp.hasPermission(Permission.COMMAND_STAFFCHAT_VIEW)));
-
-		ChatLoggingManager.logMessage(ChannelType.STAFF, context);
-	}
-
 	public static void sendJoinMessage(Player player) throws InvalidContextError {
-		ProxyChatContext context = new Context(player);
-
-		String message = Format.JOIN_MESSAGE.getRaw(context);
-		Predicate<ProxyChatAccount> predicate = PredicateUtil.getPermissionPredicate(Permission.MESSAGE_JOIN_VIEW);
-
-		// This condition checks if the player is present and vanished
-		if (context.getSender().filter(ProxyChatAccount::isVanished).isPresent()) {
-			predicate = predicate.and(PredicateUtil.getPermissionPredicate(Permission.COMMAND_VANISH_VIEW));
-		}
-
-		context.setMessage(message);
-
-		if(MessagesService.parseMessage(context, false)) {
-			sendToMatchingPlayers(context.getParsedMessage().orElseThrow(), predicate);
-		}
-
-		ChatLoggingManager.logMessage("JOIN", context);
+		sendChannelMessage(player, ChannelType.JOIN, null);
 	}
 
 	public static void sendLeaveMessage(Player player) throws InvalidContextError {
-		ProxyChatContext context = new Context(player);
-
-		String message = Format.LEAVE_MESSAGE.getRaw(context);
-		Predicate<ProxyChatAccount> predicate = PredicateUtil.getPermissionPredicate(Permission.MESSAGE_LEAVE_VIEW);
-
-		// This condition checks if the player is present and vanished
-		if (context.getSender().filter(ProxyChatAccount::isVanished).isPresent()) {
-			predicate = predicate.and(PredicateUtil.getPermissionPredicate(Permission.COMMAND_VANISH_VIEW));
-		}
-
-		context.setMessage(message);
-
-		if(MessagesService.parseMessage(context, false)) {
-			sendToMatchingPlayers(context.getParsedMessage().orElseThrow(), predicate);
-		}
-
-		ChatLoggingManager.logMessage("LEAVE", context);
+		sendChannelMessage(player, ChannelType.LEAVE, null);
 	}
 
 	public static void sendSwitchMessage(Player player, RegisteredServer server) throws InvalidContextError {
-		ProxyChatContext context = new Context(player);
-		context.setServer(server);
-
-		String message = Format.SERVER_SWITCH.getRaw(context);
-		Predicate<ProxyChatAccount> predicate = PredicateUtil.getPermissionPredicate(Permission.MESSAGE_SWITCH_VIEW);
-
-		// This condition checks if the player is present and vanished
-		if (context.getSender().filter(ProxyChatAccount::isVanished).isPresent()) {
-			predicate = predicate.and(PredicateUtil.getPermissionPredicate(Permission.COMMAND_VANISH_VIEW));
-		}
-
-		context.setMessage(message);
-
-		if(MessagesService.parseMessage(context, false)) {
-			sendToMatchingPlayers(context.getParsedMessage().orElseThrow(), predicate);
-		}
-
-		ChatLoggingManager.logMessage("SWITCH", context);
+		sendChannelMessage(player, ChannelType.SWITCH, null); //FIXME: Server?
 	}
 
-	public static Optional<Component> preProcessMessage(ProxyChatContext context, Format format) throws InvalidContextError {
-		return preProcessMessage(context, format, true);
+	public static Optional<Component> preProcessMessage(ProxyChatContext context) throws InvalidContextError {
+		context.require(ProxyChatContext.HAS_CHANNEL);
+		return preProcessMessage(context, Format.getFormatForChannel(context.getChannel().orElseThrow()), true);
 	}
 
-	public static Optional<Component> preProcessMessage(
-			ProxyChatContext context,
-			Format format,
-			boolean runFilters) {
+	public static Optional<Component> preProcessMessage(ProxyChatContext context, Format format, boolean runFilters) {
 		return preProcessMessage(context, format, runFilters, false);
 	}
 
-	public static Optional<Component> preProcessMessage(
-			ProxyChatContext context,
-			Format format,
-			boolean runFilters,
-			boolean ignoreBlockMessageExceptions)
-			throws InvalidContextError {
-		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
+	public static Optional<Component> preProcessMessage(ProxyChatContext context, Format format,
+			boolean runFilters, boolean ignoreBlockMessageExceptions) throws InvalidContextError {
+		if(context.hasMessage()) {
+			context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.IS_PARSED);
 
-		ProxyChatAccount account = context.getSender().orElseThrow();
-		CommandSource player = ProxyChatAccountManager.getCommandSource(account).orElseThrow();
-		Component message = ComponentUtil.filterFormatting(context.getParsedMessage().orElseThrow(), account);
+			ProxyChatAccount account = context.getSender().orElseThrow();
+			CommandSource player = ProxyChatAccountManager.getCommandSource(account).orElseThrow();
 
-		if (runFilters) {
-			try {
-				message = FilterManager.applyFilters(account, message);
-			} catch (BlockMessageException e) {
-				if (!ignoreBlockMessageExceptions) {
-					MessagesService.sendMessage(player, e.getComponent());
+			Component message = ComponentUtil.filterFormatting(context.getParsedMessage().orElseThrow(), account);
 
-					return Optional.empty();
+			if (runFilters) {
+				try {
+					message = FilterManager.applyFilters(account, message);
+				} catch (BlockMessageException e) {
+					if (!ignoreBlockMessageExceptions) {
+						MessagesService.sendMessage(player, e.getComponent());
+
+						return Optional.empty();
+					}
 				}
 			}
-		}
 
-		context.setParsedMessage(message);
+			context.setParsedMessage(message);
+		}
 
 		return Optional.of(PlaceHolderUtil.getFullFormatMessage(format, context));
 	}
 
 	public static boolean parseMessage(ProxyChatContext context, boolean runFilters) {
-		context.require(ProxyChatContext.HAS_MESSAGE, ProxyChatContext.HAS_SENDER);
+		if(!context.hasMessage()) {
+			return true;
+		}
+
+		context.require(ProxyChatContext.HAS_SENDER);
 
 		ProxyChatAccount playerAccount = context.getSender().orElseThrow();
 		CommandSource player = ProxyChatAccountManager.getCommandSource(playerAccount).orElseThrow();

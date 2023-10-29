@@ -21,14 +21,67 @@
 
 package uk.co.notnull.ProxyChat.api.enums;
 
+import uk.co.notnull.ProxyChat.api.placeholder.InvalidContextError;
+import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
+
+import java.util.function.Predicate;
+
 /**
  * An Enum that contains all channel types.<br>
  * This is used to differentiate in which channel a person is talking, and the message needs to be
  * replicated.
  */
 public enum ChannelType {
-  GLOBAL,
-  LOCAL,
-  STAFF,
-  MULTICAST
+  GLOBAL(true, true, false),
+  LOCAL(true, true, false, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED, ProxyChatContext.HAS_NO_TARGET, ProxyChatContext.HAS_SERVER),
+  STAFF(false, true, false),
+  PRIVATE(true, true, false, ProxyChatContext.HAS_TARGET, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED),
+  JOIN(false, false, true, ProxyChatContext.HAS_NO_MESSAGE, ProxyChatContext.HAS_NO_TARGET),
+  LEAVE(false, false, true, ProxyChatContext.HAS_NO_MESSAGE, ProxyChatContext.HAS_NO_TARGET),
+  SWITCH(false, false, true, ProxyChatContext.HAS_NO_MESSAGE, ProxyChatContext.HAS_SERVER, ProxyChatContext.HAS_NO_TARGET),
+  ALERT(false, true, false);
+
+  private final boolean ignorable;
+  private final boolean filterable;
+  private final boolean hideVanished;
+  private Predicate<ProxyChatContext>[] requirements = new Predicate[]{ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED, ProxyChatContext.HAS_NO_TARGET};
+
+  ChannelType(boolean ignorable, boolean filterable, boolean hideVanished) {
+    this.ignorable = ignorable;
+    this.filterable = filterable;
+    this.hideVanished = hideVanished;
+  }
+
+  ChannelType(boolean ignorable, boolean filterable, boolean hideVanished, Predicate<ProxyChatContext> ...requirements) {
+    this.ignorable = ignorable;
+    this.filterable = filterable;
+    this.hideVanished = hideVanished;
+    this.requirements = requirements;
+  }
+
+  public boolean isIgnorable() {
+    return ignorable;
+  }
+
+  public boolean isFilterable() {
+    return filterable;
+  }
+
+  public boolean isHideVanished() {
+    return hideVanished;
+  }
+
+  public Predicate<ProxyChatContext>[] getRequirements() {
+    return requirements;
+  }
+
+  public void checkRequirements(ProxyChatContext context) throws InvalidContextError {
+    context.require(ProxyChatContext.HAS_CHANNEL, ProxyChatContext.HAS_SENDER);
+    context.require(requirements);
+  }
+
+  @Override
+  public String toString() {
+    return "ChannelType";
+  }
 }

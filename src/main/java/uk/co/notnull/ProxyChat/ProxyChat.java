@@ -234,9 +234,8 @@ public class ProxyChat implements ProxyChatApi {
   }
 
   @Override
-  public void sendChannelMessage(ProxyChatContext context, ChannelType channel)
-      throws InvalidContextError {
-    MessagesService.sendChannelMessage(context, channel);
+  public void sendChannelMessage(ProxyChatContext context) throws InvalidContextError {
+    MessagesService.sendChannelMessage(context);
   }
 
   public Logger getLogger() {

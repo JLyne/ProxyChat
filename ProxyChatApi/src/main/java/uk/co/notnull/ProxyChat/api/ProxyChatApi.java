@@ -98,22 +98,5 @@ public interface ProxyChatApi {
    * @throws InvalidContextError Throws and {@link InvalidContextError} if either a sender or
    *     message is missing in this context.
    */
-  void sendChannelMessage(ProxyChatContext context, ChannelType channel)
-      throws InvalidContextError;
-
-  /**
-   * The same as {@link ProxyChatApi#sendChannelMessage(ProxyChatContext, ChannelType)}. But uses
-   * the channel the sender is currently in.
-   *
-   * @param context Containing sender and message.
-   * @throws InvalidContextError Throws and {@link InvalidContextError} if either a sender or
-   *     message is missing in this context.
-   */
-  default void sendChannelMessage(ProxyChatContext context) throws InvalidContextError {
-    if (context.hasSender()) {
-      sendChannelMessage(context, context.getSender().orElseThrow().getChannelType());
-    } else {
-      sendChannelMessage(context, ChannelType.LOCAL);
-    }
-  }
+  void sendChannelMessage(ProxyChatContext context) throws InvalidContextError;
 }

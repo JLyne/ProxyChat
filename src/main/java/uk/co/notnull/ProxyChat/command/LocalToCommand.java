@@ -22,6 +22,7 @@
 package uk.co.notnull.ProxyChat.command;
 
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
 import uk.co.notnull.ProxyChat.message.Context;
 import uk.co.notnull.ProxyChat.message.Messages;
@@ -61,9 +62,10 @@ public class LocalToCommand extends BaseCommand {
     String finalMessage = Arrays.stream(invocation.arguments(), 1, invocation.arguments().length)
             .collect(Collectors.joining(" "));
     ProxyChatContext context = new Context(invocation.source(), finalMessage, server.get());
+    context.setChannel(ChannelType.LOCAL);
     MessagesService.parseMessage(context, true);
 
-    MessagesService.sendLocalMessage(context);
+    MessagesService.sendChannelMessage(context);
   }
 
   @Override

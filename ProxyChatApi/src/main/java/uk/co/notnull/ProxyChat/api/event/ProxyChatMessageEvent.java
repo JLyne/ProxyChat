@@ -22,6 +22,7 @@
 package uk.co.notnull.ProxyChat.api.event;
 
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
+import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
 
 public class ProxyChatMessageEvent {
@@ -35,7 +36,7 @@ public class ProxyChatMessageEvent {
 		return context;
 	}
 
-	public String getChannel() {
+	public ChannelType getChannel() {
 		return context.getChannel().orElse(null);
 	}
 

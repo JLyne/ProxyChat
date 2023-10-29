@@ -21,9 +21,6 @@
 
 package uk.co.notnull.ProxyChat.chatlog;
 
-import uk.co.notnull.ProxyChat.ProxyChat;
-import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
-import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
 import uk.co.notnull.ProxyChat.api.utils.RegexUtil;
 import java.util.LinkedList;
@@ -44,40 +41,14 @@ public final class ChatLoggingManager {
     loggers.remove(logger);
   }
 
-  public static void logMessage(String channel, ProxyChatAccount sender, String message) {
-    ProxyChatContext context = new ProxyChatContext(sender, message);
-    context.setChannel(channel);
-
-    logMessage(context);
-  }
-
-  public static void logMessage(ChannelType channel, ProxyChatContext context) {
-    logMessage(channel.name(), context);
-
-    if(ProxyChat.getInstance().getProxyDiscordHandler() != null) {
-      ProxyChat.getInstance().getProxyDiscordHandler().logMessage(channel, context);
-    }
-  }
-
-  public static void logMessage(String channel, ProxyChatContext context) {
-    context.setChannel(channel);
-
-    logMessage(context);
-  }
-
   public static void logMessage(ProxyChatContext context) {
-    context.require(
-            ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.HAS_CHANNEL);
+    context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_CHANNEL);
+
+    if(!context.hasMessage()) {
+      return;
+    }
 
     getStream().forEach(logger -> logger.log(context));
-  }
-
-  public static void logCommand(ProxyChatAccount account, String command) {
-    for (Pattern pattern : filteredCommands) {
-      if (pattern.matcher(command).find()) return;
-    }
-
-//    logMessage("COMMAND", account, command);
   }
 
   public static void loadFilteredCommands(List<String> commands) {

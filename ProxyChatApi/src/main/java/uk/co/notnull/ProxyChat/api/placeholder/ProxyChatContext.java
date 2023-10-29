@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
+import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 
 /**
  * This class represents a context for a message or other chat related action.<br>
@@ -122,7 +123,7 @@ public class ProxyChatContext {
   private String message;
   private String filteredMessage;
   private Component parsedMessage;
-  private String channel;
+  private ChannelType channel;
   private RegisteredServer server;
   private boolean parsed = false;
   private boolean filtered = false;
@@ -245,7 +246,7 @@ public class ProxyChatContext {
     return Optional.ofNullable(parsedMessage);
   }
 
-  public Optional<String> getChannel() {
+  public Optional<ChannelType> getChannel() {
     return Optional.ofNullable(channel);
   }
 
@@ -303,7 +304,7 @@ public class ProxyChatContext {
     this.message = message;
   }
 
-  public void setChannel(final String channel) {
+  public void setChannel(final ChannelType channel) {
     this.channel = channel;
   }
 

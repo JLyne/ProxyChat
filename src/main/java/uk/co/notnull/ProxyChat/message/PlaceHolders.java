@@ -232,7 +232,7 @@ public final class PlaceHolders {
 
     PlaceHolderManager.registerPlaceholder(
         new PlaceHolder(
-                "channel", context -> context.getChannel().get(), ProxyChatContext.HAS_CHANNEL));
+                "channel", context -> context.getChannel().get().name(), ProxyChatContext.HAS_CHANNEL));
     PlaceHolderManager.registerPlaceholder(
         new PlaceHolder(
                 "message",

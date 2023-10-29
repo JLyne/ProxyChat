@@ -24,7 +24,6 @@ package uk.co.notnull.ProxyChat.message;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
-import net.kyori.adventure.identity.Identified;
 import uk.co.notnull.ProxyChat.account.ProxyChatAccountManager;
 import uk.co.notnull.ProxyChat.api.account.AccountManager;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
@@ -83,7 +82,7 @@ public final class MessagesService {
 			MessagesService.sendMessage(sender, messageSender.get());
 
 			preProcessMessage(context, Format.MESSAGE_TARGET, filterPrivateMessages, true)
-					.ifPresent((Component message) -> MessagesService.sendMessage(target, senderAccount, message));
+					.ifPresent((Component message) -> MessagesService.sendMessage(target, message));
 
 			if (ModuleManager.isModuleActive(ProxyChatModuleManager.SPY_MODULE)
 					&& !senderAccount.hasPermission(Permission.COMMAND_SOCIALSPY_EXEMPT)) {
@@ -92,7 +91,6 @@ public final class MessagesService {
 						.ifPresent((Component socialSpyMessage) ->
 										   sendToMatchingPlayers(
 												   socialSpyMessage,
-												   senderAccount,
 												   acc -> (!acc.getUniqueId().equals(senderAccount.getUniqueId()))
 														   && (!acc.getUniqueId().equals(targetAccount.getUniqueId()))
 														   && acc.hasSocialSpyEnabled()));
@@ -152,7 +150,7 @@ public final class MessagesService {
 		Predicate<ProxyChatAccount> notIgnored = PredicateUtil.getNotIgnoredPredicate(sender);
 
 		preProcessMessage(context, Format.GLOBAL_CHAT)
-				.ifPresent((Component message) -> sendToMatchingPlayers(message, sender, global, notIgnored));
+				.ifPresent((Component message) -> sendToMatchingPlayers(message, global, notIgnored));
 
 		ChatLoggingManager.logMessage(ChannelType.GLOBAL, context);
 	}
@@ -177,14 +175,14 @@ public final class MessagesService {
 
 		preProcessMessage(context, Format.LOCAL_CHAT)
 				.ifPresent((Component finalMessage) ->
-								   sendToMatchingPlayers(finalMessage, context.getSender().get(), isLocal, notIgnored));
+								   sendToMatchingPlayers(finalMessage, isLocal, notIgnored));
 
 		ChatLoggingManager.logMessage(ChannelType.LOCAL, context);
 
 		if (ModuleManager.isModuleActive(ProxyChatModuleManager.SPY_MODULE)) {
 			preProcessMessage(context, Format.LOCAL_SPY, false)
 					.ifPresent((Component message) ->
-									   sendToMatchingPlayers(message, account, ProxyChatAccount::hasLocalSpyEnabled,
+									   sendToMatchingPlayers(message, ProxyChatAccount::hasLocalSpyEnabled,
 															 isLocal.negate(), notIgnored));
 		}
 	}
@@ -202,8 +200,7 @@ public final class MessagesService {
 				&& !account.hasPermission(Permission.COMMAND_LOCALSPY_EXEMPT)) {
 			preProcessMessage(context, Format.LOCAL_SPY, false)
 					.ifPresent((Component message) ->
-									   sendToMatchingPlayers(message, account,
-															 ProxyChatAccount::hasLocalSpyEnabled, isLocal.negate()));
+									   sendToMatchingPlayers(message, ProxyChatAccount::hasLocalSpyEnabled, isLocal.negate()));
 		}
 	}
 
@@ -221,7 +218,7 @@ public final class MessagesService {
 
 		preProcessMessage(context, Format.STAFF_CHAT)
 				.ifPresent((Component finalMessage) ->
-								   sendToMatchingPlayers(finalMessage, context.getSender().orElseThrow(),
+								   sendToMatchingPlayers(finalMessage,
 														 pp -> pp.hasPermission(Permission.COMMAND_STAFFCHAT_VIEW)));
 
 		ChatLoggingManager.logMessage(ChannelType.STAFF, context);
@@ -368,29 +365,7 @@ public final class MessagesService {
 																											  finalMessage)));
 	}
 
-	@SafeVarargs
-	@SuppressWarnings("varargs")
-	public static void sendToMatchingPlayers(Component finalMessage, Identified sender, Predicate<ProxyChatAccount>... playerFilters) {
-		Predicate<ProxyChatAccount> playerFiler =
-				Arrays.stream(playerFilters).reduce(Predicate::and).orElse(acc -> true);
-
-		AccountManager.getPlayerAccounts().stream()
-				.filter(playerFiler)
-				.forEach(account ->
-								 ProxyChatAccountManager.getCommandSource(account).ifPresent(commandSource ->
-																									  MessagesService.sendMessage(
-																											  commandSource,
-																											  sender,
-																											  finalMessage)));
-	}
-
 	public static void sendMessage(CommandSource recipient, Component message) {
-		if ((message == null)) return;
-
-		recipient.sendMessage(message);
-	}
-
-	public static void sendMessage(CommandSource recipient, Identified sender, Component message) {
 		if ((message == null)) return;
 
 		recipient.sendMessage(message);

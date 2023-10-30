@@ -84,8 +84,8 @@ public class ClearChatCommand extends BaseCommand {
 
         clearLocalChat(server.get(), lines);
 
-        MessagesService.sendToMatchingPlayers(
-                Messages.CLEARED_LOCAL.get(invocation.source()), PredicateUtil.getLocalPredicate(server.get()));
+        MessagesService.sendToMatchingPlayers(Messages.CLEARED_LOCAL.get(invocation.source()),
+                                              PredicateUtil.getInclusiveMulticastPredicate(server.get()));
       } else if (invocation.arguments()[0].equalsIgnoreCase("global")) {
         clearGlobalChat(lines);
 
@@ -123,7 +123,7 @@ public class ClearChatCommand extends BaseCommand {
   }
 
   public static void clearLocalChat(RegisteredServer server, int emptyLines) {
-    clearChat(emptyLines, PredicateUtil.getLocalPredicate(server));
+    clearChat(emptyLines, PredicateUtil.getInclusiveMulticastPredicate(server));
   }
 
   private static void clearChat(int emptyLines, Predicate<ProxyChatAccount> predicate) {

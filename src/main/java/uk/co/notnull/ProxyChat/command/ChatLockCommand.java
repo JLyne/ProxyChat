@@ -107,7 +107,7 @@ public class ChatLockCommand extends BaseCommand {
         }
 
         MessagesService.sendToMatchingPlayers(
-            Messages.ENABLE_CHATLOCK.get(player), PredicateUtil.getLocalPredicate(server.get()));
+                Messages.ENABLE_CHATLOCK.get(player), PredicateUtil.getInclusiveMulticastPredicate(server.get()));
       }
     } else {
       MessagesService.sendMessage(invocation.source(), Messages.INCORRECT_USAGE.get(player, USAGE));

@@ -33,6 +33,7 @@ public enum Format {
   JOIN_MESSAGE("joinMessage"),
   LEAVE_MESSAGE("leaveMessage"),
   LOCAL_CHAT("localChat"),
+  MULTICAST_CHAT("multicastChat"),
   LOCAL_SPY("localSpy"),
   MESSAGE_SENDER("messageSender"),
   MESSAGE_TARGET("messageTarget"),
@@ -67,6 +68,9 @@ public enum Format {
       }
       case LOCAL -> {
         return LOCAL_CHAT;
+      }
+      case MULTICAST -> {
+        return MULTICAST_CHAT;
       }
       case STAFF -> {
         return STAFF_CHAT;

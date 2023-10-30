@@ -343,6 +343,8 @@ public class Configuration {
                                    ComponentUtil.miniMessage.serialize(
                                            ComponentUtil.legacySerializer.deserialize(
                                                    config.getString("PrefixSuffixSettings.defaultSuffix")))));
+      case "12.1":
+        config = config.withValue("Formats.multicastChat", config.getValue("Formats.localChat"));
 
       default:
         // Unknown Version or old version
@@ -351,7 +353,7 @@ public class Configuration {
             config.withValue(
                 "Version", ConfigValueFactory.fromAnyRef(ProxyChatApi.CONFIG_VERSION));
 
-      case "12.1":
+      case "12.2":
         // Up to date
         // -> No action needed
     }

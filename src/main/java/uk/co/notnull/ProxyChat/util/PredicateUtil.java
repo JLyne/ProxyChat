@@ -54,11 +54,11 @@ public class PredicateUtil {
 		return account -> account.hasPermission(permission);
 	}
 
-	public static Predicate<ProxyChatAccount> getServerPredicate(List<RegisteredServer> servers) {
-		return account -> servers.contains(account.getServer().orElse(null));
+	public static Predicate<ProxyChatAccount> getServerPredicate(RegisteredServer server) {
+		return account -> server.equals(account.getServer().orElse(null));
 	}
 
-	public static Predicate<ProxyChatAccount> getLocalPredicate() {
+	public static Predicate<ProxyChatAccount> getLocalChatEnabledPredicate() {
 		final Config serverList =
 				ProxyChatModuleManager.LOCAL_CHAT_MODULE.getModuleSection().getConfig("serverList");
 		final Config passThruServerList =
@@ -71,25 +71,34 @@ public class PredicateUtil {
 				.reduce(Predicate::or).orElse(account -> true);
 	}
 
-	public static Predicate<ProxyChatAccount> getLocalPredicate(RegisteredServer server) {
+	public static Predicate<ProxyChatAccount> getMulticastPredicate(RegisteredServer source) {
 		List<List<String>> multiCastServerGroups = ProxyChatModuleManager.MULTICAST_CHAT_MODULE.getMultiCastServerGroups();
 
 		if (multiCastServerGroups == null) {
-			return account -> server.equals(account.getServer().orElse(null));
+			return account -> false;
 		} else {
 			return account -> {
-				final RegisteredServer accountServer = account.getServer().orElse(null);
-				final String accountServerName = account.getServerName();
+				final RegisteredServer server = account.getServer().orElse(null);
+
+				if(server == null || server.equals(source)) {
+					return false;
+				}
+
+				final String accountServerName = server.getServerInfo().getName();
 
 				for (List<String> group : multiCastServerGroups) {
 					if (group.contains(accountServerName)) {
-						return group.contains(server.getServerInfo().getName());
+						return group.contains(source.getServerInfo().getName());
 					}
 				}
 
-				return server.equals(accountServer);
+				return false;
 			};
 		}
+	}
+
+	public static Predicate<ProxyChatAccount> getInclusiveMulticastPredicate(RegisteredServer server) {
+		return getServerPredicate(server).or(getMulticastPredicate(server));
 	}
 
 	private static Stream<Predicate<ProxyChatAccount>> serverListToPredicate(Config section) {

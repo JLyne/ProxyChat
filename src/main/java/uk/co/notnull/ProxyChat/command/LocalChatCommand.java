@@ -56,7 +56,7 @@ public class LocalChatCommand extends BaseCommand {
 
     ProxyChatAccount account = ProxyChatAccountManager.getAccount(invocation.source()).orElseThrow();
 
-    if (!PredicateUtil.getLocalPredicate().test(account)
+    if (!PredicateUtil.getLocalChatEnabledPredicate().test(account)
         && (account.getAccountType() == AccountType.PLAYER)) {
       MessagesService.sendMessage(invocation.source(), Messages.NOT_IN_LOCAL_SERVER.get());
       return;

@@ -108,7 +108,7 @@ public final class MessagesService {
 	public static void sendChannelMessage(CommandSource sender, ChannelType channel, String message) throws InvalidContextError {
 		ProxyChatContext context = new Context(sender, message);
 		context.setChannel(channel);
-		boolean allowed = parseMessage(context, channel.isFilterable());
+		boolean allowed = parseMessage(context, true);
 
 		if(allowed) {
 			sendChannelMessage(context);
@@ -140,17 +140,18 @@ public final class MessagesService {
 
 		switch (channel) {
 			case LOCAL -> {
-				RegisteredServer localServer = context.getServer().orElse(sender.getServer().orElse(null));
-				Predicate<ProxyChatAccount> finalRecipients = recipients = PredicateUtil.getLocalPredicate(localServer);
+				RegisteredServer server = context.getServer().orElseThrow();
+				recipients = PredicateUtil.getServerPredicate(server);
+				Predicate<ProxyChatAccount> spyRecipients = PredicateUtil.getInclusiveMulticastPredicate(server).negate();
 
 				//TODO: Move to module?
 				if (ModuleManager.isModuleActive(ProxyChatModuleManager.SPY_MODULE)) {
 					preProcessMessage(context, Format.LOCAL_SPY, false)
-							.ifPresent((Component message) ->
-											   sendToMatchingPlayers(message, ProxyChatAccount::hasLocalSpyEnabled,
-																	 finalRecipients.negate()));
+							.ifPresent((Component message) -> sendToMatchingPlayers(
+									message, ProxyChatAccount::hasLocalSpyEnabled, spyRecipients));
 				}
 			}
+			case MULTICAST -> recipients = PredicateUtil.getMulticastPredicate(context.getServer().orElseThrow());
 			case STAFF -> recipients = pp -> pp.hasPermission(Permission.COMMAND_STAFFCHAT_VIEW);
 			case JOIN -> recipients = PredicateUtil.getPermissionPredicate(Permission.MESSAGE_JOIN_VIEW);
 			case LEAVE -> recipients = PredicateUtil.getPermissionPredicate(Permission.MESSAGE_LEAVE_VIEW);
@@ -162,14 +163,21 @@ public final class MessagesService {
 		}
 
 		// This condition checks if the player is present and vanished
-		if(channel.isHideVanished() && sender.isVanished()) {
+		if(channel.isRespectVanish() && sender.isVanished()) {
 			recipients = recipients.and(PredicateUtil.getPermissionPredicate(Permission.COMMAND_VANISH_VIEW));
 		}
 
 		Predicate<ProxyChatAccount> finalRecipients = recipients;
 		preProcessMessage(context).ifPresent((Component message) -> sendToMatchingPlayers(message, finalRecipients));
 
-		ChatLoggingManager.logMessage(context);
+		if(channel.isLoggable()) {
+			ChatLoggingManager.logMessage(context);
+		}
+
+		if(channel.equals(ChannelType.LOCAL)) {
+			context.setChannel(ChannelType.MULTICAST);
+			sendChannelMessage(context);
+		}
 	}
 
 	public static void sendGlobalMessage(CommandSource sender, String message) throws InvalidContextError {
@@ -185,7 +193,7 @@ public final class MessagesService {
 
 		ProxyChatAccount account = context.getSender().orElseThrow();
 		RegisteredServer localServer = context.getServer().orElse(account.getServer().orElse(null));
-		Predicate<ProxyChatAccount> isLocal = PredicateUtil.getLocalPredicate(localServer);
+		Predicate<ProxyChatAccount> isLocal = PredicateUtil.getServerPredicate(localServer);
 
 		ChatLoggingManager.logMessage(context);
 

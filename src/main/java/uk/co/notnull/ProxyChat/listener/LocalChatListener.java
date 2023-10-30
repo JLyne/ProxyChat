@@ -65,7 +65,7 @@ public class LocalChatListener {
     if (ChatUtils.isCommand(message)) return;
 
     if (account.getChannelType() == ChannelType.LOCAL) {
-      if (!PredicateUtil.getLocalPredicate().test(account)) {
+      if (!PredicateUtil.getLocalChatEnabledPredicate().test(account)) {
         MessagesService.sendMessage(sender, Messages.NOT_IN_LOCAL_SERVER.get());
         e.setResult(PlayerChatEvent.ChatResult.denied());
 

@@ -34,6 +34,7 @@ import java.util.function.Predicate;
 public enum ChannelType {
   GLOBAL(true, true, false),
   LOCAL(true, true, false, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED, ProxyChatContext.HAS_NO_TARGET, ProxyChatContext.HAS_SERVER),
+  MULTICAST(true, false, false, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED, ProxyChatContext.HAS_NO_TARGET, ProxyChatContext.HAS_SERVER),
   STAFF(false, true, false),
   PRIVATE(true, true, false, ProxyChatContext.HAS_TARGET, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED),
   JOIN(false, false, true, ProxyChatContext.HAS_NO_MESSAGE, ProxyChatContext.HAS_NO_TARGET),
@@ -42,20 +43,20 @@ public enum ChannelType {
   ALERT(false, true, false);
 
   private final boolean ignorable;
-  private final boolean filterable;
-  private final boolean hideVanished;
+  private final boolean loggable;
+  private final boolean respectVanish;
   private Predicate<ProxyChatContext>[] requirements = new Predicate[]{ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED, ProxyChatContext.HAS_NO_TARGET};
 
-  ChannelType(boolean ignorable, boolean filterable, boolean hideVanished) {
+  ChannelType(boolean ignorable, boolean loggable, boolean respectVanish) {
     this.ignorable = ignorable;
-    this.filterable = filterable;
-    this.hideVanished = hideVanished;
+    this.loggable = loggable;
+    this.respectVanish = respectVanish;
   }
 
-  ChannelType(boolean ignorable, boolean filterable, boolean hideVanished, Predicate<ProxyChatContext> ...requirements) {
+  ChannelType(boolean ignorable, boolean loggable, boolean respectVanish, Predicate<ProxyChatContext> ...requirements) {
     this.ignorable = ignorable;
-    this.filterable = filterable;
-    this.hideVanished = hideVanished;
+    this.loggable = loggable;
+    this.respectVanish = respectVanish;
     this.requirements = requirements;
   }
 
@@ -63,12 +64,12 @@ public enum ChannelType {
     return ignorable;
   }
 
-  public boolean isFilterable() {
-    return filterable;
+  public boolean isLoggable() {
+    return loggable;
   }
 
-  public boolean isHideVanished() {
-    return hideVanished;
+  public boolean isRespectVanish() {
+    return respectVanish;
   }
 
   public Predicate<ProxyChatContext>[] getRequirements() {

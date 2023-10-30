@@ -122,6 +122,8 @@ public class ProxyDiscordHandler implements ChatLogger {
 		if(channel == ChannelType.STAFF) {
 			entry.visibility(LogVisibility.PRIVATE_ONLY)
 					.replacements(Map.of("message", "[STAFF] " + filtered));
+		} else if(channel == ChannelType.ALERT) {
+			entry.replacements(Map.of("message", "[ALERT] " + filtered));
 		} else {
 			if(channel == ChannelType.GLOBAL) {
 				//TODO: All servers

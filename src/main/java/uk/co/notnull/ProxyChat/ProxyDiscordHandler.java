@@ -119,6 +119,10 @@ public class ProxyDiscordHandler implements ChatLogger {
 		String filtered = context.getFilteredMessage().orElse(unfiltered);
 		ChannelType channel = context.getChannel().orElseThrow();
 
+		if(channel == ChannelType.PRIVATE) {
+			return; //Don't log private messages for now
+		}
+
 		if(channel == ChannelType.STAFF) {
 			entry.visibility(LogVisibility.PRIVATE_ONLY)
 					.replacements(Map.of("message", "[STAFF] " + filtered));

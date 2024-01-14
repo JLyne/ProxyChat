@@ -7,6 +7,10 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProxyChatApi/ProxyChat.ProxyChatApi.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ProxyChatApi/ProxyChat.ProxyChatApi.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProxyChat.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ProxyChat.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProxyChat.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ProxyChat.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProxyChatApi/uk.co.notnull.ProxyChat.ProxyChatApi.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ProxyChatApi/uk.co.notnull.ProxyChat.ProxyChatApi.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ProxyChatApi/uk.co.notnull.ProxyChat.ProxyChatApi.test.iml" filepath="$PROJECT_DIR$/.idea/modules/ProxyChatApi/uk.co.notnull.ProxyChat.ProxyChatApi.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/uk.co.notnull.ProxyChat.main.iml" filepath="$PROJECT_DIR$/.idea/modules/uk.co.notnull.ProxyChat.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/uk.co.notnull.ProxyChat.test.iml" filepath="$PROJECT_DIR$/.idea/modules/uk.co.notnull.ProxyChat.test.iml" />
     </modules>
   </component>
 </project>

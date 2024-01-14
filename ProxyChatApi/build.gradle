@@ -26,17 +26,17 @@ plugins {
 }
 
 dependencies {
-    compileOnly 'com.velocitypowered:velocity-api:3.1.2-SNAPSHOT'
+    compileOnly 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
     compileOnly 'net.luckperms:api:5.4'
 
-    annotationProcessor 'com.velocitypowered:velocity-api:3.1.2-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'ch.vorburger.mariaDB4j:mariaDB4j:2.5.3'
-    testImplementation 'commons-io:commons-io:2.11.0'
-    testImplementation 'com.velocitypowered:velocity-api:3.1.2-SNAPSHOT'
+    testImplementation 'ch.vorburger.mariaDB4j:mariaDB4j:2.6.0'
+    testImplementation 'commons-io:commons-io:2.15.1'
+    testImplementation 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
 
-    testRuntimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.3'
+    testRuntimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.11'
 }
 
 publishing {

@@ -22,10 +22,10 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'java'
     id 'maven-publish'
-    id 'io.freefair.lombok' version '6.1.0-m3'
+    id 'io.freefair.lombok' version '8.4'
 }
 
 rootProject.ext.mavenUserName=""
@@ -42,6 +42,10 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        // Adventure-bom snapshots required for velocity 3.3.0
+        maven {
+            url "https://s01.oss.sonatype.org/content/repositories/snapshots"
+        }
         maven { url "https://papermc.io/repo/repository/maven-public/" }
         maven { url 'https://repo.not-null.co.uk/releases/' }
         maven { url 'https://repo.not-null.co.uk/snapshots/' }
@@ -65,30 +69,30 @@ allprojects {
 dependencies {
     implementation project(':ProxyChatApi')
     implementation name: 'MessagesTranslator-1.4.3.41-DEV'
-    implementation 'com.typesafe:config:1.4.2'
+    implementation 'com.typesafe:config:1.4.3'
 
-    compileOnly 'com.velocitypowered:velocity-api:3.2.0-SNAPSHOT'
+    compileOnly 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
     compileOnly 'net.luckperms:api:5.4'
-    compileOnly 'uk.co.notnull:PlatformDetection-velocity:2.1'
-    compileOnly 'uk.co.notnull:ProxyDiscordAPI:1.1-SNAPSHOT'
-    compileOnly 'uk.co.notnull:SuperVanishBridge-api:1.0-SNAPSHOT'
+    compileOnly 'uk.co.notnull:PlatformDetection-velocity:2.2'
+    compileOnly 'uk.co.notnull:ProxyDiscordAPI:1.2'
+    compileOnly 'uk.co.notnull:SuperVanishBridge-api:1.1'
 
-    annotationProcessor 'com.velocitypowered:velocity-api:3.2.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
 
     testImplementation project(':ProxyChatApi')
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'ch.vorburger.mariaDB4j:mariaDB4j:2.5.3'
-    testImplementation 'commons-io:commons-io:2.11.0'
+    testImplementation 'ch.vorburger.mariaDB4j:mariaDB4j:2.6.0'
+    testImplementation 'commons-io:commons-io:2.15.1'
     testImplementation name: 'MessagesTranslator-1.4.3.41-DEV'
-    testImplementation 'com.velocitypowered:velocity-api:3.1.2-SNAPSHOT'
+    testImplementation 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
     testImplementation "org.mockito:mockito-core:3.6.0"
     testImplementation "org.powermock:powermock-api-mockito2:2.0.9"
     testImplementation "org.powermock:powermock-module-junit4:2.0.9"
-    testCompileOnly "com.github.spotbugs:spotbugs-annotations:4.2.0"
+    testCompileOnly "com.github.spotbugs:spotbugs-annotations:4.2.3"
 
-    testCompileOnly 'com.velocitypowered:velocity-api:3.2.0-SNAPSHOT'
+    testCompileOnly 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
 
-    testRuntimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.3'
+    testRuntimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.11'
     testRuntimeOnly 'org.slf4j:slf4j-nop:1.7.36'
 }
 

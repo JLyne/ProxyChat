@@ -100,4 +100,9 @@ public class DummyCommandManager implements CommandManager {
 	public boolean hasCommand(String s) {
 		return false;
 	}
+
+	@Override
+	public boolean hasCommand(String s, CommandSource commandSource) {
+		return false;
+	}
 }

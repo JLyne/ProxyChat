@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.velocitypowered.api.network.ProtocolState;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.permission.Tristate;
 import com.velocitypowered.api.proxy.ConnectionRequestBuilder;
@@ -35,13 +36,16 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.crypto.IdentifiedKey;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
+import com.velocitypowered.api.proxy.messages.PluginMessageEncoder;
 import com.velocitypowered.api.proxy.player.PlayerSettings;
 import com.velocitypowered.api.proxy.player.ResourcePackInfo;
 import com.velocitypowered.api.proxy.player.TabList;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.util.GameProfile;
 import com.velocitypowered.api.util.ModInfo;
+import com.velocitypowered.api.util.ServerLink;
 import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
@@ -222,13 +226,59 @@ public class DummyPlayer implements Player {
   }
 
   @Override
+  public ProtocolState getProtocolState() {
+    return null;
+  }
+
+  @Override
   public boolean sendPluginMessage(ChannelIdentifier identifier, byte[] data) {
+    return false;
+  }
+
+  @Override
+  public boolean sendPluginMessage(
+          @NotNull ChannelIdentifier channelIdentifier, @NotNull PluginMessageEncoder pluginMessageEncoder) {
     return false;
   }
 
   @Override
   public @Nullable String getClientBrand() {
     return null;
+  }
+
+  @Override
+  public void addCustomChatCompletions(@NotNull Collection<String> collection) {
+
+  }
+
+  @Override
+  public void removeCustomChatCompletions(@NotNull Collection<String> collection) {
+
+  }
+
+  @Override
+  public void setCustomChatCompletions(@NotNull Collection<String> collection) {
+
+  }
+
+  @Override
+  public void transferToHost(@NotNull InetSocketAddress inetSocketAddress) {
+
+  }
+
+  @Override
+  public void storeCookie(Key key, byte[] bytes) {
+
+  }
+
+  @Override
+  public void requestCookie(Key key) {
+
+  }
+
+  @Override
+  public void setServerLinks(@NotNull List<ServerLink> list) {
+
   }
 
   @Override

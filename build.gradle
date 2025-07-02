@@ -43,7 +43,7 @@ allprojects {
         mavenLocal()
         mavenCentral()
 
-        maven { url "https://papermc.io/repo/repository/maven-public/" }
+        maven { url "https://repo.papermc.io/repository/maven-public/" }
         maven { url 'https://repo.not-null.co.uk/releases/' }
         maven { url 'https://repo.not-null.co.uk/snapshots/' }
         maven { url 'https://repo.lucko.me/' }

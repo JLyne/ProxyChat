@@ -2,7 +2,7 @@
   "id": "proxychat",
   "name": "ProxyChat",
   "version": "@project.version@",
-  "authors": ["Jim (NotKatuen)", "BrainStone", "shawn_ian"],
+  "authors": ["Jim (AnEnragedPigeon)", "BrainStone", "shawn_ian"],
   "dependencies": [
     {
       "id": "luckperms",
@@ -17,7 +17,7 @@
       "optional": true
     },
     {
-      "id": "supervanishbridge",
+      "id": "vanishbridge",
       "optional": true
     }
   ],

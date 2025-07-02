@@ -24,17 +24,17 @@ package uk.co.notnull.ProxyChat;
 import com.velocitypowered.api.event.Subscribe;
 import uk.co.notnull.ProxyChat.api.account.AccountManager;
 import uk.co.notnull.ProxyChat.api.event.ProxyChatJoinEvent;
-import uk.co.notnull.supervanishbridge.api.SuperVanishBridgeAPI;
-import uk.co.notnull.supervanishbridge.api.VanishStateChangeEvent;
+import uk.co.notnull.vanishbridge.api.VanishBridgeAPI;
+import uk.co.notnull.vanishbridge.api.VanishStateChangeEvent;
 
-public class SuperVanishBridgeHandler {
+public class VanishBridgeHandler {
 	private final ProxyChat plugin;
-	private final SuperVanishBridgeAPI superVanishBridgeAPI;
+	private final VanishBridgeAPI vnishBridgeAPI;
 
-	public SuperVanishBridgeHandler(ProxyChat plugin) {
+	public VanishBridgeHandler(ProxyChat plugin) {
 		this.plugin = plugin;
-		this.superVanishBridgeAPI = (SuperVanishBridgeAPI) plugin.getProxy().getPluginManager()
-				.getPlugin("supervanishbridge").orElseThrow().getInstance().orElseThrow();
+		this.vnishBridgeAPI = (VanishBridgeAPI) plugin.getProxy().getPluginManager()
+				.getPlugin("vanishbridge").orElseThrow().getInstance().orElseThrow();
 
 
 		plugin.getProxy().getEventManager().register(plugin, this);
@@ -49,6 +49,6 @@ public class SuperVanishBridgeHandler {
 	@Subscribe
 	public void onVanishStateChange(ProxyChatJoinEvent event) {
 		AccountManager.getAccount(event.getPlayer().getUniqueId())
-				.ifPresent(account -> account.setVanished(superVanishBridgeAPI.isVanished(event.getPlayer())));
+				.ifPresent(account -> account.setVanished(vnishBridgeAPI.isVanished(event.getPlayer())));
 	}
 }

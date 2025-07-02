@@ -35,7 +35,6 @@ import uk.co.notnull.ProxyChat.account.AccountSQLStorage;
 import uk.co.notnull.ProxyChat.account.ProxyChatAccountManager;
 import uk.co.notnull.ProxyChat.api.ProxyChatApi;
 import uk.co.notnull.ProxyChat.api.account.AccountManager;
-import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.api.hook.HookManager;
 import uk.co.notnull.ProxyChat.api.module.ModuleManager;
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
@@ -82,7 +81,7 @@ public class ProxyChat implements ProxyChatApi {
   private ProxyChatEventsListener proxyChatEventsListener;
   private MutingListener mutingListener;
   private ProxyDiscordHandler proxyDiscordHandler;
-  private SuperVanishBridgeHandler superVanishBridgeHandler;
+  private VanishBridgeHandler vanishBridgeHandler;
 
   @Inject
   public ProxyChat(ProxyServer proxy, Logger logger) {
@@ -109,8 +108,8 @@ public class ProxyChat implements ProxyChatApi {
       proxyDiscordHandler = new ProxyDiscordHandler(this);
     }
     
-    if(proxy.getPluginManager().isLoaded("supervanishbridge")) {
-      superVanishBridgeHandler = new SuperVanishBridgeHandler(this);
+    if(proxy.getPluginManager().isLoaded("vanishbridge")) {
+      vanishBridgeHandler = new VanishBridgeHandler(this);
     }
 
     onEnable();

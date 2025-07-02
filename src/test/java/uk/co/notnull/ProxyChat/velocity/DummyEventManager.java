@@ -39,6 +39,11 @@ public class DummyEventManager implements EventManager {
 	}
 
 	@Override
+	public <E> void register(Object o, Class<E> aClass, short i, EventHandler<E> eventHandler) {
+
+	}
+
+	@Override
 	public <E> CompletableFuture<E> fire(E e) {
 		return CompletableFuture.completedFuture(e);
 	}

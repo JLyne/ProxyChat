@@ -35,14 +35,15 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+
 import uk.co.notnull.ProxyChat.ProxyChat;
 import uk.co.notnull.ProxyChat.api.filter.FilterManager;
-import uk.co.notnull.ProxyChat.api.filter.ProxyChatFilter;
 import uk.co.notnull.ProxyChat.command.EmojiCommand;
 import uk.co.notnull.ProxyChat.emoji.CustomEmoji;
 import uk.co.notnull.ProxyChat.emoji.Emoji;
 import uk.co.notnull.ProxyChat.filter.EmojiFilter;
 import uk.co.notnull.ProxyChat.filter.EmojiPostFilter;
+import uk.co.notnull.ProxyChat.listener.EmojiSuggestionsListener;
 import uk.co.notnull.ProxyChat.util.LoggerHelper;
 
 import java.io.IOException;
@@ -79,8 +80,11 @@ public class EmojiModule extends Module {
 	private Map<String, Emoji> searchableDefaultEmoji; //All default unicode emoji considered searchable, mapped by all usable names
 	private Map<String, CustomEmoji> customEmoji; //All defined custom emoji, mapped by all usable names
 
-	private Component emojiList;
+	private List<String> suggestions;  // Cached list of tab completions to send to new players
+	private Component emojiList;  // Cached component for the /emotes list
+
 	private EmojiCommand emojiCommand;
+	private EmojiSuggestionsListener emojiSuggestionsListener;
 
 	@Override
 	public String getName() {
@@ -104,6 +108,12 @@ public class EmojiModule extends Module {
 		FilterManager.addPostParseFilter(getName(), emojiPostFilter);
 
 		emojiCommand.register();
+
+		emojiSuggestionsListener = new EmojiSuggestionsListener();
+
+		ProxyChat.getInstance().getProxy()
+			.getEventManager()
+			.register(ProxyChat.getInstance(), emojiSuggestionsListener);
 	}
 
 	@Override
@@ -119,6 +129,8 @@ public class EmojiModule extends Module {
 
 		FilterManager.removePreParseFilter(getName());
 		FilterManager.removePostParseFilter(getName());
+		ProxyChat.getInstance().getProxy().getEventManager()
+            .unregisterListener(ProxyChat.getInstance(), emojiSuggestionsListener);
 	}
 
 	/**
@@ -155,6 +167,10 @@ public class EmojiModule extends Module {
 			customCharacterPattern = Pattern.compile(characterRegex.toString());
 		}
 
+		// Build cached structures
+		List<String> names = new ArrayList<>();
+		emoji.values().forEach(e -> names.addAll(e.getNames()));
+		suggestions = names.stream().map(name -> ":" + name + ":").collect(Collectors.toList());
 		buildEmojiListComponent(customEmojiByCategory);
 	}
 
@@ -206,6 +222,10 @@ public class EmojiModule extends Module {
 		});
 
 		emojiList = list.build();
+	}
+
+	public List<String> getEmojiSuggestions() {
+		return suggestions;
 	}
 
 	public List<String> getEmojiSuggestions(SimpleCommand.Invocation invocation) {

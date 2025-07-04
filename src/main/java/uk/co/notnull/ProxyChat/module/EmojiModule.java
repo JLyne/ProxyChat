@@ -65,8 +65,8 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class EmojiModule extends Module {
-	private final Pattern incompleteEmojiPattern = Pattern.compile("(.*):(\\w+)$"); //Pattern for matching an incomplete :emoji_name:
-	private final Pattern emojiPattern = Pattern.compile(":(\\w+):"); //Pattern for matching all default unicode emoji
+	private final Pattern incompleteEmojiPattern = Pattern.compile("(.*):([^\\s:]+)$"); //Pattern for matching an incomplete :emoji_name:
+	private final Pattern emojiPattern = Pattern.compile(":(\\S+):"); //Pattern for matching all default unicode emoji
 	private Pattern customCharacterPattern; //Pattern for matching all configured custom emoji
 
 	// https://github.com/mathiasbynens/emoji-test-regex-pattern

@@ -21,6 +21,8 @@
 
 package uk.co.notnull.ProxyChat.api.utils;
 
+import org.intellij.lang.annotations.MagicConstant;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -207,7 +209,7 @@ public class RegexUtil {
    * @throws PatternSyntaxException If the regex syntax is invalid.
    * @see RegexUtil#parseWildcardToPattern(String, int, boolean, boolean, boolean, boolean)
    */
-  public static Pattern parseWildcardToPattern(String wildcard, int flags)
+  public static Pattern parseWildcardToPattern(String wildcard, @MagicConstant(flagsFromClass = Pattern.class) int flags)
       throws PatternSyntaxException {
     return parseWildcardToPattern(wildcard, flags, false, false, false, false);
   }
@@ -256,7 +258,7 @@ public class RegexUtil {
    */
   public static Pattern parseWildcardToPattern(
       String wildcard,
-      int flags,
+      @MagicConstant(flagsFromClass = Pattern.class) int flags,
       boolean freeMatching,
       boolean leetSpeak,
       boolean ignoreSpaces,

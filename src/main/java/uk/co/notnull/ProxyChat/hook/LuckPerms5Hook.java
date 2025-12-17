@@ -24,7 +24,6 @@ package uk.co.notnull.ProxyChat.hook;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.hook.ProxyChatHook;
 import uk.co.notnull.ProxyChat.api.hook.HookManager;
-import java.util.Objects;
 import java.util.Optional;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -55,8 +54,7 @@ public class LuckPerms5Hook implements ProxyChatHook {
         Optional.ofNullable(api.getUserManager().getUser(account.getUniqueId()));
 
     return user.map(User::getCachedData)
-        .map(data -> data.getMetaData(getQueryOptions(user)))
-        .filter(Objects::nonNull);
+        .map(data -> data.getMetaData(getQueryOptions(user)));
   }
 
   @Override

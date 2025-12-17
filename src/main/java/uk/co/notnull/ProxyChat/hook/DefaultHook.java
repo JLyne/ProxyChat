@@ -28,22 +28,22 @@ import uk.co.notnull.ProxyChat.api.hook.HookManager;
 import java.util.Optional;
 
 public class DefaultHook implements ProxyChatHook {
-  private final Optional<String> defaultPrefix;
-  private final Optional<String> defaultSuffix;
+  private final String defaultPrefix;
+  private final String defaultSuffix;
 
   public DefaultHook(String defaultPrefix, String defaultSuffix) {
-    this.defaultPrefix = Optional.of(defaultPrefix);
-    this.defaultSuffix = Optional.of(defaultSuffix);
+    this.defaultPrefix = defaultPrefix;
+    this.defaultSuffix = defaultSuffix;
   }
 
   @Override
   public Optional<String> getPrefix(ProxyChatAccount account) {
-    return defaultPrefix;
+    return Optional.ofNullable(defaultPrefix);
   }
 
   @Override
   public Optional<String> getSuffix(ProxyChatAccount account) {
-    return defaultSuffix;
+    return Optional.ofNullable(defaultSuffix);
   }
 
   @Override

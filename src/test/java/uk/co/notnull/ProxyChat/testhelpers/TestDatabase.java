@@ -63,7 +63,7 @@ public final class TestDatabase {
     try {
       Thread.sleep(500);
       FileUtils.deleteDirectory(new File(databaseInstance.getConfiguration().getBaseDir()));
-    } catch (IOException | InterruptedException e) {
+    } catch (IOException | InterruptedException ignored) {
     }
   }
 

@@ -53,7 +53,7 @@ public class MapUtils {
           throws IllegalArgumentException {
     return new Collector<>() {
       public Supplier<ImmutableMap.Builder<K, V>> supplier() {
-        return ImmutableMap.Builder<K, V>::new;
+        return ImmutableMap.Builder::new;
       }
 
       public BiConsumer<ImmutableMap.Builder<K, V>, T> accumulator() {
@@ -74,7 +74,7 @@ public class MapUtils {
       }
 
       public Function<ImmutableMap.Builder<K, V>, ImmutableMap<K, V>> finisher() {
-        return ImmutableMap.Builder<K, V>::build;
+        return ImmutableMap.Builder::build;
       }
 
       public Set<Collector.Characteristics> characteristics() {

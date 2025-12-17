@@ -57,10 +57,8 @@ public class AccountFileStorage implements ProxyChatAccountStorage {
         throw new IOException("Could not create " + accountFile);
       }
 
-      FileOutputStream saveFile = new FileOutputStream(accountFile);
-      try {
-        ObjectOutputStream save = new ObjectOutputStream(saveFile);
-        try {
+      try (FileOutputStream saveFile = new FileOutputStream(accountFile)) {
+        try (ObjectOutputStream save = new ObjectOutputStream(saveFile)) {
           save.writeObject(account.getName());
           save.writeObject(account.getChannelType());
           save.writeObject(account.isVanished());
@@ -69,14 +67,6 @@ public class AccountFileStorage implements ProxyChatAccountStorage {
           save.writeObject(account.hasLocalSpyEnabled());
           save.writeObject(account.getIgnored());
           save.writeObject(account.getMutedUntil());
-        } finally {
-          if (save != null) {
-            save.close();
-          }
-        }
-      } finally {
-        if (saveFile != null) {
-          saveFile.close();
         }
       }
     } catch (IOException e) {
@@ -92,10 +82,8 @@ public class AccountFileStorage implements ProxyChatAccountStorage {
 
       if (!accountFile.exists()) return new AccountInfo(new Account(uuid), false, true);
 
-      FileInputStream saveFile = new FileInputStream(accountFile);
-      try {
-        ObjectInputStream save = new ObjectInputStream(saveFile);
-        try {
+      try (FileInputStream saveFile = new FileInputStream(accountFile)) {
+        try (ObjectInputStream save = new ObjectInputStream(saveFile)) {
           // Read Name (and discard it (for now))
           save.readObject();
 
@@ -111,14 +99,6 @@ public class AccountFileStorage implements ProxyChatAccountStorage {
                           (Timestamp) save.readObject()),
                   false,
                   false);
-        } finally {
-          if (save != null) {
-            save.close();
-          }
-        }
-      } finally {
-        if (saveFile != null) {
-          saveFile.close();
         }
       }
     } catch (IOException | ClassNotFoundException | ClassCastException e) {

@@ -21,6 +21,8 @@
 
 package uk.co.notnull.ProxyChat.api.utils;
 
+import org.intellij.lang.annotations.MagicConstant;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -29,7 +31,6 @@ public class RegexReplacer {
   private final String patternStr;
   private final Pattern pattern;
   private final String replacement;
-  private final int defaultFlags;
   private final Map<Integer, Pattern> patternCache;
 
   public RegexReplacer(Pattern pattern, String replacement) {
@@ -37,7 +38,7 @@ public class RegexReplacer {
     this.pattern = pattern;
     this.replacement = replacement;
 
-    defaultFlags = pattern.flags();
+	  int defaultFlags = pattern.flags();
     patternCache = new HashMap<>();
 
     patternCache.put(defaultFlags, pattern);
@@ -47,7 +48,7 @@ public class RegexReplacer {
     this(pattern, 0, replacement);
   }
 
-  public RegexReplacer(String pattern, int regexFlags, String replacement) {
+  public RegexReplacer(String pattern, @MagicConstant(flagsFromClass = Pattern.class) int regexFlags, String replacement) {
     this(Pattern.compile(pattern, regexFlags), replacement);
   }
 
@@ -55,7 +56,7 @@ public class RegexReplacer {
     return replaceAll(pattern, input);
   }
 
-  public String apply(String input, int flags) {
+  public String apply(String input, @MagicConstant(flagsFromClass = Pattern.class) int flags) {
     if (!patternCache.containsKey(flags)) {
       patternCache.put(flags, Pattern.compile(patternStr, flags));
     }

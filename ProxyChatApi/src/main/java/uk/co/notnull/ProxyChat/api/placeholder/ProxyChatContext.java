@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
@@ -323,33 +324,31 @@ public class ProxyChatContext {
   @Override
   public boolean equals(final Object o) {
     if (o == this) return true;
-    if (!(o instanceof ProxyChatContext)) return false;
-    final ProxyChatContext other = (ProxyChatContext) o;
-    if (!other.canEqual((Object) this)) return false;
+    if (!(o instanceof ProxyChatContext other)) return false;
+    if (!other.canEqual(this)) return false;
     if (this.isParsed() != other.isParsed()) return false;
     if (this.isFiltered() != other.isFiltered()) return false;
     final Object this$sender = this.getSender();
     final Object other$sender = other.getSender();
-    if (this$sender == null ? other$sender != null : !this$sender.equals(other$sender)) return false;
+    if (!Objects.equals(this$sender, other$sender)) return false;
     final Object this$target = this.getTarget();
     final Object other$target = other.getTarget();
-    if (this$target == null ? other$target != null : !this$target.equals(other$target)) return false;
+    if (!Objects.equals(this$target, other$target)) return false;
     final Object this$message = this.getMessage();
     final Object other$message = other.getMessage();
-    if (this$message == null ? other$message != null : !this$message.equals(other$message)) return false;
+    if (!Objects.equals(this$message, other$message)) return false;
     final Object this$filteredMessage = this.getFilteredMessage();
     final Object other$filteredMessage = other.getFilteredMessage();
-    if (this$filteredMessage == null ? other$filteredMessage != null : !this$filteredMessage.equals(other$filteredMessage)) return false;
+    if (!Objects.equals(this$filteredMessage, other$filteredMessage)) return false;
     final Object this$parsedMessage = this.getParsedMessage();
     final Object other$parsedMessage = other.getParsedMessage();
-    if (this$parsedMessage == null ? other$parsedMessage != null : !this$parsedMessage.equals(other$parsedMessage)) return false;
+    if (!Objects.equals(this$parsedMessage, other$parsedMessage)) return false;
     final Object this$channel = this.getChannel();
     final Object other$channel = other.getChannel();
-    if (this$channel == null ? other$channel != null : !this$channel.equals(other$channel)) return false;
+    if (!Objects.equals(this$channel, other$channel)) return false;
     final Object this$server = this.getServer();
     final Object other$server = other.getServer();
-    if (this$server == null ? other$server != null : !this$server.equals(other$server)) return false;
-    return true;
+    return Objects.equals(this$server, other$server);
   }
 
   protected boolean canEqual(final Object other) {

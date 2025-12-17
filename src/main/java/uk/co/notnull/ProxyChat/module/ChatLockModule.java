@@ -21,7 +21,6 @@
 
 package uk.co.notnull.ProxyChat.module;
 
-import uk.co.notnull.ProxyChat.api.filter.ProxyChatFilter;
 import uk.co.notnull.ProxyChat.api.filter.FilterManager;
 import uk.co.notnull.ProxyChat.command.ChatLockCommand;
 import uk.co.notnull.ProxyChat.filter.ChatLockFilter;

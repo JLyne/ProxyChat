@@ -22,7 +22,6 @@
 package uk.co.notnull.ProxyChat.account;
 
 import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -70,13 +69,10 @@ public class ProxyChatAccountManager extends AccountManager {
   public static Optional<? extends CommandSource> getCommandSource(@NotNull ProxyChatAccount account) {
     ProxyServer instance = ProxyChat.getInstance().getProxy();
 
-    switch (account.getAccountType()) {
-      case PLAYER:
-        return instance.getPlayer(account.getUniqueId());
-      case CONSOLE:
-      default:
-        return Optional.of(instance.getConsoleCommandSource());
-    }
+    return switch (account.getAccountType()) {
+      case PLAYER -> instance.getPlayer(account.getUniqueId());
+      default -> Optional.of(instance.getConsoleCommandSource());
+    };
   }
 
   public static List<ProxyChatAccount> getAccountsForPartialName(String partialName, CommandSource player) {
@@ -144,12 +140,12 @@ public class ProxyChatAccountManager extends AccountManager {
     return newPlayers.contains(uuid);
   }
 
-  @Subscribe(order = PostOrder.FIRST)
+  @Subscribe(priority = Short.MAX_VALUE)
   public void onPlayerConnect(ProxyChatJoinEvent event) {
     loadAccount(event.getPlayer().getUniqueId());
   }
 
-  @Subscribe(order = PostOrder.LAST)
+  @Subscribe(priority = Short.MIN_VALUE)
   public void onPlayerDisconnect(ProxyChatLeaveEvent event) {
     unloadAccount(event.getPlayer().getUniqueId());
   }

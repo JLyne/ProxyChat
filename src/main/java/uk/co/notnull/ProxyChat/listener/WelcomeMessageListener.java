@@ -21,7 +21,6 @@
 
 package uk.co.notnull.ProxyChat.listener;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.proxy.Player;
 import uk.co.notnull.ProxyChat.account.ProxyChatAccountManager;
@@ -32,7 +31,7 @@ import uk.co.notnull.ProxyChat.message.Format;
 import uk.co.notnull.ProxyChat.message.MessagesService;
 
 public class WelcomeMessageListener {
-  @Subscribe(order = PostOrder.LATE)
+  @Subscribe
   public void onPlayerJoin(ProxyChatJoinEvent e) {
     Player player = e.getPlayer();
 

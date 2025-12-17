@@ -26,7 +26,6 @@ import static org.junit.Assert.fail;
 
 import uk.co.notnull.ProxyChat.api.ProxyChatApi;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
-import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
 import uk.co.notnull.ProxyChat.api.placeholder.InvalidContextError;
 import uk.co.notnull.ProxyChat.api.utils.ProxyChatInstaceHolder;

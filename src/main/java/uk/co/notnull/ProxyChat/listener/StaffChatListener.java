@@ -21,7 +21,6 @@
 
 package uk.co.notnull.ProxyChat.listener;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.PlayerChatEvent;
 import com.velocitypowered.api.proxy.Player;
@@ -44,7 +43,7 @@ public class StaffChatListener {
   private final Config symbolSection =
       ProxyChatModuleManager.STAFF_CHAT_MODULE.getModuleSection().getConfig("symbol");
 
-  @Subscribe(order = PostOrder.LATE)
+  @Subscribe
   public void onPlayerChat(PlayerChatEvent e) {
     if (!e.getResult().isAllowed()) return;
     if (e.getPlayer() == null) return;

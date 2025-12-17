@@ -26,14 +26,12 @@ import uk.co.notnull.ProxyChat.api.utils.RegexUtil;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class ChatLoggingManager {
   private static final List<ChatLogger> loggers = new LinkedList<>();
-  private static List<Pattern> filteredCommands = new LinkedList<>();
 
-  public static void addLogger(ChatLogger logger) {
+	public static void addLogger(ChatLogger logger) {
     loggers.add(logger);
   }
 
@@ -52,10 +50,9 @@ public final class ChatLoggingManager {
   }
 
   public static void loadFilteredCommands(List<String> commands) {
-    filteredCommands =
-        commands.stream()
-            .map(RegexUtil::parseWildcardToPattern)
-            .collect(Collectors.toList());
+	  List<Pattern> filteredCommands = commands.stream()
+			  .map(RegexUtil::parseWildcardToPattern)
+			  .toList();
   }
 
   private static Stream<ChatLogger> getStream() {

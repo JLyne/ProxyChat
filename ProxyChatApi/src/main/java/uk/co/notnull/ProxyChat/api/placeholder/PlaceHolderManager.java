@@ -50,7 +50,7 @@ public final class PlaceHolderManager {
 
   public static Component processMessage(Component message, ProxyChatContext context) {
     final List<ProxyChatPlaceHolder> placeholders =
-        getApplicableStream(context).collect(Collectors.toList());
+        getApplicableStream(context).toList();
 
     Function<TextComponent.Builder, ComponentLike> replacement = (TextComponent.Builder match) -> {
       String placeholderName = match.content().substring(1, match.content().length() -1);

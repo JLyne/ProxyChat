@@ -24,6 +24,7 @@ package uk.co.notnull.ProxyChat.velocity;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import com.velocitypowered.api.scheduler.Scheduler;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.mockito.Mockito;
 
 import java.time.Duration;
@@ -34,7 +35,7 @@ import java.util.function.Consumer;
 
 public class DummyScheduler implements Scheduler {
 	@Override
-	public TaskBuilder buildTask(Object o, Runnable runnable) {
+	public TaskBuilder buildTask(@NonNull Object o, @NonNull Runnable runnable) {
 		TaskBuilder mock = Mockito.mock(TaskBuilder.class);
 		Mockito.when(mock.clearDelay()).thenReturn(mock);
 		Mockito.when(mock.clearRepeat()).thenReturn(mock);

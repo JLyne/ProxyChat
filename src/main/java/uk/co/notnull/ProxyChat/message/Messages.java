@@ -138,7 +138,7 @@ public enum Messages implements Message {
     return get(new Context(sender, command));
   }
 
-  private Messages(final String stringPath) {
+  Messages(final String stringPath) {
     this.stringPath = stringPath;
   }
 

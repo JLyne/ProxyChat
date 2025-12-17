@@ -23,7 +23,6 @@ package uk.co.notnull.ProxyChat.api.module;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ModuleManager {
@@ -39,7 +38,7 @@ public class ModuleManager {
       activeModules.addAll(
           availableModules.stream()
               .filter(ProxyChatModule::isEnabled)
-              .collect(Collectors.toList()));
+              .toList());
     }
 
     return activeModules;

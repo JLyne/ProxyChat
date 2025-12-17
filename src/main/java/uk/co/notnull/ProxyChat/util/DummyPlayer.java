@@ -23,6 +23,7 @@ package uk.co.notnull.ProxyChat.util;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -50,6 +51,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class DummyPlayer implements Player {
   private final UUID uuid;
@@ -135,11 +137,6 @@ public class DummyPlayer implements Player {
   }
 
   @Override
-  @Deprecated
-  public void clearHeaderAndFooter() {
-  }
-
-  @Override
   public void clearPlayerListHeaderAndFooter() {
 
   }
@@ -197,13 +194,13 @@ public class DummyPlayer implements Player {
   }
 
   @Override
-  public Collection<ResourcePackInfo> getAppliedResourcePacks() {
-    return null;
+  public @NonNull Collection<ResourcePackInfo> getAppliedResourcePacks() {
+    return Collections.emptyList();
   }
 
   @Override
-  public Collection<ResourcePackInfo> getPendingResourcePacks() {
-    return null;
+  public @NonNull Collection<ResourcePackInfo> getPendingResourcePacks() {
+    return Collections.emptyList();
   }
 
   @Override
@@ -242,10 +239,11 @@ public class DummyPlayer implements Player {
   }
 
   @Override
-  public boolean sendPluginMessage(ChannelIdentifier identifier, byte[] data) {
+  public boolean sendPluginMessage(@NonNull ChannelIdentifier identifier, byte @NonNull [] data) {
     return false;
   }
 
+  @SuppressWarnings("UnstableApiUsage")
   @Override
   public boolean sendPluginMessage(
           @NotNull ChannelIdentifier channelIdentifier, @NotNull PluginMessageEncoder pluginMessageEncoder) {

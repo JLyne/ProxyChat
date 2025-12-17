@@ -33,7 +33,7 @@ public abstract class Module implements ProxyChatModule {
 
   @Override
   public boolean isEnabled() {
-    return test_mode ? true : getModuleSection().getBoolean(CONFIG_ENABLED);
+    return test_mode || getModuleSection().getBoolean(CONFIG_ENABLED);
   }
 
   public Config getModuleSection() {

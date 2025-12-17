@@ -21,7 +21,6 @@
 
 package uk.co.notnull.ProxyChat.api;
 
-import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
 import uk.co.notnull.ProxyChat.api.placeholder.InvalidContextError;
 import uk.co.notnull.ProxyChat.api.utils.ProxyChatInstaceHolder;
@@ -31,37 +30,7 @@ import java.io.File;
 /** This is the base Interface for the ProxyChatApi. The central methods will be found here */
 public interface ProxyChatApi {
   String ID = "proxychat";
-  String NAME = "Proxy Chat";
-  String DESCRIPTION = "Proxy Chat Plugin";
-  String URL = "https://github.com/JLyne/ProxyChat";
-  String AUTHOR_JIM = "Jim";
-  String AUTHOR_BRAINSTONE = "BrainStone";
-  String AUTHOR_SHAWN = "shawn_ian";
-  String[] AUTHORS = new String[] {AUTHOR_JIM, AUTHOR_BRAINSTONE, AUTHOR_SHAWN};
-  String[] CONTRIBUTORS =
-      new String[] {
-        "AwesomestGamer",
-        "Brianetta",
-        "CryLegend",
-        "gb2233",
-        "Hodel1",
-        "Luck",
-        "MineTech13",
-        "n0dai"
-      };
-  String[] TRANSLATORS =
-      new String[] {
-        "DardBrinza",
-        "Fantasenf",
-        "fjeddy",
-        "Garixer",
-        "gb2233",
-        "Itaquito",
-        "marzenie",
-        "Maxime_74",
-        "povsister"
-      };
-  String[] DONATORS = new String[] {"Breantique", "NickT"};
+
   double CONFIG_VERSION = 12.2;
 
   /**
@@ -94,7 +63,6 @@ public interface ProxyChatApi {
    * in the context.
    *
    * @param context Containing sender and message.
-   * @param channel What channel to send the message in.
    * @throws InvalidContextError Throws and {@link InvalidContextError} if either a sender or
    *     message is missing in this context.
    */

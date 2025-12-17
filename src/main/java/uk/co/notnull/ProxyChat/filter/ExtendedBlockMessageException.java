@@ -25,7 +25,10 @@ import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.filter.BlockMessageException;
 import uk.co.notnull.ProxyChat.message.Messages;
 
+import java.io.Serial;
+
 public class ExtendedBlockMessageException extends BlockMessageException {
+  @Serial
   private static final long serialVersionUID = 5519820760858610372L;
   private final Messages messageType;
 

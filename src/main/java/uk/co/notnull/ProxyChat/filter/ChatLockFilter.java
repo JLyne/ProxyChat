@@ -27,7 +27,6 @@ import uk.co.notnull.ProxyChat.api.filter.BlockMessageException;
 import uk.co.notnull.ProxyChat.api.filter.ProxyChatPreParseFilter;
 import uk.co.notnull.ProxyChat.api.filter.FilterManager;
 import uk.co.notnull.ProxyChat.message.Messages;
-import uk.co.notnull.ProxyChat.message.MessagesService;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.util.PredicateUtil;
 

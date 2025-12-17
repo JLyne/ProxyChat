@@ -47,11 +47,11 @@ public class Emoji {
 	}
 
 	public String getPrimaryName() {
-		return names.get(0);
+		return names.getFirst();
 	}
 
 	public String getPrimaryNameWithColons() {
-		return ":" + names.get(0) + ":";
+		return ":" + names.getFirst() + ":";
 	}
 
 	public String getCharacter() {
@@ -69,7 +69,7 @@ public class Emoji {
 
 		this.component = Component.text().content(character)
 				.hoverEvent(Component.text()
-									.content(character + " " + names.get(0))
+									.content(character + " " + names.getFirst())
 									.append(Component.newline())
 									.append(Component.text("Unicode",
 														   Style.style().color(NamedTextColor.BLUE).build())

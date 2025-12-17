@@ -61,21 +61,20 @@ public class RegexReplacerTest {
     final RegexReplacer caseInsensitive =
         new RegexReplacer(PATTERN_SIMPLE, Pattern.CASE_INSENSITIVE, REPLACEMENT_SIMPLE);
 
-    final String in = "FoO";
+    final String notReplaced = "FoO";
     final String replaced = REPLACEMENT_SIMPLE;
-    final String notReplaced = in;
 
-    assertEquals("caseSensitive original", notReplaced, caseSensitive.apply(in));
+	  assertEquals("caseSensitive original", notReplaced, caseSensitive.apply(notReplaced));
     assertEquals(
-        "caseSensitive reflagged", replaced, caseSensitive.apply(in, Pattern.CASE_INSENSITIVE));
-    assertEquals("caseInsensitive original", replaced, caseInsensitive.apply(in));
-    assertEquals("caseInsensitive reflagged", notReplaced, caseInsensitive.apply(in, 0));
+        "caseSensitive reflagged", replaced, caseSensitive.apply(notReplaced, Pattern.CASE_INSENSITIVE));
+    assertEquals("caseInsensitive original", replaced, caseInsensitive.apply(notReplaced));
+    assertEquals("caseInsensitive reflagged", notReplaced, caseInsensitive.apply(notReplaced, 0));
 
     // Repeat to check cache
-    assertEquals("caseSensitive original", notReplaced, caseSensitive.apply(in));
+    assertEquals("caseSensitive original", notReplaced, caseSensitive.apply(notReplaced));
     assertEquals(
-        "caseSensitive reflagged", replaced, caseSensitive.apply(in, Pattern.CASE_INSENSITIVE));
-    assertEquals("caseInsensitive original", replaced, caseInsensitive.apply(in));
-    assertEquals("caseInsensitive reflagged", notReplaced, caseInsensitive.apply(in, 0));
+        "caseSensitive reflagged", replaced, caseSensitive.apply(notReplaced, Pattern.CASE_INSENSITIVE));
+    assertEquals("caseInsensitive original", replaced, caseInsensitive.apply(notReplaced));
+    assertEquals("caseInsensitive reflagged", notReplaced, caseInsensitive.apply(notReplaced, 0));
   }
 }

@@ -21,6 +21,8 @@
 
 package uk.co.notnull.ProxyChat.api.placeholder;
 
+import java.io.Serial;
+
 /**
  * This exception is used to indicate that a passed context did not fulfill the requirements placed
  * on it.<br>
@@ -28,6 +30,7 @@ package uk.co.notnull.ProxyChat.api.placeholder;
  * were not fulfilled as that simplifies debugging!
  */
 public class InvalidContextError extends AssertionError {
+  @Serial
   private static final long serialVersionUID = -7826893842156075019L;
 
   /**

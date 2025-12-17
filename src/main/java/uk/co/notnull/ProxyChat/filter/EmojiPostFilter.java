@@ -56,11 +56,10 @@ public class EmojiPostFilter implements ProxyChatPostParseFilter {
 		//Replace default emoji characters with the emoji's component
 		characterReplacement = TextReplacementConfig.builder()
 				.match(module.getDefaultCharacterPattern())
-				.replacement((MatchResult result, TextComponent.Builder builder) -> {
-					return module.getEmojiByCharacter(result.group(1))
-							.map(Emoji::getComponent)
-							.orElse(builder.build());
-				})
+				.replacement((MatchResult result, TextComponent.Builder builder) ->
+									 module.getEmojiByCharacter(result.group(1))
+											 .map(Emoji::getComponent)
+											 .orElse(builder.build()))
 				.build();
 
 		this.noPermissions = noPermissions;

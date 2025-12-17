@@ -27,7 +27,7 @@ import java.io.StringWriter;
 import org.slf4j.Logger;
 
 public final class LoggerHelper {
-  private static final java.util.concurrent.atomic.AtomicReference<Object> logger = new java.util.concurrent.atomic.AtomicReference<Object>();
+  private static final java.util.concurrent.atomic.AtomicReference<Object> logger = new java.util.concurrent.atomic.AtomicReference<>();
 
   public static void error(String text) {
     getLogger().error(text);
@@ -39,14 +39,9 @@ public final class LoggerHelper {
 
   public static String getStackTrace(Throwable t) {
     StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    try {
+    try (PrintWriter pw = new PrintWriter(sw)) {
       t.printStackTrace(pw);
       return sw.toString();
-    } finally {
-      if (pw != null) {
-        pw.close();
-      }
     }
   }
 

@@ -23,6 +23,8 @@ package uk.co.notnull.ProxyChat.api.event;
 
 import com.velocitypowered.api.proxy.Player;
 
+import java.util.Objects;
+
 /**
  * Event called as soon as a connection has a {@link Player} and is ready to be connected to
  * a server.
@@ -55,13 +57,11 @@ public class ProxyChatJoinEvent {
   @Override
   public boolean equals(final Object o) {
     if (o == this) return true;
-    if (!(o instanceof ProxyChatJoinEvent)) return false;
-    final ProxyChatJoinEvent other = (ProxyChatJoinEvent) o;
-    if (!other.canEqual((Object) this)) return false;
+    if (!(o instanceof ProxyChatJoinEvent other)) return false;
+    if (!other.canEqual(this)) return false;
     final Object this$player = this.getPlayer();
     final Object other$player = other.getPlayer();
-    if (this$player == null ? other$player != null : !this$player.equals(other$player)) return false;
-    return true;
+    return Objects.equals(this$player, other$player);
   }
 
   protected boolean canEqual(final Object other) {

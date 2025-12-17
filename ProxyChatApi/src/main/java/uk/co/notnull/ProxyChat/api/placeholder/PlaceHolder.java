@@ -24,6 +24,7 @@ package uk.co.notnull.ProxyChat.api.placeholder;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
 
@@ -117,13 +118,11 @@ public class PlaceHolder implements ProxyChatPlaceHolder {
   @Override
   public boolean equals(final Object o) {
     if (o == this) return true;
-    if (!(o instanceof PlaceHolder)) return false;
-    final PlaceHolder other = (PlaceHolder) o;
-    if (!other.canEqual((Object) this)) return false;
+    if (!(o instanceof PlaceHolder other)) return false;
+    if (!other.canEqual(this)) return false;
     final Object this$placeholder = this.getPlaceholder();
     final Object other$placeholder = other.getPlaceholder();
-    if (this$placeholder == null ? other$placeholder != null : !this$placeholder.equals(other$placeholder)) return false;
-    return true;
+    return Objects.equals(this$placeholder, other$placeholder);
   }
 
   protected boolean canEqual(final Object other) {

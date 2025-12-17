@@ -34,7 +34,6 @@ import uk.co.notnull.ProxyChat.permission.PermissionManager;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class MessageToggleCommand extends BaseCommand {
   public MessageToggleCommand(MessengerModule messengerModule) {

@@ -56,6 +56,6 @@ public class ConfigurationTest {
                     StandardCharsets.UTF_8),
             Configuration.PARSE_OPTIONS);
 
-    assertEquals(defaultConfig.getDouble("Version"), ProxyChatApi.CONFIG_VERSION, 0.0);
+    assertEquals(ProxyChatApi.CONFIG_VERSION, defaultConfig.getDouble("Version"), 0.0);
   }
 }

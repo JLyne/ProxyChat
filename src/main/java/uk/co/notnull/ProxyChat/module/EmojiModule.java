@@ -262,7 +262,7 @@ public class EmojiModule extends Module {
 			results.addAll(searchableDefaultEmoji.entrySet().stream()
 								   .filter(e -> e.getKey().contains(search))
 								   .map(Map.Entry::getValue).distinct().limit(limit)
-								   .collect(Collectors.toList()));
+								   .toList());
 		}
 
 		return results;

@@ -23,6 +23,8 @@ package uk.co.notnull.ProxyChat.api.event;
 
 import com.velocitypowered.api.proxy.Player;
 
+import java.util.Objects;
+
 /**
  * Called when a player has left the proxy, it is not safe to call any methods that perform an
  * action on the passed player instance.
@@ -55,13 +57,11 @@ public class ProxyChatLeaveEvent {
   @Override
   public boolean equals(final Object o) {
     if (o == this) return true;
-    if (!(o instanceof ProxyChatLeaveEvent)) return false;
-    final ProxyChatLeaveEvent other = (ProxyChatLeaveEvent) o;
-    if (!other.canEqual((Object) this)) return false;
+    if (!(o instanceof ProxyChatLeaveEvent other)) return false;
+    if (!other.canEqual(this)) return false;
     final Object this$player = this.getPlayer();
     final Object other$player = other.getPlayer();
-    if (this$player == null ? other$player != null : !this$player.equals(other$player)) return false;
-    return true;
+    return Objects.equals(this$player, other$player);
   }
 
   protected boolean canEqual(final Object other) {

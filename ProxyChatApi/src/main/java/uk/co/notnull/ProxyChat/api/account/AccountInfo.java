@@ -21,6 +21,8 @@
 
 package uk.co.notnull.ProxyChat.api.account;
 
+import java.util.Objects;
+
 public final class AccountInfo {
   private final ProxyChatAccount account;
   private final boolean forceSave;
@@ -47,14 +49,12 @@ public final class AccountInfo {
   @Override
   public boolean equals(final Object o) {
     if (o == this) return true;
-    if (!(o instanceof AccountInfo)) return false;
-    final AccountInfo other = (AccountInfo) o;
+    if (!(o instanceof AccountInfo other)) return false;
     if (this.isForceSave() != other.isForceSave()) return false;
     if (this.isNewAccount() != other.isNewAccount()) return false;
     final Object this$account = this.getAccount();
     final Object other$account = other.getAccount();
-    if (this$account == null ? other$account != null : !this$account.equals(other$account)) return false;
-    return true;
+    return Objects.equals(this$account, other$account);
   }
 
   @Override

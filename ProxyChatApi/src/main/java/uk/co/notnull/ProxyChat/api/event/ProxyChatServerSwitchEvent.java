@@ -24,6 +24,8 @@ package uk.co.notnull.ProxyChat.api.event;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 
+import java.util.Objects;
+
 /**
  * Called when a player has changed servers.
  *
@@ -67,16 +69,14 @@ public class ProxyChatServerSwitchEvent {
   @Override
   public boolean equals(final Object o) {
     if (o == this) return true;
-    if (!(o instanceof ProxyChatServerSwitchEvent)) return false;
-    final ProxyChatServerSwitchEvent other = (ProxyChatServerSwitchEvent) o;
-    if (!other.canEqual((Object) this)) return false;
+    if (!(o instanceof ProxyChatServerSwitchEvent other)) return false;
+    if (!other.canEqual(this)) return false;
     final Object this$player = this.getPlayer();
     final Object other$player = other.getPlayer();
-    if (this$player == null ? other$player != null : !this$player.equals(other$player)) return false;
+    if (!Objects.equals(this$player, other$player)) return false;
     final Object this$from = this.getFrom();
     final Object other$from = other.getFrom();
-    if (this$from == null ? other$from != null : !this$from.equals(other$from)) return false;
-    return true;
+    return Objects.equals(this$from, other$from);
   }
 
   protected boolean canEqual(final Object other) {

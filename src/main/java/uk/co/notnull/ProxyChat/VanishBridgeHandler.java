@@ -28,14 +28,11 @@ import uk.co.notnull.vanishbridge.api.VanishBridgeAPI;
 import uk.co.notnull.vanishbridge.api.VanishStateChangeEvent;
 
 public class VanishBridgeHandler {
-	private final ProxyChat plugin;
-	private final VanishBridgeAPI vnishBridgeAPI;
+	private final VanishBridgeAPI vanishBridgeAPI;
 
 	public VanishBridgeHandler(ProxyChat plugin) {
-		this.plugin = plugin;
-		this.vnishBridgeAPI = (VanishBridgeAPI) plugin.getProxy().getPluginManager()
+		this.vanishBridgeAPI = (VanishBridgeAPI) plugin.getProxy().getPluginManager()
 				.getPlugin("vanishbridge").orElseThrow().getInstance().orElseThrow();
-
 
 		plugin.getProxy().getEventManager().register(plugin, this);
 	}
@@ -49,6 +46,6 @@ public class VanishBridgeHandler {
 	@Subscribe
 	public void onVanishStateChange(ProxyChatJoinEvent event) {
 		AccountManager.getAccount(event.getPlayer().getUniqueId())
-				.ifPresent(account -> account.setVanished(vnishBridgeAPI.isVanished(event.getPlayer())));
+				.ifPresent(account -> account.setVanished(vanishBridgeAPI.isVanished(event.getPlayer())));
 	}
 }

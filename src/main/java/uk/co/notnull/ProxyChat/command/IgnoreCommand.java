@@ -71,9 +71,9 @@ public class IgnoreCommand extends BaseCommand {
                   .map(AccountManager::getAccount)
                   .filter(Optional::isPresent)
                   .map(Optional::get)
-                  .collect(Collectors.toList());
+                  .toList();
 
-      if (ignored.size() <= 0) {
+      if (ignored.isEmpty()) {
         MessagesService.sendMessage(invocation.source(), Messages.IGNORE_NOBODY.get(player));
       } else {
         String list =

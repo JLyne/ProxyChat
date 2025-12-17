@@ -26,33 +26,9 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import uk.co.notnull.ProxyChat.account.ProxyChatAccountManager;
-import uk.co.notnull.ProxyChat.api.account.AccountManager;
-import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.placeholder.ProxyChatContext;
 
-import java.util.UUID;
-
 public class Context extends ProxyChatContext {
-  public Context() {
-    super();
-  }
-
-  public Context(ProxyChatAccount player) {
-    super(player);
-  }
-
-  public Context(ProxyChatAccount sender, ProxyChatAccount target) {
-    super(sender, target);
-  }
-
-  public Context(UUID sender) {
-    super(AccountManager.getAccount(sender).get());
-  }
-
-  public Context(UUID sender, UUID target) {
-    super(AccountManager.getAccount(sender).get(), AccountManager.getAccount(target).get());
-  }
-
   public Context(CommandSource sender) {
     super(ProxyChatAccountManager.getAccount(sender).get());
   }

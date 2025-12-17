@@ -81,9 +81,8 @@ public class ProxyChat implements ProxyChatApi {
   private ProxyChatEventsListener proxyChatEventsListener;
   private MutingListener mutingListener;
   private ProxyDiscordHandler proxyDiscordHandler;
-  private VanishBridgeHandler vanishBridgeHandler;
 
-  @Inject
+	@Inject
   public ProxyChat(ProxyServer proxy, Logger logger) {
     this.proxy = proxy;
     this.logger = logger;
@@ -109,7 +108,7 @@ public class ProxyChat implements ProxyChatApi {
     }
     
     if(proxy.getPluginManager().isLoaded("vanishbridge")) {
-      vanishBridgeHandler = new VanishBridgeHandler(this);
+		VanishBridgeHandler vanishBridgeHandler = new VanishBridgeHandler(this);
     }
 
     onEnable();

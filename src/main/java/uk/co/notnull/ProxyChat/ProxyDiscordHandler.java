@@ -91,7 +91,7 @@ public class ProxyDiscordHandler implements ChatLogger {
 
 	@Subscribe
 	public void onDiscordChat(DiscordChatEvent event) {
-		Optional<ProxyChatAccount> account = ProxyChatAccountManager.getAccount(event.getUser().getUniqueId());
+		Optional<ProxyChatAccount> account = ProxyChatAccountManager.getAccount(event.getSender().getUniqueId());
 
 		account.ifPresent(acc -> {
 			if(acc.isMuted()) {

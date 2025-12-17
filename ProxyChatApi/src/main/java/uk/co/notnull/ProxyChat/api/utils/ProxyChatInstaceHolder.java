@@ -64,7 +64,6 @@ public final class ProxyChatInstaceHolder {
    * @param instance Seriously. Don't use this!
    *     <p>-- GETTER -- Returns the ProxyChatApi instance. Don't use this though. Use {@link
    *     ProxyChatApi#getInstance()} instead!
-   * @return ProxyChatApi instance
    */
   public static void setInstance(final ProxyChatApi instance) {
     ProxyChatInstaceHolder.instance = instance;

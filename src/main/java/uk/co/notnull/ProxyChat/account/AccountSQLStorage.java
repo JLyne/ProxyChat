@@ -233,40 +233,25 @@ public class AccountSQLStorage implements ProxyChatAccountStorage {
     return connection.prepareStatement(statement);
   }
 
-	@SuppressWarnings("unused")
-	private ResultSet executeQuery(final String query) throws SQLException {
-		Statement statement = getStatement();
-		try {
-			return statement.executeQuery(query);
-		} finally {
-			if (statement != null) {
-				statement.close();
-			}
-		}
-	}
+  @SuppressWarnings("unused")
+  private ResultSet executeQuery(final String query) throws SQLException {
+    try (Statement statement = getStatement()) {
+  	  return statement.executeQuery(query);
+    }
+  }
 
-	private boolean executeStatement(final String query) throws SQLException {
-		Statement statement = getStatement();
-		try {
-			return statement.execute(query);
-		} finally {
-			if (statement != null) {
-				statement.close();
-			}
-		}
-	}
+  private boolean executeStatement(final String query) throws SQLException {
+    try (Statement statement = getStatement()) {
+  	  return statement.execute(query);
+    }
+  }
 
-	@SuppressWarnings("unused")
-	private int executeUpdate(final String query) throws SQLException {
-		Statement statement = getStatement();
-		try {
-			return statement.executeUpdate(query);
-		} finally {
-			if (statement != null) {
-				statement.close();
-			}
-		}
-	}
+  @SuppressWarnings("unused")
+  private int executeUpdate(final String query) throws SQLException {
+    try (Statement statement = getStatement()) {
+  	  return statement.executeUpdate(query);
+    }
+  }
 
   private String getTableName(String baseName) {
     String name = tablePrefix + baseName;

@@ -29,6 +29,7 @@ import uk.co.notnull.ProxyChat.api.filter.FilterManager;
 import uk.co.notnull.ProxyChat.message.Messages;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import java.util.ArrayDeque;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -115,21 +116,19 @@ public class DuplicationFilter implements ProxyChatPreParseFilter {
     @Override
     public boolean equals(final Object o) {
       if (o == this) return true;
-      if (!(o instanceof DuplicationFilter.TimePointMessage)) return false;
-      final DuplicationFilter.TimePointMessage other = (DuplicationFilter.TimePointMessage) o;
+      if (!(o instanceof TimePointMessage other)) return false;
       if (this.getTimePoint() != other.getTimePoint()) return false;
       final Object this$message = this.getMessage();
       final Object other$message = other.getMessage();
-      if (this$message == null ? other$message != null : !this$message.equals(other$message)) return false;
-      return true;
-    }
+      return Objects.equals(this$message, other$message);
+	}
 
     @Override
     public int hashCode() {
       final int PRIME = 59;
       int result = 1;
       final long $timePoint = this.getTimePoint();
-      result = result * PRIME + (int) ($timePoint >>> 32 ^ $timePoint);
+      result = result * PRIME + Long.hashCode($timePoint);
       final Object $message = this.getMessage();
       result = result * PRIME + ($message == null ? 43 : $message.hashCode());
       return result;

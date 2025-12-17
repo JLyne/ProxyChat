@@ -24,35 +24,13 @@ package uk.co.notnull.ProxyChat.velocity;
 import com.velocitypowered.api.plugin.PluginDescription;
 import com.velocitypowered.api.plugin.meta.PluginDependency;
 
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public class DummyPluginDescription implements PluginDescription {
 	@Override
 	public String getId() {
 		return null;
-	}
-
-	@Override
-	public Optional<String> getName() {
-		return Optional.empty();
-	}
-
-	@Override
-	public Optional<String> getVersion() {
-		return Optional.empty();
-	}
-
-	@Override
-	public Optional<String> getDescription() {
-		return Optional.empty();
-	}
-
-	@Override
-	public Optional<String> getUrl() {
-		return Optional.empty();
 	}
 
 	@Override
@@ -63,15 +41,5 @@ public class DummyPluginDescription implements PluginDescription {
 	@Override
 	public Collection<PluginDependency> getDependencies() {
 		return null;
-	}
-
-	@Override
-	public Optional<PluginDependency> getDependency(String id) {
-		return Optional.empty();
-	}
-
-	@Override
-	public Optional<Path> getSource() {
-		return Optional.empty();
 	}
 }

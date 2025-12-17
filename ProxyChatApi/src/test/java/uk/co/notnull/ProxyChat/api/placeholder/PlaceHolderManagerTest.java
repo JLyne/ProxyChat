@@ -27,6 +27,8 @@ import net.kyori.adventure.text.Component;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Objects;
+
 public class PlaceHolderManagerTest {
   private static final long TIMEOUT = 1000;
   private static final ProxyChatContext EMPTY_CONTEXT = new ProxyChatContext();
@@ -126,16 +128,14 @@ public class PlaceHolderManagerTest {
     @Override
     public boolean equals(final Object o) {
       if (o == this) return true;
-      if (!(o instanceof PlaceHolderManagerTest.HelperPlaceholder)) return false;
-      final PlaceHolderManagerTest.HelperPlaceholder other = (PlaceHolderManagerTest.HelperPlaceholder) o;
+      if (!(o instanceof HelperPlaceholder other)) return false;
       final Object this$name = this.getName();
       final Object other$name = other.getName();
-      if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+      if (!Objects.equals(this$name, other$name)) return false;
       final Object this$replacement = this.getReplacement();
       final Object other$replacement = other.getReplacement();
-      if (this$replacement == null ? other$replacement != null : !this$replacement.equals(other$replacement)) return false;
-      return true;
-    }
+      return Objects.equals(this$replacement, other$replacement);
+	}
 
     @Override
     public int hashCode() {

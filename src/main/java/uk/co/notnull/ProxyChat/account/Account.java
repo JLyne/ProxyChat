@@ -33,6 +33,7 @@ import uk.co.notnull.ProxyChat.module.ProxyChatModuleManager;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.util.DummyPlayer;
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
@@ -41,7 +42,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Account implements ProxyChatAccount {
   protected static ChannelType defaultChannelType = ChannelType.LOCAL;
 
-  private UUID uuid;
+  private final UUID uuid;
 
   private final Player player;
 
@@ -63,7 +64,7 @@ public class Account implements ProxyChatAccount {
     player = (Player) ProxyChatAccountManager.getCommandSource(uuid).orElse(new DummyPlayer(uuid));
 
     if(player instanceof DummyPlayer) {
-      ProxyChat.getInstance().getLogger().error("Couldn't get player for uuid " + uuid + ". This is probably a bug!");
+      ProxyChat.getInstance().getLogger().error("Couldn't get player for uuid {}. This is probably a bug!", uuid);
     }
 
     channelType = defaultChannelType;
@@ -256,13 +257,9 @@ public class Account implements ProxyChatAccount {
   @Override
   public boolean equals(final Object o) {
     if (o == this) return true;
-    if (!(o instanceof Account)) return false;
-    final Account other = (Account) o;
-    if (!other.canEqual((Object) this)) return false;
-    final Object this$uuid = this.uuid;
-    final Object other$uuid = other.uuid;
-    if (this$uuid == null ? other$uuid != null : !this$uuid.equals(other$uuid)) return false;
-    return true;
+    if (!(o instanceof Account other)) return false;
+    if (!other.canEqual(this)) return false;
+    return Objects.equals(this.uuid, other.uuid);
   }
 
   protected boolean canEqual(final Object other) {

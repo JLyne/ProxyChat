@@ -37,7 +37,6 @@ public final class TestHelper {
   private static boolean hasInitRun = false;
 
   public static void initProxyChat() {
-    try {
       if (!hasInitRun) {
         ProxyServer proxyServer = new DummyProxyServer();
         PluginDescription desc = new DummyPluginDescription();
@@ -46,9 +45,6 @@ public final class TestHelper {
         hasInitRun = true;
       }
       Configuration.load();
-    } catch (final java.lang.Throwable $ex) {
-      throw lombok.Lombok.sneakyThrow($ex);
-    }
   }
 
   public static void deinitProxyChat() throws IOException {

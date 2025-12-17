@@ -40,40 +40,31 @@ public final class TestDatabase {
   private static String host;
   private static int port;
 
-  public static void startDatabase() {
-    try {
-      final int limit = 100;
-      int count = 0;
-      String actualBaseDir;
-      String actualDataDir;
-      do {
-        actualBaseDir = baseDir + count;
-      } while ((++count < limit) && (new File(actualBaseDir)).exists());
-      Preconditions.checkElementIndex(count, limit, "count must be less than " + limit);
-      actualDataDir = actualBaseDir + "/data";
-      final DBConfiguration config = DBConfigurationBuilder.newBuilder().setPort(0).setSocket(localhost).setBaseDir(actualBaseDir).setDataDir(actualDataDir).build();
-      databaseInstance = DB.newEmbeddedDB(config);
-      databaseInstance.start();
-      port = databaseInstance.getConfiguration().getPort();
-      host = localhost + ':' + port;
-      databaseInstance.createDB("test");
-    } catch (final ManagedProcessException $ex) {
-      throw lombok.Lombok.sneakyThrow($ex);
-    }
+  public static void startDatabase() throws ManagedProcessException {
+     final int limit = 100;
+     int count = 0;
+     String actualBaseDir;
+     String actualDataDir;
+     do {
+       actualBaseDir = baseDir + count;
+     } while ((++count < limit) && (new File(actualBaseDir)).exists());
+     Preconditions.checkElementIndex(count, limit, "count must be less than " + limit);
+     actualDataDir = actualBaseDir + "/data";
+     final DBConfiguration config = DBConfigurationBuilder.newBuilder().setPort(0).setSocket(localhost).setBaseDir(actualBaseDir).setDataDir(actualDataDir).build();
+     databaseInstance = DB.newEmbeddedDB(config);
+     databaseInstance.start();
+     port = databaseInstance.getConfiguration().getPort();
+     host = localhost + ':' + port;
+     databaseInstance.createDB("test");
   }
 
-  public static void stopDatabase() {
+  public static void stopDatabase() throws ManagedProcessException {
+    databaseInstance.stop();
     try {
-      databaseInstance.stop();
-      try {
-        Thread.sleep(500);
-        FileUtils.deleteDirectory(new File(databaseInstance.getConfiguration().getBaseDir()));
-      } catch (IOException | InterruptedException e) {
-      }
-    } catch (final ManagedProcessException $ex) {
-      throw lombok.Lombok.sneakyThrow($ex);
+      Thread.sleep(500);
+      FileUtils.deleteDirectory(new File(databaseInstance.getConfiguration().getBaseDir()));
+    } catch (IOException | InterruptedException e) {
     }
-    // Ignore
   }
 
   public static Connection getDatabaseInstance() throws SQLException {

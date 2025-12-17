@@ -27,7 +27,6 @@ import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccountStorage;
 import uk.co.notnull.ProxyChat.api.enums.ChannelType;
 import uk.co.notnull.ProxyChat.util.LoggerHelper;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -44,7 +43,6 @@ import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
-import lombok.NonNull;
 
 public class AccountSQLStorage implements ProxyChatAccountStorage {
   private final Connection connection;
@@ -63,11 +61,11 @@ public class AccountSQLStorage implements ProxyChatAccountStorage {
   private final String tableIgnoresColumnUser;
   private final String tableIgnoresColumnIgnores;
 
-  @NonNull private PreparedStatement saveAccount;
-  @NonNull private PreparedStatement loadAccount;
-  @NonNull private PreparedStatement deleteIgnores;
-  @NonNull private PreparedStatement addIgnore;
-  @NonNull private PreparedStatement getIgnores;
+  private PreparedStatement saveAccount;
+  private PreparedStatement loadAccount;
+  private PreparedStatement deleteIgnores;
+  private PreparedStatement addIgnore;
+  private PreparedStatement getIgnores;
 
   private static byte[] getBytesFromUUID(UUID uuid) {
     ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
@@ -99,11 +97,7 @@ public class AccountSQLStorage implements ProxyChatAccountStorage {
   }
 
   private static String urlEncode(String message) {
-	 try {
-		return URLEncoder.encode(message, StandardCharsets.UTF_8.name());
-	 } catch (final UnsupportedEncodingException $ex) {
-		  throw lombok.Lombok.sneakyThrow($ex);
-	  }
+	  return URLEncoder.encode(message, StandardCharsets.UTF_8);
   }
 
   public AccountSQLStorage(
@@ -160,65 +154,57 @@ public class AccountSQLStorage implements ProxyChatAccountStorage {
 	@Override
 	public void save(ProxyChatAccount account) {
 		try {
-			try {
-				byte[] uuidBytes = getBytesFromUUID(account.getUniqueId());
-				// deleteIgnores
-				deleteIgnores.setBytes(1, uuidBytes);
-				deleteIgnores.execute();
-				deleteIgnores.clearParameters();
-				// saveAccount
-				saveAccount.setBytes(1, uuidBytes);
-				saveAccount.setString(2, account.getName());
-				saveAccount.setString(3, account.getChannelType().name());
-				saveAccount.setBoolean(4, account.isVanished());
-				saveAccount.setBoolean(5, account.hasMessangerEnabled());
-				saveAccount.setBoolean(6, account.hasSocialSpyEnabled());
-				saveAccount.setBoolean(7, account.hasLocalSpyEnabled());
-				saveAccount.setTimestamp(8, account.getMutedUntil());
-				saveAccount.executeUpdate();
-				saveAccount.clearParameters();
-				// addIgnore
-				addIgnore.setBytes(1, uuidBytes);
-				for (UUID uuid : account.getIgnored()) {
-					addIgnore.setBytes(2, getBytesFromUUID(uuid));
-					addIgnore.executeUpdate();
-				}
-				addIgnore.clearParameters();
-			} catch (SQLException e) {
-				LoggerHelper.error("Could not save user " + account.getUniqueId() + " to database!", e);
+			byte[] uuidBytes = getBytesFromUUID(account.getUniqueId());
+			// deleteIgnores
+			deleteIgnores.setBytes(1, uuidBytes);
+			deleteIgnores.execute();
+			deleteIgnores.clearParameters();
+			// saveAccount
+			saveAccount.setBytes(1, uuidBytes);
+			saveAccount.setString(2, account.getName());
+			saveAccount.setString(3, account.getChannelType().name());
+			saveAccount.setBoolean(4, account.isVanished());
+			saveAccount.setBoolean(5, account.hasMessangerEnabled());
+			saveAccount.setBoolean(6, account.hasSocialSpyEnabled());
+			saveAccount.setBoolean(7, account.hasLocalSpyEnabled());
+			saveAccount.setTimestamp(8, account.getMutedUntil());
+			saveAccount.executeUpdate();
+			saveAccount.clearParameters();
+			// addIgnore
+			addIgnore.setBytes(1, uuidBytes);
+			for (UUID uuid : account.getIgnored()) {
+				addIgnore.setBytes(2, getBytesFromUUID(uuid));
+				addIgnore.executeUpdate();
 			}
-		} catch (final java.lang.Throwable $ex) {
-			throw lombok.Lombok.sneakyThrow($ex);
+			addIgnore.clearParameters();
+		} catch (SQLException e) {
+			LoggerHelper.error("Could not save user " + account.getUniqueId() + " to database!", e);
 		}
 	}
 
 	@Override
 	public AccountInfo load(UUID uuid) {
 		try {
-			try {
-				byte[] uuidBytes = getBytesFromUUID(uuid);
-				// loadAccount
-				loadAccount.setBytes(1, uuidBytes);
-				try (ResultSet resultLoadAccount = loadAccount.executeQuery()) {
-					loadAccount.clearParameters();
-					if (!resultLoadAccount.next()) return new AccountInfo(new Account(uuid), true, true);
-					// getIgnores
-					getIgnores.setBytes(1, uuidBytes);
-					try (ResultSet resultGetIgnores = getIgnores.executeQuery()) {
-						getIgnores.clearParameters();
-						BlockingQueue<UUID> ignores = new LinkedBlockingQueue<>();
-						while (resultGetIgnores.next()) {
-							ignores.add(getUUIDFromBytes(resultGetIgnores.getBytes(tableIgnoresColumnIgnores)));
-						}
-						return new AccountInfo(new Account(uuid, ChannelType.valueOf(resultLoadAccount.getString(tableAccountsColumnChannelType)), resultLoadAccount.getBoolean(tableAccountsColumnVanished), resultLoadAccount.getBoolean(tableAccountsColumnMessenger), resultLoadAccount.getBoolean(tableAccountsColumnSocialSpy), resultLoadAccount.getBoolean(tableAccountsColumnLocalSpy), ignores, resultLoadAccount.getTimestamp(tableAccountsColumnMutedUntil)), true, false);
+			byte[] uuidBytes = getBytesFromUUID(uuid);
+			// loadAccount
+			loadAccount.setBytes(1, uuidBytes);
+			try (ResultSet resultLoadAccount = loadAccount.executeQuery()) {
+				loadAccount.clearParameters();
+				if (!resultLoadAccount.next()) return new AccountInfo(new Account(uuid), true, true);
+				// getIgnores
+				getIgnores.setBytes(1, uuidBytes);
+				try (ResultSet resultGetIgnores = getIgnores.executeQuery()) {
+					getIgnores.clearParameters();
+					BlockingQueue<UUID> ignores = new LinkedBlockingQueue<>();
+					while (resultGetIgnores.next()) {
+						ignores.add(getUUIDFromBytes(resultGetIgnores.getBytes(tableIgnoresColumnIgnores)));
 					}
+					return new AccountInfo(new Account(uuid, ChannelType.valueOf(resultLoadAccount.getString(tableAccountsColumnChannelType)), resultLoadAccount.getBoolean(tableAccountsColumnVanished), resultLoadAccount.getBoolean(tableAccountsColumnMessenger), resultLoadAccount.getBoolean(tableAccountsColumnSocialSpy), resultLoadAccount.getBoolean(tableAccountsColumnLocalSpy), ignores, resultLoadAccount.getTimestamp(tableAccountsColumnMutedUntil)), true, false);
 				}
-			} catch (SQLException e) {
-				LoggerHelper.error("Could not load user " + uuid + " from database!", e);
-				return new AccountInfo(new Account(uuid), true, true);
 			}
-		} catch (final java.lang.Throwable $ex) {
-			throw lombok.Lombok.sneakyThrow($ex);
+		} catch (SQLException e) {
+			LoggerHelper.error("Could not load user " + uuid + " from database!", e);
+			return new AccountInfo(new Account(uuid), true, true);
 		}
 	}
 

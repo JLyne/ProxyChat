@@ -26,6 +26,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import ch.vorburger.exec.ManagedProcessException;
 import com.google.common.collect.ImmutableMap;
 import uk.co.notnull.ProxyChat.TestHelper;
 import uk.co.notnull.ProxyChat.api.account.AccountInfo;
@@ -56,7 +57,7 @@ public class AccountSQLStorageTest {
   private Connection connection;
 
   @BeforeClass
-  public static void setUpBeforeClass() {
+  public static void setUpBeforeClass() throws ManagedProcessException {
     Module.setTest_mode(true);
 
     TestHelper.initProxyChat();
@@ -64,7 +65,7 @@ public class AccountSQLStorageTest {
   }
 
   @AfterClass
-  public static void tearDownAfterClass() {
+  public static void tearDownAfterClass() throws ManagedProcessException {
     TestDatabase.stopDatabase();
   }
 

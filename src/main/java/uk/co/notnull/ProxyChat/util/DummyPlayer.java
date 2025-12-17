@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.velocitypowered.api.network.HandshakeIntent;
 import com.velocitypowered.api.network.ProtocolState;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.permission.Tristate;
@@ -216,6 +217,11 @@ public class DummyPlayer implements Player {
   }
 
   @Override
+  public Optional<String> getRawVirtualHost() {
+    return Optional.empty();
+  }
+
+  @Override
   public boolean isActive() {
     return false;
   }
@@ -227,6 +233,11 @@ public class DummyPlayer implements Player {
 
   @Override
   public ProtocolState getProtocolState() {
+    return null;
+  }
+
+  @Override
+  public HandshakeIntent getHandshakeIntent() {
     return null;
   }
 

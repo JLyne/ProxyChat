@@ -1,0 +1,36 @@
+[versions]
+velocityApi = "3.4.0-SNAPSHOT"
+config = "1.4.3"
+shadow = "9.3.0"
+vanishBridge = "2.0-SNAPSHOT"
+luckperms = "5.5"
+platformDetection="2.2"
+proxyDiscordApi="1.2"
+mockito = "3.6.0"
+powermock = "2.0.9"
+junit = "4.13.2"
+spotbugs = "4.2.3"
+mariadbClient = "2.7.11"
+mariadbServer = "2.6.0"
+commonsIO = "2.15.1"
+slf4j = "1.7.36"
+
+[libraries]
+velocityApi = { group = "com.velocitypowered", name = "velocity-api", version.ref="velocityApi" }
+vanishBridgeApi = { group = "uk.co.notnull", name = "VanishBridge-api", version.ref="vanishBridge" }
+config = { group = "com.typesafe", name = "config", version.ref="config" }
+luckpermsApi = { group = "net.luckperms", name = "api", version.ref="luckperms" }
+platformDetection = { group = "uk.co.notnull", name = "PlatformDetection-velocity", version.ref="platformDetection" }
+proxyDiscordApi = { group = "uk.co.notnull", name = "ProxyDiscordAPI", version.ref="proxyDiscordApi" }
+junit = { group = "junit", name = "junit", version.ref="junit" }
+mockito = { group = "org.mockito", name = "mockito-core", version.ref="mockito" }
+powermockMockito = { group = "org.powermock", name = "powermock-api-mockito2", version.ref="powermock" }
+powermockJunit = { group = "org.powermock", name = "powermock-module-junit4", version.ref="powermock" }
+spotbugsAnnotations = { group = "com.github.spotbugs", name = "spotbugs-annotations", version.ref="spotbugs" }
+commonsIO = { group = "commons-io", name = "commons-io", version.ref="commonsIO" }
+mariadbServer = { group = "ch.vorburger.mariaDB4j", name = "mariaDB4j", version.ref="mariadbServer" }
+mariadbClient = { group = "org.mariadb.jdbc", name = "mariadb-java-client", version.ref="mariadbClient" }
+slf4jNop = { group = "org.slf4j", name = "slf4j-nop", version.ref="slf4j" }
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

@@ -21,5 +21,5 @@
 
 rootProject.name = "ProxyChat"
 
-include "ProxyChatApi"
+include("ProxyChatApi")
 

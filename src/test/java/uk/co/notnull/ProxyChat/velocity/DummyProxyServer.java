@@ -76,6 +76,11 @@ public class DummyProxyServer implements ProxyServer {
     }
 
     @Override
+    public boolean isShuttingDown() {
+        return false;
+    }
+
+    @Override
     public void closeListeners() {
 
     }

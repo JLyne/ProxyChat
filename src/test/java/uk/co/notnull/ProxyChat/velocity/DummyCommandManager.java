@@ -21,6 +21,7 @@
 
 package uk.co.notnull.ProxyChat.velocity;
 
+import com.mojang.brigadier.suggestion.Suggestions;
 import com.velocitypowered.api.command.BrigadierCommand;
 import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandManager;
@@ -31,6 +32,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class DummyCommandManager implements CommandManager {
@@ -88,6 +90,16 @@ public class DummyCommandManager implements CommandManager {
 
 	@Override
 	public CompletableFuture<Boolean> executeImmediatelyAsync(CommandSource commandSource, String s) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<List<String>> offerSuggestions(CommandSource commandSource, String s) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<Suggestions> offerBrigadierSuggestions(CommandSource commandSource, String s) {
 		return null;
 	}
 

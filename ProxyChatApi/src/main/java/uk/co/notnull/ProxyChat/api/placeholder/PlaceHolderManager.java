@@ -24,16 +24,12 @@ package uk.co.notnull.ProxyChat.api.placeholder;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import uk.co.notnull.ProxyChat.api.utils.TextReplacementRenderer;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.PatternReplacementResult;
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
 
 public final class PlaceHolderManager {
   public static final Character placeholderChar = '%';
@@ -52,29 +48,26 @@ public final class PlaceHolderManager {
     final List<ProxyChatPlaceHolder> placeholders =
         getApplicableStream(context).toList();
 
-    Function<TextComponent.Builder, ComponentLike> replacement = (TextComponent.Builder match) -> {
-      String placeholderName = match.content().substring(1, match.content().length() -1);
+    TextReplacementConfig config = TextReplacementConfig.builder()
+            .match(placeholderPattern).replacement(match -> {
+              String placeholderName = match.content().substring(1, match.content().length() -1);
 
-      if(placeholderName.charAt(0) == '%') {
-        return match;
-      } else {
-        Optional<ProxyChatPlaceHolder> placeholder =
-                placeholders.stream().filter(p -> p.matchesName(placeholderName)).findFirst();
+              if(placeholderName.charAt(0) == '%') {
+                return match;
+              } else {
+                Optional<ProxyChatPlaceHolder> placeholder =
+                        placeholders.stream().filter(p -> p.matchesName(placeholderName)).findFirst();
 
-        if(placeholder.isPresent()) {
-          match.content("");
-          match.append(placeholder.get().getReplacementComponent(placeholderName, context));
-        }
-      }
+                if(placeholder.isPresent()) {
+                  match.content("");
+                  match.append(placeholder.get().getReplacementComponent(placeholderName, context));
+                }
+              }
 
-      return match;
-    };
+              return match;
+            }).build();
 
-    return TextReplacementRenderer.INSTANCE.render(message,
-                                                   new TextReplacementRenderer.State(placeholderPattern,
-                                                                                     (result, builder) -> replacement.apply(builder),
-                                                                                     (index, replaced) -> PatternReplacementResult.REPLACE));
-
+    return message.replaceText(config);
   }
 
   public static String processMessage(String message, ProxyChatContext context) {

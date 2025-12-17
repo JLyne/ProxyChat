@@ -23,6 +23,8 @@ package uk.co.notnull.ProxyChat.account;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.DisconnectEvent;
+import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import org.jetbrains.annotations.NotNull;
@@ -31,8 +33,6 @@ import uk.co.notnull.ProxyChat.api.account.AccountInfo;
 import uk.co.notnull.ProxyChat.api.account.AccountManager;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.enums.AccountType;
-import uk.co.notnull.ProxyChat.api.event.ProxyChatJoinEvent;
-import uk.co.notnull.ProxyChat.api.event.ProxyChatLeaveEvent;
 
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 
@@ -140,13 +140,13 @@ public class ProxyChatAccountManager extends AccountManager {
     return newPlayers.contains(uuid);
   }
 
-  @Subscribe(priority = Short.MAX_VALUE)
-  public void onPlayerConnect(ProxyChatJoinEvent event) {
+  @Subscribe
+  public void onPlayerConnect(PostLoginEvent event) {
     loadAccount(event.getPlayer().getUniqueId());
   }
 
-  @Subscribe(priority = Short.MIN_VALUE)
-  public void onPlayerDisconnect(ProxyChatLeaveEvent event) {
+  @Subscribe
+  public void onPlayerDisconnect(DisconnectEvent event) {
     unloadAccount(event.getPlayer().getUniqueId());
   }
 }

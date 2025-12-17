@@ -21,15 +21,14 @@
 
 package uk.co.notnull.ProxyChat.listener;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.proxy.Player;
-import uk.co.notnull.ProxyChat.api.event.ProxyChatServerSwitchEvent;
 import uk.co.notnull.ProxyChat.module.ProxyChatModuleManager;
 
 public class EmojiSuggestionsListener {
-  @Subscribe(order = PostOrder.LATE)
-  public void onPlayerServerSwitch(ProxyChatServerSwitchEvent e) {
+  @Subscribe
+  public void onPlayerServerSwitch(ServerPostConnectEvent e) {
     Player player = e.getPlayer();
     player.setCustomChatCompletions(ProxyChatModuleManager.EMOJI_MODULE.getEmojiSuggestions());
   }

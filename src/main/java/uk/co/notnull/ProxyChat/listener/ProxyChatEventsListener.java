@@ -21,34 +21,23 @@
 
 package uk.co.notnull.ProxyChat.listener;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
-import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.proxy.Player;
 import uk.co.notnull.ProxyChat.ProxyChat;
 import uk.co.notnull.ProxyChat.api.event.ProxyChatJoinEvent;
 import uk.co.notnull.ProxyChat.api.event.ProxyChatLeaveEvent;
-import uk.co.notnull.ProxyChat.api.event.ProxyChatServerSwitchEvent;
 
 public class ProxyChatEventsListener {
-  @Subscribe(order = PostOrder.EARLY)
+  @Subscribe(priority = Short.MAX_VALUE)
   public void onPlayerServerSwitch(PlayerChooseInitialServerEvent e) {
     Player player = e.getPlayer();
 
     ProxyChat.getInstance().getProxy().getEventManager().fireAndForget(new ProxyChatJoinEvent(player));
   }
 
-  @Subscribe(order = PostOrder.LATE)
-  public void onPlayerServerSwitch(ServerPostConnectEvent e) {
-    Player player = e.getPlayer();
-
-    ProxyChat.getInstance().getProxy().getEventManager().fireAndForget(
-            new ProxyChatServerSwitchEvent(player, player.getCurrentServer().get().getServer()));
-  }
-
-  @Subscribe(order = PostOrder.LATE)
+  @Subscribe(priority = Short.MAX_VALUE)
   public void onPlayerLeave(DisconnectEvent e) {
     Player player = e.getPlayer();
 

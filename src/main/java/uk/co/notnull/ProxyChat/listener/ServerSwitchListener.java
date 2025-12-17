@@ -21,21 +21,20 @@
 
 package uk.co.notnull.ProxyChat.listener;
 
-import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.proxy.Player;
-import uk.co.notnull.ProxyChat.api.event.ProxyChatServerSwitchEvent;
 import uk.co.notnull.ProxyChat.message.MessagesService;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 import uk.co.notnull.ProxyChat.permission.PermissionManager;
 
 public class ServerSwitchListener {
-  @Subscribe(order = PostOrder.LATE)
-  public void onPlayerServerSwitch(ProxyChatServerSwitchEvent e) {
+  @Subscribe
+  public void onPlayerServerSwitch(ServerPostConnectEvent e) {
     Player player = e.getPlayer();
 
     if (PermissionManager.hasPermission(player, Permission.MESSAGE_SWITCH)) {
-      MessagesService.sendSwitchMessage(player, e.getFrom());
+      player.getCurrentServer().ifPresent(s -> MessagesService.sendSwitchMessage(player, s.getServer()));
     }
   }
 }

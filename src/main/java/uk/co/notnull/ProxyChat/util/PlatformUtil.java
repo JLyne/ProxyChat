@@ -76,7 +76,13 @@ public final class PlatformUtil {
 			return ProxyChat.getInstance().getProxy().getVersion().getVersion();
 		}
 
-		return platformDetection != null ? platformDetection.getPlatformVersion(player.getUniqueId()) : "Unknown";
+		if (platformDetection == null) {
+			return "Unknown";
+		}
+
+		String version = platformDetection.getPlatformVersion(player.getUniqueId());
+
+		return version != null ? version : "Unknown";
 	}
 
 	public static TextComponent getHover(ProxyChatAccount player) {

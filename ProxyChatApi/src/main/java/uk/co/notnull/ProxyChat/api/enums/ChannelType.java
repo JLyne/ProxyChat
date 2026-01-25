@@ -33,10 +33,10 @@ import java.util.function.Predicate;
  */
 public enum ChannelType {
   GLOBAL(true, true, false),
-  LOCAL(true, true, false, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED, ProxyChatContext.HAS_NO_TARGET, ProxyChatContext.HAS_SERVER),
-  MULTICAST(true, false, false, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED, ProxyChatContext.HAS_NO_TARGET, ProxyChatContext.HAS_SERVER),
+  LOCAL(true, true, false, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.HAS_NO_TARGET, ProxyChatContext.HAS_SERVER),
+  MULTICAST(true, false, false, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.HAS_NO_TARGET, ProxyChatContext.HAS_SERVER),
   STAFF(false, true, false),
-  PRIVATE(true, true, false, ProxyChatContext.HAS_TARGET, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED),
+  PRIVATE(true, true, false, ProxyChatContext.HAS_TARGET, ProxyChatContext.HAS_MESSAGE),
   JOIN(false, false, true, ProxyChatContext.HAS_NO_MESSAGE, ProxyChatContext.HAS_NO_TARGET),
   LEAVE(false, false, true, ProxyChatContext.HAS_NO_MESSAGE, ProxyChatContext.HAS_NO_TARGET),
   SWITCH(false, false, true, ProxyChatContext.HAS_NO_MESSAGE, ProxyChatContext.HAS_SERVER, ProxyChatContext.HAS_NO_TARGET),
@@ -45,7 +45,7 @@ public enum ChannelType {
   private final boolean ignorable;
   private final boolean loggable;
   private final boolean respectVanish;
-  private Predicate<ProxyChatContext>[] requirements = new Predicate[]{ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED, ProxyChatContext.HAS_NO_TARGET};
+  private Predicate<ProxyChatContext>[] requirements = new Predicate[]{ProxyChatContext.HAS_MESSAGE, ProxyChatContext.HAS_NO_TARGET};
 
   ChannelType(boolean ignorable, boolean loggable, boolean respectVanish) {
     this.ignorable = ignorable;

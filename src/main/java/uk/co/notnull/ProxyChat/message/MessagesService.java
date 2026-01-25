@@ -50,16 +50,11 @@ public final class MessagesService {
 	public static void sendPrivateMessage(CommandSource sender, CommandSource target, String message) throws InvalidContextError {
 		ProxyChatContext context = new Context(sender, target, message);
 		context.setChannel(ChannelType.PRIVATE);
-		boolean allowed = parseMessage(context, true);
-
-		if(allowed) {
-			sendPrivateMessage(context);
-		}
+		sendPrivateMessage(context);
 	}
 
 	public static void sendPrivateMessage(ProxyChatContext context) throws InvalidContextError {
-		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_TARGET,
-						ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
+		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_TARGET, ProxyChatContext.HAS_MESSAGE);
 
 		ProxyChatAccount senderAccount = context.getSender().orElseThrow();
 		ProxyChatAccount targetAccount = context.getTarget().orElseThrow();
@@ -82,7 +77,7 @@ public final class MessagesService {
 		if (messageSender.isPresent()) {
 			MessagesService.sendMessage(sender, messageSender.get());
 
-			preProcessMessage(context, Format.MESSAGE_TARGET, filterPrivateMessages, true)
+			preProcessMessage(context, Format.MESSAGE_TARGET, filterPrivateMessages)
 					.ifPresent((Component message) -> MessagesService.sendMessage(target, message));
 
 			if (ModuleManager.isModuleActive(ProxyChatModuleManager.SPY_MODULE)
@@ -108,11 +103,7 @@ public final class MessagesService {
 	public static void sendChannelMessage(CommandSource sender, ChannelType channel, String message) throws InvalidContextError {
 		ProxyChatContext context = new Context(sender, message);
 		context.setChannel(channel);
-		boolean allowed = parseMessage(context, true);
-
-		if(allowed) {
-			sendChannelMessage(context);
-		}
+		sendChannelMessage(context);
 	}
 
 	public static void sendChannelMessage(ProxyChatContext context) throws InvalidContextError {
@@ -189,7 +180,7 @@ public final class MessagesService {
 	}
 
 	public static void sendTransparentMessage(ProxyChatContext context) throws InvalidContextError {
-		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.IS_PARSED);
+		context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.HAS_MESSAGE);
 
 		ProxyChatAccount account = context.getSender().orElseThrow();
 		RegisteredServer localServer = context.getServer().orElse(account.getServer().orElse(null));
@@ -222,38 +213,23 @@ public final class MessagesService {
 		sendChannelMessage(player, ChannelType.SWITCH, null); //FIXME: Server?
 	}
 
-	public static Optional<Component> preProcessMessage(ProxyChatContext context) throws InvalidContextError {
+	private static Optional<Component> preProcessMessage(ProxyChatContext context) throws InvalidContextError {
 		context.require(ProxyChatContext.HAS_CHANNEL);
 		return preProcessMessage(context, Format.getFormatForChannel(context.getChannel().orElseThrow()), true);
 	}
 
-	public static Optional<Component> preProcessMessage(ProxyChatContext context, Format format, boolean runFilters) {
+	private static Optional<Component> preProcessMessage(ProxyChatContext context, Format format, boolean runFilters) {
 		return preProcessMessage(context, format, runFilters, false);
 	}
 
-	public static Optional<Component> preProcessMessage(ProxyChatContext context, Format format,
+	private static Optional<Component> preProcessMessage(ProxyChatContext context, Format format,
 			boolean runFilters, boolean ignoreBlockMessageExceptions) throws InvalidContextError {
 		if(context.hasMessage()) {
-			context.require(ProxyChatContext.HAS_SENDER, ProxyChatContext.IS_PARSED);
+			context.require(ProxyChatContext.HAS_SENDER);
 
-			ProxyChatAccount account = context.getSender().orElseThrow();
-			CommandSource player = ProxyChatAccountManager.getCommandSource(account).orElseThrow();
-
-			Component message = ComponentUtil.filterFormatting(context.getParsedMessage().orElseThrow(), account);
-
-			if (runFilters) {
-				try {
-					message = FilterManager.applyFilters(account, message);
-				} catch (BlockMessageException e) {
-					if (!ignoreBlockMessageExceptions) {
-						MessagesService.sendMessage(player, e.getComponent());
-
-						return Optional.empty();
-					}
-				}
+			if (!parseMessage(context, runFilters)) {
+				return Optional.empty();
 			}
-
-			context.setParsedMessage(message);
 		}
 
 		return Optional.of(PlaceHolderUtil.getFullFormatMessage(format, context));
@@ -268,22 +244,30 @@ public final class MessagesService {
 
 		ProxyChatAccount playerAccount = context.getSender().orElseThrow();
 		CommandSource player = ProxyChatAccountManager.getCommandSource(playerAccount).orElseThrow();
-		String message = context.getMessage().orElseThrow();
+		String filteredMessage = context.getMessage().orElseThrow();
+		String unfilteredMessage = context.getMessage().orElseThrow();
+
+		context.setParsedMessage(ComponentUtil.extractUrls(
+				ComponentUtil.filterFormatting(
+						ComponentUtil.untrustedMiniMessage.deserialize(unfilteredMessage), playerAccount)));
 
 		if(runFilters) {
 			try {
-				message = FilterManager.applyFilters(playerAccount, message);
-				context.setFilteredMessage(message);
+				filteredMessage = FilterManager.applyFilters(playerAccount, filteredMessage);
+				context.setFilteredMessage(filteredMessage);
+				context.setParsedFilteredMessage(
+						FilterManager.applyFilters(
+								playerAccount,
+								ComponentUtil.extractUrls(
+										ComponentUtil.filterFormatting(
+												ComponentUtil.untrustedMiniMessage.deserialize(filteredMessage),
+												playerAccount))));
 			} catch (BlockMessageException e) {
 				MessagesService.sendMessage(player, e.getComponent());
 
 				return false;
 			}
 		}
-
-		context.setParsedMessage(ComponentUtil.extractUrls(
-				ComponentUtil.filterFormatting(
-						ComponentUtil.untrustedMiniMessage.deserialize(message), playerAccount)));
 
 		return true;
 	}

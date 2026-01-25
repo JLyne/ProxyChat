@@ -124,6 +124,7 @@ public class ProxyChatContext {
   private String message;
   private String filteredMessage;
   private Component parsedMessage;
+  private Component parsedFilteredMessage;
   private ChannelType channel;
   private RegisteredServer server;
   private boolean parsed = false;
@@ -135,6 +136,7 @@ public class ProxyChatContext {
     message = null;
     filteredMessage = null;
     parsedMessage = null;
+    parsedFilteredMessage = null;
     channel = null;
     server = null;
   }
@@ -236,14 +238,26 @@ public class ProxyChatContext {
   }
 
   public Optional<String> getMessage() {
-    return Optional.ofNullable(message);
+    return filtered ? Optional.of(filteredMessage) : Optional.of(message);
   }
 
   public Optional<String> getFilteredMessage() {
     return Optional.ofNullable(filteredMessage);
   }
 
+  public Optional<String> getUnfilteredMessage() {
+    return Optional.ofNullable(message);
+  }
+
   public Optional<Component> getParsedMessage() {
+    return filtered ? Optional.of(parsedFilteredMessage) : Optional.of(parsedMessage);
+  }
+
+  public Optional<Component> getParsedFilteredMessage() {
+    return Optional.ofNullable(parsedFilteredMessage);
+  }
+
+  public Optional<Component> getParsedUnfilteredMessage() {
     return Optional.ofNullable(parsedMessage);
   }
 
@@ -263,6 +277,11 @@ public class ProxyChatContext {
   public void setParsedMessage(Component message) {
     parsed = true;
     parsedMessage = message;
+  }
+
+  public void setParsedFilteredMessage(Component message) {
+    filtered = true;
+    parsedFilteredMessage = message;
   }
 
   // Fill the requirementsNameCache

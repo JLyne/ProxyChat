@@ -236,10 +236,16 @@ public final class PlaceHolders {
     PlaceHolderManager.registerPlaceholder(
         new PlaceHolder(
                 "message",
-                context -> PlaceHolderUtil.escapePlaceholders(context.getFilteredMessage().orElse(context.getMessage().get())),
+                context -> PlaceHolderUtil.escapePlaceholders(context.getMessage().get()),
                 (ComponentReplacementSupplier) context -> context.getParsedMessage().get(),
                 ProxyChatContext.HAS_MESSAGE)
             .createAliases("command", "unknown_server"));
+    PlaceHolderManager.registerPlaceholder(
+        new PlaceHolder(
+                "unfiltered_message",
+                context -> PlaceHolderUtil.escapePlaceholders(context.getUnfilteredMessage().get()),
+                (ComponentReplacementSupplier) context -> context.getParsedUnfilteredMessage().get(),
+                ProxyChatContext.HAS_MESSAGE));
     PlaceHolderManager.registerPlaceholder(
         new PlaceHolder("network_online", context -> getTotalPlayerCount()));
     PlaceHolderManager.registerPlaceholder(

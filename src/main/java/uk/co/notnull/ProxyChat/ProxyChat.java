@@ -23,6 +23,7 @@ package uk.co.notnull.ProxyChat;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
+import com.google.inject.Inject;
 import com.typesafe.config.Config;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -59,7 +60,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Map;
-import javax.inject.Inject;
 import org.slf4j.Logger;
 
 public class ProxyChat implements ProxyChatApi {

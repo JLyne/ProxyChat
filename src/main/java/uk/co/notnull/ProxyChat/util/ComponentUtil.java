@@ -33,6 +33,8 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -77,9 +79,15 @@ public class ComponentUtil {
 			.decoration(TextDecoration.UNDERLINED, true).build();
 
 	private static final TextReplacementConfig extractUrlConfig = TextReplacementConfig.builder()
-			.match(Pattern.compile("https?://(?:(?:\\d{1,3}.){3}\\d{1,3}|[-\\w_.]+\\.\\w{2,})(?:/\\S*)?"))
-			.replacement(url -> url.style(urlStyle).clickEvent(ClickEvent.openUrl(url.content()))).build();
-
+			.match(Pattern.compile("https?://(?!.*[.]{2})(?![-.*])((?!.*@\\.)[-_\\w@^=%&:;~+.]+(?<![-.])/?)([-_\\w@^=%&$:;/~+.]+(?<!\\.))?[?]?([-_\\w=&@$!|~+]+)*#?([-_\\w=&@$!|~+]+)*"))
+			.replacement(url -> {
+				try {
+					URI uri = new URI(url.content());
+					return url.style(urlStyle).clickEvent(ClickEvent.openUrl(uri.toString()));
+				} catch (URISyntaxException ignored) {
+					return url; // Leave unchanged if invalid URI
+				}
+			}).build();
 
 	public static Component filterFormatting(Component message, ProxyChatAccount account) {
 	  Style.Builder style = Style.style();

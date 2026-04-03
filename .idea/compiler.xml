@@ -54,6 +54,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="ProxyChat.PaperBridge.main" options="-Xlint:all -Xlint:-processing" />
       <module name="uk.co.notnull.ProxyChat.ProxyChatApi.main" options="-Xlint:all -Xlint:-processing" />
       <module name="uk.co.notnull.ProxyChat.main" options="-Xlint:all -Xlint:-processing" />
     </option>

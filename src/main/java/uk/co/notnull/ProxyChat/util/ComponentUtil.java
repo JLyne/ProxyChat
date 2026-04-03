@@ -30,6 +30,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+
 import uk.co.notnull.ProxyChat.api.account.ProxyChatAccount;
 import uk.co.notnull.ProxyChat.api.permission.Permission;
 
@@ -70,7 +71,11 @@ public class ComponentUtil {
 	public static final TagResolver untrustedResolver = TagResolver.builder().resolvers(
 			StandardTags.color(),
 			StandardTags.decorations(),
-			StandardTags.reset()
+			StandardTags.reset(),
+			StandardTags.gradient(),
+			StandardTags.rainbow(),
+			StandardTags.pride(),
+			StandardTags.shadowColor()
 	).build();
 	public static final MiniMessage untrustedMiniMessage = MiniMessage.builder().tags(untrustedResolver).build();
 	public static final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -92,6 +97,7 @@ public class ComponentUtil {
 	public static Component filterFormatting(Component message, ProxyChatAccount account) {
 	  Style.Builder style = Style.style();
 	  TextColor color = message.color();
+	  ShadowColor shadowColor = message.shadowColor();
 
 	  //TODO: Permissions for these?
 	  style.clickEvent(message.clickEvent());
@@ -105,6 +111,10 @@ public class ComponentUtil {
 		}
 	  } else if(color != null && account.hasPermission(Permission.USE_CHAT_FORMAT_RGB)) {
 		style.color(color);
+	  }
+
+	  if(shadowColor != null && account.hasPermission(Permission.USE_CHAT_FORMAT_RGB)) {
+		style.shadowColor(shadowColor);
 	  }
 
 	  for(Map.Entry<TextDecoration, TextDecoration.State> entry : message.decorations().entrySet()) {

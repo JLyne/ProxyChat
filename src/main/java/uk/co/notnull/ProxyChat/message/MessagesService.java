@@ -137,7 +137,7 @@ public final class MessagesService {
 
 				//TODO: Move to module?
 				if (ModuleManager.isModuleActive(ProxyChatModuleManager.SPY_MODULE)) {
-					preProcessMessage(context, Format.LOCAL_SPY, false)
+					preProcessMessage(context.clone(), Format.LOCAL_SPY, false)
 							.ifPresent((Component message) -> sendToMatchingPlayers(
 									message, ProxyChatAccount::hasLocalSpyEnabled, spyRecipients));
 				}
@@ -236,7 +236,7 @@ public final class MessagesService {
 	}
 
 	public static boolean parseMessage(ProxyChatContext context, boolean runFilters) {
-		if(!context.hasMessage()) {
+		if(!context.hasMessage() || context.isParsed()) {
 			return true;
 		}
 

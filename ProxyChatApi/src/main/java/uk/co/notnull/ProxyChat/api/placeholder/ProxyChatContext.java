@@ -238,7 +238,7 @@ public class ProxyChatContext {
   }
 
   public Optional<String> getMessage() {
-    return filtered ? Optional.of(filteredMessage) : Optional.of(message);
+    return filtered ? Optional.ofNullable(filteredMessage) : Optional.ofNullable(message);
   }
 
   public Optional<String> getFilteredMessage() {
@@ -250,7 +250,7 @@ public class ProxyChatContext {
   }
 
   public Optional<Component> getParsedMessage() {
-    return filtered ? Optional.of(parsedFilteredMessage) : Optional.of(parsedMessage);
+    return filtered ? Optional.ofNullable(parsedFilteredMessage) : Optional.ofNullable(parsedMessage);
   }
 
   public Optional<Component> getParsedFilteredMessage() {
@@ -400,5 +400,19 @@ public class ProxyChatContext {
   @Override
   public String toString() {
     return "ProxyChatContext(sender=" + this.getSender() + ", target=" + this.getTarget() + ", message=" + this.getMessage() + ", filteredMessage=" + this.getFilteredMessage() + ", parsedMessage=" + this.getParsedMessage() + ", channel=" + this.getChannel() + ", server=" + this.getServer() + ", parsed=" + this.isParsed() + ", filtered=" + this.isFiltered() + ")";
+  }
+
+  public ProxyChatContext clone() {
+    ProxyChatContext context = new ProxyChatContext();
+    getSender().ifPresent(context::setSender);
+    getTarget().ifPresent(context::setTarget);
+    getMessage().ifPresent(context::setMessage);
+    getFilteredMessage().ifPresent(context::setFilteredMessage);
+    getParsedMessage().ifPresent(context::setParsedMessage);
+    getParsedFilteredMessage().ifPresent(context::setParsedFilteredMessage);
+    getChannel().ifPresent(context::setChannel);
+    getServer().ifPresent(context::setServer);
+
+    return context;
   }
 }

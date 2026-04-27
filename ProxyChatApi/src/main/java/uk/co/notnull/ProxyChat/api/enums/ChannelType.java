@@ -37,6 +37,8 @@ public enum ChannelType {
   MULTICAST(true, false, false, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.HAS_NO_TARGET, ProxyChatContext.HAS_SERVER),
   STAFF(false, true, false),
   PRIVATE(true, true, false, ProxyChatContext.HAS_TARGET, ProxyChatContext.HAS_MESSAGE),
+  LOCAL_EVENT(true, true, true, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.HAS_SERVER, ProxyChatContext.HAS_NO_TARGET),
+  MULTICAST_EVENT(true, false, true, ProxyChatContext.HAS_MESSAGE, ProxyChatContext.HAS_SERVER, ProxyChatContext.HAS_NO_TARGET),
   JOIN(false, false, true, ProxyChatContext.HAS_NO_MESSAGE, ProxyChatContext.HAS_NO_TARGET),
   LEAVE(false, false, true, ProxyChatContext.HAS_NO_MESSAGE, ProxyChatContext.HAS_NO_TARGET),
   SWITCH(false, false, true, ProxyChatContext.HAS_NO_MESSAGE, ProxyChatContext.HAS_SERVER, ProxyChatContext.HAS_NO_TARGET),

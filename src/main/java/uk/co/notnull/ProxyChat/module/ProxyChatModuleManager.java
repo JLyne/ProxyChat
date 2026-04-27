@@ -49,6 +49,7 @@ public class ProxyChatModuleManager extends ModuleManager {
   public static final JoinMessageModule JOIN_MESSAGE_MODULE = new JoinMessageModule();
   public static final LeaveMessageModule LEAVE_MESSAGE_MODULE = new LeaveMessageModule();
   public static final LocalChatModule LOCAL_CHAT_MODULE = new LocalChatModule();
+  public static final BridgeModule BRIDGE_MODULE = new BridgeModule();
   public static final LocalToModule LOCAL_TO_MODULE = new LocalToModule();
   public static final MessengerModule MESSENGER_MODULE = new MessengerModule();
   public static final MulticastChatModule MULTICAST_CHAT_MODULE = new MulticastChatModule();

@@ -34,6 +34,8 @@ public enum Format {
   LEAVE_MESSAGE("leaveMessage"),
   LOCAL_CHAT("localChat"),
   MULTICAST_CHAT("multicastChat"),
+  LOCAL_EVENT("localEvent"),
+  MULTICAST_EVENT("multicastEvent"),
   LOCAL_SPY("localSpy"),
   MESSAGE_SENDER("messageSender"),
   MESSAGE_TARGET("messageTarget"),
@@ -83,6 +85,12 @@ public enum Format {
       }
       case SWITCH -> {
         return SERVER_SWITCH;
+      }
+      case LOCAL_EVENT -> {
+        return LOCAL_EVENT;
+      }
+      case MULTICAST_EVENT -> {
+        return MULTICAST_EVENT;
       }
       case ALERT -> {
         return ALERT;

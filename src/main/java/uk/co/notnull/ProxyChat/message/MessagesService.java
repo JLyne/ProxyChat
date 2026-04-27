@@ -130,7 +130,7 @@ public final class MessagesService {
 		ChannelType channel = context.getChannel().orElseThrow();
 
 		switch (channel) {
-			case LOCAL -> {
+			case LOCAL, LOCAL_EVENT -> {
 				RegisteredServer server = context.getServer().orElseThrow();
 				recipients = PredicateUtil.getServerPredicate(server);
 				Predicate<ProxyChatAccount> spyRecipients = PredicateUtil.getInclusiveMulticastPredicate(server).negate();
@@ -142,7 +142,7 @@ public final class MessagesService {
 									message, ProxyChatAccount::hasLocalSpyEnabled, spyRecipients));
 				}
 			}
-			case MULTICAST -> recipients = PredicateUtil.getMulticastPredicate(context.getServer().orElseThrow());
+			case MULTICAST, MULTICAST_EVENT -> recipients = PredicateUtil.getMulticastPredicate(context.getServer().orElseThrow());
 			case STAFF -> recipients = pp -> pp.hasPermission(Permission.COMMAND_STAFFCHAT_VIEW);
 			case JOIN -> recipients = PredicateUtil.getPermissionPredicate(Permission.MESSAGE_JOIN_VIEW);
 			case LEAVE -> recipients = PredicateUtil.getPermissionPredicate(Permission.MESSAGE_LEAVE_VIEW);
@@ -167,6 +167,11 @@ public final class MessagesService {
 
 		if(channel.equals(ChannelType.LOCAL)) {
 			context.setChannel(ChannelType.MULTICAST);
+			sendChannelMessage(context);
+		}
+
+		if(channel.equals(ChannelType.LOCAL_EVENT)) {
+			context.setChannel(ChannelType.MULTICAST_EVENT);
 			sendChannelMessage(context);
 		}
 	}

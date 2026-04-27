@@ -50,6 +50,8 @@
     <bytecodeTargetLevel target="1.8">
       <module name="BungeeChat.main" target="11" />
       <module name="BungeeChat.test" target="11" />
+      <module name="ProxyChat.PaperBridge.main" target="25" />
+      <module name="ProxyChat.PaperBridge.test" target="25" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
